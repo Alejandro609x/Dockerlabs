@@ -63,17 +63,17 @@ Para que el navegador nos muestre la pagina web tenemos que meter la dirección 
 ```bash
 nano /etc/hosts
 ```
-![directorio](/Backend/Images/etchosts.jpeg)
+![directorio](/Backend/Images/etchost.jpeg)
 
 Podemos recopilar información sobre la pagina web con, esto es util para ver sobre los servicios que trabaja y la verciones de la pagina y poder encontrar una vulnerabilidad:
 ```bash
 whatweb 172.17.0.2
 ```
-![Reconocimiento](/Backend/Images/etc/whatweb.jpeg)
+![Reconocimiento](/Backend/Images/whatweb.jpeg)
 
 Ya que sabemos que estamos trabajando una pagina web podemos ver que tiene un apartado de login, intentamos entrar con credenciales de podria venir pordefecto y con este verificamos si podriamos entrar, pero no tiene estas credenciales habilitadas.
 
-![pagina](/Backend/Images/etc/pruebas.jpeg)
+![pagina](/Backend/Images/pruebas.jpeg)
 
 Hacemos uso de gobuster para buscar directorios:
 ```bash
@@ -84,30 +84,30 @@ gobuster dir -u /usr/share/seclists/Discovery/web-Content/directory-list-2.3-med
 apt -y install seclists
 ```
 
-![directorios](/Backend/Images/etc/directorios.jpeg)
+![directorios](/Backend/Images/directorios.jpeg)
 
 Para confirmas si era vulnerable la pagina una inyección use admin' en un campo de usuario y la aplicación respondio con un error de base de datos, y esto confirma que el sitio es vulnerable a inyecciones SQL. Esto sucede porque el carácter de comilla simple (') puede alterar la estructura de la consulta SQL.
 
-![pagina](/Backend/Images/etc/pagina.jpeg)
+![pagina](/Backend/Images/pagina.jpeg)
 
-![error](/Backend/Images/etc/sql.jpeg)
+![error](/Backend/Images/sql.jpeg)
 
 Hice uso de Burp Suite para poder mandar la peticion a mi proxy y copiar la peticion un archivo .req para poder usarlo posteriormente.
 
-![peticiones](/Backend/Images/etc/peticion.jpeg)
+![peticiones](/Backend/Images/peticion.jpeg)
 
 Con la herramineta sqlmap que sirve para realizar inyecciones sql automaticamente la use para realizar ataques al formulario y poder optener informacion sensible.
 ```bash
 sqlmap -r peticiones.req --level=5 --risk=3 --dump 
 ```
-![sql](/Backend/Images/etc/sqlmap.jpeg)
+![sql](/Backend/Images/sqlmap.jpeg)
 
 Una vez que te se termino la inyeccion podemo soptener una base de datos llamada users con usuarios y contraseñas, estas credenciales no tuvieron exito en el inicio de sesión en la pagina web y se intentento acceder por SSH el cual la unica credencial valida fue pepe, al ser pocas contraseñas se hizo manual pero se puede realizar por la herramineta hydra.
 Nos conectapor por SSH:
 ```bash
 ssh pepe@172.17.0.2 -p 22
 ```
-![ssh](/Backend/Images/etc/conectarssh.jpeg)
+![ssh](/Backend/Images/conectarssh.jpeg)
 
 📌 **Nota:** Esta herramienta esta penalizada en las certificaciones y en esta las tienes que realizar manualmente.
 
@@ -115,10 +115,10 @@ Se buscan vulnerabilidades para poder escalar privilegios en donde este comando 
 ```bash
 find / \-perm -4000 2>/dev/null
 ```
-![buscar](/Backend/Images/etc/Buscar.jpeg)
+![buscar](/Backend/Images/Buscar.jpeg)
 
 Guardamos el hash como .txt y con la herramienta John the ripper podemos podemos conseguir la contraseña con el cual nos sirve para conectarnos a SSH como root.
-![contraseña](/Backend/Images/etc/ContraseñaRoot.jpeg)
+![contraseña](/Backend/Images/ContraseñaRoot.jpeg)
 
 📌 **Nota:** Puedes hacerlo directamente con comados bash o con paginas de internet.
 
