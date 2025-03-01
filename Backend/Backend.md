@@ -1,7 +1,3 @@
-Aquí tienes tu documento mejorado, con una mejor estructura, ortografía corregida, claridad en las explicaciones y un formato más limpio y llamativo:  
-
----
-
 # 🖥️ **Máquina: Backend**  
 - **🔹 Dificultad:** Fácil  
 - **📌 Descripción:**  
@@ -19,193 +15,110 @@ Aquí tienes tu documento mejorado, con una mejor estructura, ortografía correg
 
 Para desplegar la máquina, sigue estos pasos:  
 
-### 🔹 1️⃣ Descargar y descomprimir el archivo  
+### 1️⃣ **Descargar y descomprimir el archivo**  
 Primero, descarga el archivo `.zip` y extráelo. En mi caso, uso `7z`:  
 
 ```bash
 7z e backend.zip
 ```
 
-### 🔹 2️⃣ Ejecutar el despliegue automático  
+### 2️⃣ **Ejecutar el despliegue automático**  
 Una vez descomprimido, ejecuta el siguiente comando para desplegar la máquina:  
 
 ```bash
 bash auto_deploy.sh backend.tar
 ```
 
-📌 **Nota:** Asegúrate de tener `7z` instalado y de ejecutar el script en un entorno adecuado con Docker configurado.  
-
 ---
 
-## 📡 **Fase de Reconocimiento**  
+📌 **Nota:** Asegúrate de tener `7z` instalado y de ejecutar el script en un entorno adecuado con Docker configurado.  
 
-Una vez iniciada la máquina, verificamos la conexión con:  
+![Máquina Iniciada](/Backend/Images/inicio.jpeg)
 
+Una vez iniciada compruebas la conecion y con el comando:
 ```bash
 ping -c4 172.17.0.2
 ```
-
-Si la conexión es exitosa, procedemos con un escaneo de puertos usando `nmap`:  
-
+Una vez confirmada la conexion comenzamos con las fase de reconocimiento usando el comando:
 ```bash
 nmap -p- --open -sS --min-rate 500 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
 ```
+📌 **Nota:** En mis repositorios puedes encontrar información sobre los comandos empleados en esta fase ya que uso script personalizados.
 
-📌 **Nota:** En mis repositorios puedes encontrar información sobre los comandos empleados en esta fase, ya que uso scripts personalizados.  
-
-Extraemos la información relevante de los puertos con:  
-
+Extraigo la informacion importante con el comando personalizado:
 ```bash
 extracPorts allPorts.txt
 ```
-
 ![Reconocimiento](/Backend/Images/escaneo.jpeg)
 
-Ahora realizamos un análisis más detallado de los servicios detectados:  
-
+Con las informacion estraida hacemos un reconocimeto mas exahustivo con los puertos que ya conocemos y ver las información sobre los servicios que corren en los puertos, para esto usamos el comando:
 ```bash
 nmap -p22,80 -sCV 172.17.0.2 -oN target
 ```
-
-📌 **Nota:**  
-- **Puerto 22** → Servicio **SSH** (posible acceso remoto).  
-- **Puerto 80** → Página web corriendo en el servidor.  
+📌 **Nota:** Con esta informacón podemos empezar a busacr vulberabilidades por las verciones que nos muestras y ver los servicios y como podiramos atacar, en este caso el puerto 22 corresponde al SSH y el puertp 80 nos muestra que en ese puerto corre una pagina web.
 
 ![Reconocimiento](/Backend/Images/puertos.jpeg)
 
-Para acceder a la página web en el navegador, añadimos la IP al archivo **`/etc/hosts`**:  
-
+Para que el navegador nos muestre la pagina web tenemos que meter la dirección IP de la maquina 172.17.0.2, podemos abrir el archivo con:
 ```bash
 nano /etc/hosts
 ```
+![directorio](/Backend/Images/etc/hosts.jpeg)
 
-![Directorio](/Backend/Images/etc/hosts.jpeg)
-
----
-
-## 🔍 **Análisis de la Página Web**  
-
-Recopilamos información con `whatweb`:  
-
+Podemos recopilar información sobre la pagina web con, esto es util para ver sobre los servicios que trabaja y la verciones de la pagina y poder encontrar una vulnerabilidad:
 ```bash
 whatweb 172.17.0.2
 ```
-
 ![Reconocimiento](/Backend/Images/etc/whatweb.jpeg)
 
-Al explorar la página web, encontramos un formulario de **inicio de sesión**. Probamos credenciales por defecto, pero ninguna funcionó.  
+Ya que sabemos que estamos trabajando una pagina web podemos ver que tiene un apartado de login, intentamos entrar con credenciales de podria venir pordefecto y con este verificamos si podriamos entrar, pero no tiene estas credenciales habilitadas.
 
-![Página](/Backend/Images/etc/pruebas.jpeg)
+![pagina](/Backend/Images/etc/pruebas.jpeg)
 
----
-
-## 🚀 **Enumeración de Directorios**  
-
-Ejecutamos `gobuster` para encontrar posibles rutas ocultas en la página web:  
-
+Hacemos uso de gobuster para buscar directorios:
 ```bash
-gobuster dir -u 172.17.0.2 -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 20 -x php,html,txt -b '403,404'
+gobuster dir -u /usr/share/seclists/Discovery/web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b '403,404 -x php,html,txt
 ```
-
-📌 **Nota:** Si no tienes la biblioteca de directorios instalada, usa:  
-
+📌 **Nota:** -u sirve para definir una biblioteca de directorios si no la tienes instalada puedes usar apt install, ademas podriamos usar gobuster para buscar sub-dominios pero cuando realice la practica deduje que seria una ataque por inyeccioón MySQL, solo me llamo la atencion que la url aparecia como index.html y login.html y queria probar si podria existir mas directorios ocultos y no huvo directorios impoertantes.
 ```bash
 apt -y install seclists
 ```
 
-![Directorios](/Backend/Images/etc/directorios.jpeg)
+![directorios](/Backend/Images/etc/directorios.jpeg)
 
----
+Para confirmas si era vulnerable la pagina una inyección use admin' en un campo de usuario y la aplicación respondio con un error de base de datos, y esto confirma que el sitio es vulnerable a inyecciones SQL. Esto sucede porque el carácter de comilla simple (') puede alterar la estructura de la consulta SQL.
 
-## 🛠 **Explotación: Inyección SQL**  
+![pagina](/Backend/Images/etc/pagina.jpeg)
 
-Para comprobar si el formulario de inicio de sesión es vulnerable, probamos con:  
+![error](/Backend/Images/etc/sql.jpeg)
 
-```text
-admin'
-```
+Hice uso de Burp Suite para poder mandar la peticion a mi proxy y copiar la peticion un archivo .req para poder usarlo posteriormente.
 
-Esto generó un error de base de datos, indicando que el sitio **es vulnerable a inyecciones SQL**.  
+![peticiones](/Backend/Images/etc/peticion.jpeg)
 
-![Error](/Backend/Images/etc/sql.jpeg)
-
-### **Automatización con SQLMap**  
-
-Capturamos la solicitud con **Burp Suite** y la guardamos en un archivo `.req`.  
-
-![Peticiones](/Backend/Images/etc/peticion.jpeg)
-
-Usamos `sqlmap` para automatizar la inyección SQL y extraer información sensible:  
-
+Con la herramineta sqlmap que sirve para realizar inyecciones sql automaticamente la use para realizar ataques al formulario y poder optener informacion sensible.
 ```bash
-sqlmap -r peticiones.req --level=5 --risk=3 --dump
+sqlmap -r peticiones.req --level=5 --risk=3 --dump 
 ```
+![sql](/Backend/Images/etc/sqlmap.jpeg)
 
-![SQLMap](/Backend/Images/etc/sqlmap.jpeg)
-
-Como resultado, obtuvimos la base de datos `users` con **usuarios y contraseñas**.
-
----
-
-## 🔑 **Acceso al Sistema vía SSH**  
-
-Probamos las credenciales obtenidas y encontramos que **"pepe"** tiene acceso por SSH:  
-
+Una vez que te se termino la inyeccion podemo soptener una base de datos llamada users con usuarios y contraseñas, estas credenciales no tuvieron exito en el inicio de sesión en la pagina web y se intentento acceder por SSH el cual la unica credencial valida fue pepe, al ser pocas contraseñas se hizo manual pero se puede realizar por la herramineta hydra.
+Nos conectapor por SSH:
 ```bash
 ssh pepe@172.17.0.2 -p 22
 ```
+![ssh](/Backend/Images/etc/conectarssh.jpeg)
 
-![SSH](/Backend/Images/etc/conectarssh.jpeg)
+📌 **Nota:** Esta herramienta esta penalizada en las certificaciones y en esta las tienes que realizar manualmente.
 
-📌 **Nota:** Se puede automatizar el intento de acceso con **Hydra**, pero para este ejercicio lo hicimos manualmente.  
-
----
-
-## 🏗️ **Escalada de Privilegios**  
-
-Buscamos binarios con **SUID** para detectar posibles vulnerabilidades:  
-
+Se buscan vulnerabilidades para poder escalar privilegios en donde este comando nos mostro que podemos ejecutar comados grep y ls con privilegios de root y pudimos conseguir un hash MD5 (con la practica puedes identificar los tipos). 
 ```bash
-find / -perm -4000 2>/dev/null
+find / \-perm -4000 2>/dev/null
 ```
+![buscar](/Backend/Images/etc/Buscar.jpeg)
 
-Esto reveló que podemos ejecutar `grep` y `ls` con privilegios de **root**.  
+Guardamos el hash como .txt y con la herramienta John the ripper podemos podemos conseguir la contraseña con el cual nos sirve para conectarnos a SSH como root.
+![contraseña](/Backend/Images/etc/ContraseñaRoot.jpeg)
 
-![Buscar](/Backend/Images/etc/Buscar.jpeg)
-
-Dentro de los archivos encontramos un **hash MD5**. Guardamos el hash en un archivo y lo desciframos con `John the Ripper`:  
-
-```bash
-john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
-```
-
-📌 **Nota:** También se puede descifrar con herramientas en línea.  
-
-Finalmente, usamos la contraseña obtenida para conectarnos por SSH como **root**.  
-
-![Contraseña Root](/Backend/Images/etc/ContraseñaRoot.jpeg)
-
----
-
-## 🎉 **Conclusión**  
-
-✔️ **Se logró acceso inicial mediante SQLi.**  
-✔️ **Se obtuvieron credenciales de usuario mediante extracción de bases de datos.**  
-✔️ **Se accedió por SSH y se escaló privilegios hasta root.**  
-
-🚀 **Máquina "Backend" completada exitosamente.**  
-
----
-
-### 📌 **Herramientas Utilizadas:**  
-- **Nmap** (Escaneo de puertos)  
-- **Gobuster** (Enumeración de directorios)  
-- **Burp Suite** (Captura de peticiones)  
-- **SQLMap** (Automatización de inyecciones SQL)  
-- **John the Ripper** (Descifrado de contraseñas)  
-
----
-
-Este formato mejora la organización, claridad y profesionalismo del documento. ¡Espero que te sirva! 🚀🔥
-
+📌 **Nota:** Puedes hacerlo directamente con comados bash o con paginas de internet.
 
