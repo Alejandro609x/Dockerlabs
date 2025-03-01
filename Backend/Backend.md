@@ -33,3 +33,21 @@ bash auto_deploy.sh backend.tar
 
 📌 **Nota:** Asegúrate de tener `7z` instalado y de ejecutar el script en un entorno adecuado con Docker configurado.  
 
+![Máquina Iniciada](/Backend/Images/inicio.jpeg)
+
+Una vez iniciada compruebas la conecion y con el comando:
+```bash
+ping -c4 172.17.0.2
+```
+Una vez confirmada la conexion comenzamos con las fase de reconocimiento usando el comando:
+```bash
+nmap -p- --open -sS --min-rate 500 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
+```
+📌 **Nota:** En mis repositorios puedes encontrar información sobre los comandos empleados en esta fase ya que uso script personalizados.
+
+Extraigo la informacion importante con el comando personalizado:
+```bash
+extracPorts allPorts.txt
+```
+![Reconocimiento](/Backend/Images/escaneo.jpeg)
+
