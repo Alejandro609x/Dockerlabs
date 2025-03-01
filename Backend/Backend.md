@@ -63,7 +63,7 @@ Para que el navegador nos muestre la pagina web tenemos que meter la dirección 
 ```bash
 nano /etc/hosts
 ```
-![directorio](/Backend/Images/etc/hosts.jpeg)
+![directorio](/Backend/Images/etchosts.jpeg)
 
 Podemos recopilar información sobre la pagina web con, esto es util para ver sobre los servicios que trabaja y la verciones de la pagina y poder encontrar una vulnerabilidad:
 ```bash
