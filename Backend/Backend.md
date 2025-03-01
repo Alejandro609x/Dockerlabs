@@ -99,7 +99,7 @@ gobuster dir -u /usr/share/seclists/Discovery/web-Content/directory-list-2.3-med
 apt -y install seclists
 ```
 
-Aunque no encontramos directorios importantes, el uso de **gobuster** también podría haber sido útil para buscar subdominios. Sin embargo, en este caso, deduje que el ataque sería por inyección MySQL, dado que la URL mostraba como `index.html` y `login.html`.
+Aunque no encontramos directorios importantes, el uso de **gobuster** también podría haber sido útil para buscar subdominios. Sin embargo, en este caso, deduje que el ataque sería por inyección MySQL, aplique este ataque porque me llamo la atención que en la URL esta `index.html` y `login.html` y queria confirmar si no habia directorios ocultos.
 
 ![directorios](/Backend/Images/directorios.jpeg)
 
