@@ -51,3 +51,10 @@ extracPorts allPorts.txt
 ```
 ![Reconocimiento](/Backend/Images/escaneo.jpeg)
 
+Con las informacion estraida hacemos un reconocimeto mas exahustivo con los puertos que ya conocemos y ver las información sobre los servicios que corren en los puertos, para esto usamos el comando:
+```bash
+nmap -p22,80 -sCV 172.17.0.2 -oN target
+```
+📌 **Nota:** Con esta informacón podemos empezar a busacr vulberabilidades por las verciones que nos muestras y ver los servicios y como podiramos atacar, en este caso el puerto 22 corresponde al SSH y el puertp 80 nos muestra que en ese puerto corre una pagina web.
+
+![Reconocimiento](/Backend/Images/puertos.jpeg)
