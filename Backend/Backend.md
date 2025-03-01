@@ -121,7 +121,7 @@ sqlmap -r peticiones.req --level=5 --risk=3 --dump
 
 ![sql](/Backend/Images/sqlmap.jpeg)
 
-Al finalizar la inyección, conseguimos acceder a una base de datos llamada **users**, que contiene nombres de usuario y contraseñas. Sin embargo, estas credenciales no fueron válidas para iniciar sesión en la página web. Intentamos acceder por SSH y encontramos que la única credencial válida era `pepe`. Aunque se intentó hacer un ataque automatizado con **Hydra**, la cantidad de contraseñas era pequeña, por lo que se optó por hacerlo manualmente.
+Al finalizar la inyección, conseguimos acceder a una base de datos llamada **users**, que contiene nombres de usuario y contraseñas. Sin embargo, estas credenciales no fueron válidas para iniciar sesión en la página web. Intentamos acceder por SSH y encontramos que la única credencial válida era `pepe`. Aunque se puede intentar hacer un ataque automatizado con **Hydra**, la cantidad de contraseñas era pequeña, por lo que se optó por hacerlo manualmente.
 
 Para acceder por SSH, usamos:
 
