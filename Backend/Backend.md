@@ -81,7 +81,7 @@ Luego, recopilamos información sobre la página web con el siguiente comando, l
 whatweb 172.17.0.2
 ```
 
-![Reconocimiento](/Backend/Images/whatweb.jpeg)
+![Reconocimiento](/Backend/Images/whaweb.jpeg.)
 
 Al acceder a la página, observamos que existe un formulario de login. Intentamos ingresar utilizando credenciales predeterminadas, pero no tienen éxito.
 
