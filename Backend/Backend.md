@@ -131,7 +131,7 @@ ssh pepe@172.17.0.2 -p 22
 
 ![ssh](/Backend/Images/conectarssh.jpeg)
 
-📌 **Nota:** En este caso, el uso de herramientas automatizadas como **Hydra** no es recomendable para certificaciones, ya que debes realizar el ataque de forma manual.
+📌 **Nota:** En este caso, el uso de herramientas automatizadas como **sqlmap** no es recomendable para certificaciones, ya que debes realizar el ataque de forma manual.
 
 Una vez dentro, buscamos posibles vulnerabilidades para escalar privilegios. Al ejecutar el siguiente comando, descubrimos que podíamos ejecutar **grep** y **ls** con privilegios de root, lo que nos permitió obtener un hash MD5.
 
