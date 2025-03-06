@@ -90,7 +90,7 @@ Al acceder a la página, observamos que existe un formulario de login. Intentamo
 Para encontrar posibles directorios ocultos, utilizamos **gobuster** con una lista de directorios conocida:
 
 ```bash
-gobuster dir -u /usr/share/seclists/Discovery/web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b '403,404' -x php,html,txt
+gobuster dir -u http:// /usr/share/seclists/Discovery/web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b '403,404' -x php,html,txt
 ```
 
 📌 **Nota:** Si no tienes instalada la lista de directorios, puedes hacerlo con:
