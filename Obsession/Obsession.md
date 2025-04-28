@@ -7,7 +7,7 @@
   - Identificar y explotar fallos de seguridad en la aplicación backend mediante técnicas de **inyección SQL**.  
   - Comprender el impacto de estas vulnerabilidades.  
 
-![Máquina Backend](/Backend/Images/Maquina.png)
+![Máquina Backend](/Obsession/Imagenes/Plantilla.png)
 
 ---
 
