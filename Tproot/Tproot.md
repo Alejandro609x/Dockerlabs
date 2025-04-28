@@ -6,7 +6,6 @@
 
 - **🎯 Objetivo:**  
   - Explotar la vulnerabilidad en vsftpd 2.3.4 para obtener acceso como root.  
-  - Identificar directorios ocultos en el servidor web.  
   - Comprender y aplicar diferentes métodos de explotación.  
   - Consolidar buenas prácticas de enumeración y explotación básica.
 
