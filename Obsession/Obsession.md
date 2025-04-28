@@ -6,8 +6,11 @@
 
 - **🎯 Objetivo:**  
   -Enumerar y explotar acceso anónimo en FTP para obtener información sensible.
+  
   -Identificar directorios ocultos en el servidor web.
+  
   -Realizar un ataque de fuerza bruta contra SSH para obtener acceso al sistema.
+  
   -Escalar privilegios a root mediante una mala configuración de sudo con vim.
   
 ![Máquina Backend](/Obsession/Imagenes/Plantilla.png)
