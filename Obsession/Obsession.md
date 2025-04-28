@@ -65,23 +65,8 @@ nmap -p22,80 -sCV 172.17.0.2 -oN target
 ![Reconocimiento](/Obsession/Imagenes/Servicios.jpeg)
 📌 **Nota:** Esta información nos permite identificar posibles vulnerabilidades basadas en las versiones de los servicios, como en este caso, donde el puerto 22 está relacionado con SSH y el puerto 80 con una página web.
 
-Con este analisis puedo ver que el servicio ftp no necesita contraseña ya que esta habilitado el usuario anonymus, asi que entramos con el siguiente comando y cuando pida la contraseña solo le damos enter:
-```bash
-ftp 172.17.0.2
-```
-![Reconocimiento](/Obsession/Imagenes/FTP.jpeg)
- Una vez dentro del servico encontre dos documetos que descargue en mi equipo para analizarlos con los comandos:
+Durante la fase de reconocimiento, detecté que el puerto 80 está abierto y el servicio ftp tiene el usuario anonymus activo, lo que indica que hay un servidor web en ejecución y puedo entrar al servicio ftp sin necesidad de una contraseña.
 
-```bash
-get pendientes.txt /home/alejandro/Descargas pendientes.txt
-```
-```bash
-get chat-gonza.txt /home/alejandro/Descargas pendientes.txt
-```
- 
-![Servicios](/Obsession/Imagenes/FTP descargas.jpeg)
-
-Durante la fase de reconocimiento, detecté que el puerto 80 está abierto, lo que indica que hay un servidor web en ejecución.
 Para acceder a la página web desde el navegador, es necesario añadir la dirección IP de la máquina (172.17.0.2) en el archivo hosts.
 Para hacerlo, edita el archivo con el siguiente comando:
 
@@ -102,6 +87,39 @@ Para recopilar información sobre la página web puedes usar el siguiente comand
 ```bash
 whatweb 172.17.0.2
 ```
+
+Para entrar al servicio ftp ya que esta habilitado el usuario anonymus, usamos el siguiente comando y cuando pida la contraseña solo le damos enter:
+```bash
+ftp 172.17.0.2
+```
+![Reconocimiento](/Obsession/Imagenes/FTP.jpeg)
+
+ Una vez dentro del servico encontre dos documetos que descargue en mi equipo para analizarlos con los comandos:
+
+```bash
+get pendientes.txt /home/alejandro/Descargas pendientes.txt
+```
+```bash
+get chat-gonza.txt /home/alejandro/Descargas chat-gonza.txt
+```
+ 
+![FTP_descargas](/Obsession/Imagenes/FTP_descargas.jpeg)
+
+Procedemos a analizar los archivos desacargados ya que son .txt los abriremos con cat.
+```bash
+get pendientes.txt 
+```
+```bash
+cat chat-gonza.txt 
+```
+
+![cat](/Obsession/Imagenes/Lectura.jpeg)
+
+Logramos notar posible evidencia ante un juez si es que la chica necesitara en una situacion legal pero no es el caso solo nos centraremos en buscar vulnerabilidades como el que menciona que necesita hacer unos cambios en la pagina.
+
+Al entrar en la pagina notamos que no hay mucho que hacer dentro de esta.
+
+![Pagina](/Obsession/Imagenes/Pagina.jpeg)
 
 Para encontrar posibles directorios ocultos en el servidor web, utilizamos la herramienta **wfuzz** junto con una lista de palabras conocida.  
 El siguiente comando realiza un ataque de fuerza bruta sobre las rutas del servidor:
@@ -126,6 +144,28 @@ Así tendrás acceso a muchísimas listas útiles para pentesting.
 
 ![Pagina](/Obsession/Imagenes/wfuzz.jpeg)
 
+Gracias a este scaneo logramos identificar 2 directorios ocultos uno llamado important que es una espice de credo  que no nos aporta alguna vulnerabilidad destacable, y otra llamada backup donde podemos observar el usuario que suele ocupar para sus servicios.
+
+![evidencia](/Obsession/Imagenes/important.jpeg)
+![evidencia](/Obsession/Imagenes/Contenido_importan.jpeg)
+![evidencia](/Obsession/Imagenes/backup.jpeg)
+![evidencia](/Obsession/Imagenes/Contenido_backup.jpeg)
+
+Ya que sabemos la contrasella del servicio SSH podemos ocupar hydra para haga un ataque de fuerza bruta para encontrar su contraseña, para ello ocupamos el comando:
+
+```bash
+hydra -l russoski -p /usr/share/wordlist/rockyou.txt ssh://172.17.0.2 -t 50
+```
+
+![Hydra](/Obsession/Imagenes/Hydrassh.jpeg)
+
+Al conseguir la contraseña podemos iniciar sesuin en el servicio de SSH con el comando:
+```bash
+sudo ssh russoski@172.17.0.2 22
+ ```
+![Entrar](/Obsession/Imagenes/Entrar.jpeg)
+
+Una vez dentro buscamosalhuna vulnerabilidad para escalar privilegios y llegar a ser root
 
 
 
