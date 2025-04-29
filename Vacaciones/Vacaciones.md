@@ -10,7 +10,7 @@
   - Realizar cambio de usuario vía nueva sesión SSH.
   - Escalar privilegios a `root`.
 
-![Despliegue](/Vacaciones/Imagenes/Plantilla.jpeg)
+![Despliegue](/Vacaciones/Imagenes/Plantilla.png)
 
 ---
 
