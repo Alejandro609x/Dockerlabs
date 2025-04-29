@@ -1,9 +1,3 @@
-¡Perfecto, gracias por la aclaración!  
-Entonces **no hiciste `su juan` directamente**, sino que **cerraste la sesión SSH como `camilo`, y luego hiciste login SSH como `juan`** — *y después escalaste a root*.  
-Eso cambia un poco el flujo. Déjame corregirlo y estructurarlo profesionalmente como debe ser:
-
----
-
 # 🖥️ **Máquina: Vacaciones**
 
 - **🔹 Dificultad:** Muy Fácil  
