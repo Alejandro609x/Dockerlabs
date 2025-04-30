@@ -1,23 +1,37 @@
-# 🖥️ Máquina: BorazuwarahCTF  
+Gracias por aclararlo. Aquí tienes el **inicio corregido y mejorado** para que marque claramente que estás comenzando el análisis de una nueva máquina:
+
+---
+
+# 🖥️ Nueva Máquina: **BorazuwarahCTF**  
 🔹 **Dificultad:** Muy Fácil  
 
 ---
 
 ## 📌 Descripción
 
-**BorazuwarahCTF** es una máquina de práctica alojada en **DockerLabs**, diseñada especialmente para quienes se inician en el _pentesting_. Permite practicar técnicas esenciales como:
+**BorazuwarahCTF** es una máquina de práctica alojada en **DockerLabs**, ideal para quienes se están iniciando en el **pentesting**. Permite familiarizarse con técnicas básicas como:
 
 - Ataques de fuerza bruta con **Hydra**  
-- Análisis de metadatos en imágenes  
-- Escalada de privilegios mediante **sudo**  
+- Extracción de metadatos desde archivos  
+- Escalada de privilegios a través de configuraciones de **sudo** mal gestionadas  
+
+![Logo de la máquina](/HedgeHog/Imagenes/Logo.png)
 
 ---
 
-## 🎯 Objetivos
+## 🧰 Preparativos
 
-- Identificar credenciales mediante ataques de fuerza bruta  
-- Extraer información sensible desde archivos públicos  
-- Escalar privilegios en el sistema  
+Descargamos e iniciamos la máquina vulnerable con el siguiente comando:
+
+```bash
+sudo bash auto_deploy.sh hedgehog.tar
+```
+
+![Inicio de la máquina](/HedgeHog/Imagenes/Iniciar.jpeg)
+
+---
+
+¿Quieres que este encabezado se repita cada vez que inicies una máquina nueva en tus documentos o videos?
 
 ---
 
