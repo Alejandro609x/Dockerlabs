@@ -33,6 +33,7 @@ Una vez iniciada, verifica la conexión con:
 ping -c4 172.17.0.2
 ```  
 ![ping](/BorazuwarahCTF/Imagenes/Ping.jpeg)  
+
 ---
 
 ## 🔍 **Reconocimiento**  
@@ -48,10 +49,10 @@ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allports.txt
 - **22/tcp (SSH)**  
 - **80/tcp (HTTP)**  
 
-![Resultado del Escaneo](/Escaneo.jpeg)  
+![Resultado del Escaneo](/BorazuwarahCTF/Imagenes/Escaneo.jpeg)  
 
 ### Servicios Detectados  
-Se utilizó Nmap para obtener más detalles:  
+Se utilizó Nmap para obtener más detalles de los servicios que corren en los puertos:  
 
 ```bash
 nmap -sCV -p22,80 172.17.0.2 -oN target.txt
@@ -61,10 +62,34 @@ nmap -sCV -p22,80 172.17.0.2 -oN target.txt
 - **SSH:** OpenSSH 9.2p1  
 - **HTTP:** Apache 2.4.59  
 
-![Servicios Detectados](/Servicios.jpeg)  
+![Servicios Detectados](/BorazuwarahCTF/Imagenes/Servicios.jpeg)  
 
 ---
 
+## 🛠️ **Pagina Web**  
+Revise la pagina web que estaba corriendo en el puerto :80, pero no se encontro nada relevante use las herramientas de gobuster,wfuzz revise la pagina con whatweb y procedi a revisar la imagen.
+
+![Pagina](/BorazuwarahCTF/Imagenes/Pagina.jpeg)  
+
+---
+
+## 🛠️ **Exploracion de la imagen**  
+
+### Metadatos
+Descargue la imagen con el comando:  
+
+```bash
+wget http://172.17.0.2/imagen.jpeg
+```
+Con la imagen descargada se prcedio ha revisar su metadata donde se encontro un usuario que procedi a usar Hydra para intentar encontrar su contraseña para el servicio de SSH ya que en la etapa de reconocimeto encontramos que el puerto 22 estava activo.
+
+```bash
+exiftool imagen.jpeg
+```  
+
+![Metadatos](/BorazuwarahCTF/Imagenes/Metadatos.jpeg)  
+
+---
 ## 🛠️ **Explotación**  
 
 ### Fuerza Bruta con Hydra  
@@ -78,7 +103,7 @@ hydra -l borazunarah -P /usr/share/wordlists/rockyou.txt ssh://172.17.0.2 -t 20
 - **Usuario:** `borazunarah`  
 - **Contraseña:** `123456`  
 
-![Resultado de Hydra](/Hydra.jpeg)  
+![Resultado de Hydra](/BorazuwarahCTF/Imagenes/Hydra.jpeg)  
 
 ### Conexión SSH  
 Se accedió al sistema con las credenciales obtenidas:  
@@ -101,24 +126,7 @@ sudo -l
 sudo /bin/bash
 ```  
 
-![Escalada de Privilegios](/SSH.jpeg)  
-
----
-
-## 📂 **Análisis de Metadatos**  
-
-Se descargó una imagen del servidor y se analizaron sus metadatos:  
-
-```bash
-wget http://172.17.0.2/imagen.jpeg
-exiftool imagen.jpeg
-```  
-
-**Metadatos relevantes:**  
-- **Usuario:** `Horazwaraah`  
-- **Descripción:** Posible información sensible.  
-
-![Metadatos de la Imagen](/Metadatos.jpeg)  
+![Escalada de Privilegios](/BorazuwarahCTF/Imagenes/SSH.jpeg)  
 
 ---
 
@@ -127,5 +135,3 @@ Esta máquina permitió practicar técnicas básicas de pentesting, desde recono
 - Verificar permisos de sudo.  
 - Analizar metadatos en archivos públicos.  
 - Utilizar herramientas como Hydra para ataques de fuerza bruta.  
-
-![Página Web](/Pagina.jpeg)
