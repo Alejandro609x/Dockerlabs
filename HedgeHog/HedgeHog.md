@@ -1,15 +1,11 @@
-Gracias por aclararlo. Aquí tienes el **inicio corregido y mejorado** para que marque claramente que estás comenzando el análisis de una nueva máquina:
-
----
-
-# 🖥️ Nueva Máquina: **BorazuwarahCTF**  
+# 🖥️ Máquina: **HedgeHog**  
 🔹 **Dificultad:** Muy Fácil  
 
 ---
 
 ## 📌 Descripción
 
-**BorazuwarahCTF** es una máquina de práctica alojada en **DockerLabs**, ideal para quienes se están iniciando en el **pentesting**. Permite familiarizarse con técnicas básicas como:
+**HedgeHog** es una máquina de práctica alojada en **DockerLabs**, ideal para quienes se están iniciando en el **pentesting**. Permite familiarizarse con técnicas básicas como:
 
 - Ataques de fuerza bruta con **Hydra**  
 - Extracción de metadatos desde archivos  
