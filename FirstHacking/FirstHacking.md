@@ -48,7 +48,7 @@
    nmap -sC -sV -p 21 172.17.0.2 -oN target.txt
    ```
 
-   > ✨ *Nota:* Puedes encontrar más detalles sobre cómo automatizar y optimizar escaneos Nmap en [nmap-escaneos-y-funciones](#).
+   > ✨ *Nota:* Puedes encontrar más detalles sobre cómo automatizar y optimizar escaneos Nmap en mis repositorios.
 
    ![](/FirstHacking/Imagenes/Servicios.jpeg)
 
