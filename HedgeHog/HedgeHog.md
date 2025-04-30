@@ -205,5 +205,3 @@ Para prevenir este tipo de escalada de privilegios:
 - Audita el archivo `/etc/sudoers` regularmente
 
 ---
-
-¿Deseas que este informe se convierta también en una plantilla reutilizable o formato para tus futuros reportes?
