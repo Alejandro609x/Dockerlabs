@@ -2,7 +2,7 @@
 **Dificultad:** Muy Fácil  
 
 ## 📌 Descripción  
-La máquina Trust está diseñada para practicar técnicas básicas de enumeración web, fuerza bruta por SSH y escalada de privilegios a través de la ejecución de binarios con permisos elevados.
+Trust está diseñada para practicar técnicas básicas de enumeración web, fuerza bruta por SSH y escalada de privilegios a través de la ejecución de binarios con permisos elevados.
 
 ---
 
