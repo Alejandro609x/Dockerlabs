@@ -5,6 +5,8 @@ Aquí encontrarás **soluciones completas y detalladas** a las máquinas que he 
 
 Si estás aprendiendo sobre contenedores o quieres mejorar tus habilidades en despliegue y resolución de problemas en **Docker**, este repositorio puede serte de gran ayuda.
 
+Te recomiedo estar revisando el repositorio, se estara actualizando periodicamente.
+
 ## 🔍 ¿Qué contiene este repositorio?
 
 Cada carpeta representa una máquina de **DockerLabs** e incluye:
