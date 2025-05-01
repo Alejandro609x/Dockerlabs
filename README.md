@@ -1,7 +1,3 @@
-Claro, aquí tienes tu texto actualizado con el agregado que mencionaste, manteniendo el estilo y estructura original:
-
----
-
 # 🚀 DockerLabs - Resolución de Máquinas
 
 ¡Bienvenido a mi repositorio de **DockerLabs**!  
