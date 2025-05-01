@@ -164,8 +164,6 @@ Se logró el objetivo de comprometer el sistema y obtener acceso como `root`. El
 
 Este ejercicio demuestra la importancia de validar correctamente las entradas del usuario, así como limitar el uso de binarios con SUID innecesarios en sistemas productivos.
 
-Perfecto. Aquí tienes el reporte actualizado con una **nota técnica** aclarando que el uso de herramientas automatizadas como **Burp Suite** o **SQLMap** puede estar **prohibido en ciertas certificaciones**, como OSCP o similares, y que es responsabilidad del profesional seguir las políticas establecidas.
-
 ---
 
 > ⚠️ **Nota:** En ciertas certificaciones como **OSCP**, **OSWE**, o entornos de evaluación restringidos, el uso de herramientas automatizadas como **Burp Suite Intruder** o **SQLMap** puede estar **estrictamente prohibido**. Estas herramientas simplifican la explotación, pero pueden ir en contra de los principios de aprendizaje, análisis manual o evaluación ética establecidos por la organización. Asegúrate siempre de revisar las políticas antes de usarlas.
