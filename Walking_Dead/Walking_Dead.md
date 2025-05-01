@@ -9,67 +9,55 @@
 
 ## 1. Despliegue de la Máquina
 
-Se descargó la máquina vulnerable desde el repositorio de Dockerlabs. Posteriormente, se descomprimió utilizando:
+Se descargó la máquina desde Dockerlabs. Se descomprimió y desplegó utilizando:
 
 ```bash
 unzip walking_dead.zip
-```
-
-Luego, se desplegó la máquina con el script proporcionado:
-
-```bash
 sudo bash auto_deploy.sh walking_dead.tar
 ```
 
-![Despliegue de la máquina](/Walking_Dead/Imagenes/Despliegue.jpeg)
+![Despliegue](/Walking_Dead/Imagenes/Despliegue.jpeg)
 
 ---
 
 ## 2. Verificación de Conectividad
 
-Para comprobar que la máquina se encuentra activa en la red, se ejecutó un comando `ping` hacia su IP asignada (172.17.0.2):
+Se confirmó que la máquina está activa mediante un `ping` a la IP 172.17.0.2:
 
 ```bash
 ping -c4 172.17.0.2
 ```
 
-La respuesta positiva confirmó la disponibilidad de la máquina.
-
-![Ping exitoso](/Walking_Dead/Imagenes/Ping.jpeg)
+![Ping](/Walking_Dead/Imagenes/Ping.jpeg)
 
 ---
 
-## 3. Reconocimiento de Puertos
+## 3. Escaneo de Puertos
 
-Se realizó un escaneo de puertos completo con `nmap` para identificar servicios expuestos:
+Se utilizó `nmap` para detectar puertos abiertos:
 
 ```bash
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
 ```
 
-Este comando escanea todos los puertos TCP abiertos mediante un escaneo SYN (`-sS`) sin realizar resolución DNS (`-n`) ni ping previo (`-Pn`). La salida se guardó en formato `grepable`.
-
-Se identificaron los siguientes puertos abiertos:
-
-- **22/tcp** – SSH  
-- **80/tcp** – HTTP
+Se identificaron los puertos 22 (SSH) y 80 (HTTP).
 
 ![Puertos abiertos](/Walking_Dead/Imagenes/Puertos.jpeg)
 
 ---
 
-## 4. Detección de Servicios y Versiones
+## 4. Detección de Servicios
 
-Utilizando mi script personalizado `extractPorts`, se extrajeron los puertos detectados y se utilizó `nmap` para realizar un escaneo más detallado de servicios y versiones:
+Con el script `extractPorts` se extrajeron los puertos abiertos para un escaneo más profundo:
 
 ```bash
 sudo nmap -sCV -p22,80 172.17.0.2 -oN targetedScan.txt
 ```
 
-El parámetro `-sCV` ejecuta scripts por defecto y detecta versiones. Este análisis permitió identificar:
+Se identificó:
 
-- **SSH**: OpenSSH con autenticación estándar (sin configuraciones inusuales)
-- **HTTP**: Servidor web Apache (sin información sensible visible en headers)
+- **Apache Web Server en el puerto 80**
+- **OpenSSH en el puerto 22**
 
 ![Servicios detectados](/Walking_Dead/Imagenes/Servicios.jpeg)
 
@@ -77,52 +65,78 @@ El parámetro `-sCV` ejecuta scripts por defecto y detecta versiones. Este anál
 
 ## 5. Análisis del Sitio Web
 
-Al acceder vía navegador a `http://172.17.0.2`, el sitio inicial no muestra información útil para un atacante:
+Al visitar `http://172.17.0.2`, el sitio no ofrecía información útil directamente.
 
-![Página principal del sitio](/Walking_Dead/Imagenes/Pagina.jpeg)
+![Página principal](/Walking_Dead/Imagenes/Pagina.jpeg)
 
-Se procedió a realizar *fuzzing* de directorios con herramientas como **Gobuster** y **Wfuzz**, pero no se encontraron recursos relevantes.
+Se intentó encontrar contenido oculto mediante herramientas de enumeración de directorios como **Gobuster** y **Wfuzz**, sin resultados relevantes iniciales.
 
 ---
 
 ## 6. Análisis Manual del Código Fuente
 
-Durante la inspección manual del código fuente HTML del sitio web, se encontró una etiqueta `<p>` oculta con un enlace sospechoso:
+Al inspeccionar manualmente el código HTML del sitio (clic derecho > Ver código fuente), se encontró un fragmento sospechoso:
 
 ```html
 <p class="hidden-link"><a href="hidden/.shell.php">Access Panel</a></p>
 ```
 
-Este hallazgo sugiere la presencia de un posible panel oculto o incluso una *web shell*.
+![Fragmento HTML oculto](/mnt/data/Directorio_oculto.jpeg)
 
-![Código fuente con enlace oculto](/Walking_Dead/Imagenes/Directorio_oculto.jpeg)
+Este tipo de etiquetas ocultas no son visibles en el navegador, pero están presentes en el código fuente. La etiqueta `<a href="hidden/.shell.php">` apunta a un posible recurso interesante: un archivo PHP con nombre `.shell.php`, lo que puede sugerir una **web shell**.
 
 ---
 
-## 7. Acceso a Web Shell
+## 7. Confirmación de Web Shell
 
-Se accedió a la ruta `http://172.17.0.2/hidden/.shell.php`, donde inicialmente no se mostraba ninguna interfaz interactiva.
+Se accedió directamente a la ruta descubierta:  
+`http://172.17.0.2/hidden/.shell.php`
 
-![Acceso a .shell.php](/Walking_Dead/Imagenes/Directorio.jpeg)
+Inicialmente, la página mostraba una pantalla en blanco, sin interfaz aparente:
 
-Sin embargo, se sospechó que se trataba de una *web shell* funcional basada en parámetros GET. Se probó ejecutando el siguiente comando directamente en la URL:
+![Acceso a .shell.php](/mnt/data/Directorio.jpeg)
+
+Sin embargo, se probó manualmente añadir el parámetro `?cmd=whoami` a la URL, lo cual ejecutó un comando del sistema remoto:
 
 ```
 http://172.17.0.2/hidden/.shell.php?cmd=whoami
 ```
 
-Esto ejecutó correctamente el comando en el sistema remoto, lo cual confirma que se trata de una *web shell* basada en parámetros. El servidor respondió con el nombre del usuario en ejecución.
+Esto reveló el usuario bajo el cual corre el servidor web: `www-data`.
 
-![Ejecución remota del comando `whoami`](/Walking_Dead/Imagenes/web_shell.jpeg)
+![Salida del comando whoami](/mnt/data/web_shell.jpeg)
 
----
-
-## Estado Actual
-
-- Se ha obtenido una *web shell* funcional con acceso a la ejecución remota de comandos.
-- El siguiente paso será escalar privilegios o establecer un *reverse shell* para interacción más cómoda.
-- Se recomienda seguir explorando el sistema de archivos y procesos del sistema remoto.
+Esto **confirma que la página es una Web Shell**, y permite ejecutar comandos en el sistema remoto directamente desde el navegador.
 
 ---
 
-¿Deseas que continúe con la post-explotación, incluyendo análisis del sistema y escalada de privilegios?
+## 8. Glosario de Términos Técnicos
+
+### 🔍 Fuzzing
+
+**Fuzzing** (también conocido como *fuzz testing*) es una técnica utilizada para descubrir directorios, archivos o parámetros ocultos en una aplicación web. Consiste en enviar automáticamente cientos o miles de peticiones con distintos nombres comunes o patrones, con la esperanza de que el servidor responda con algún resultado inesperado.
+
+Ejemplo de herramienta de fuzzing:
+```bash
+gobuster dir -u http://172.17.0.2 -w /usr/share/wordlists/dirb/common.txt
+```
+
+---
+
+### 🔐 Web Shell
+
+Una **web shell** es un script (en PHP, ASP, etc.) que permite al atacante ejecutar comandos en el sistema a través de un navegador. Comúnmente se accede a ella mediante un parámetro en la URL como `?cmd=ls`, que se interpreta en el backend del servidor.
+
+---
+
+### 💡 Parámetro GET
+
+Los parámetros GET permiten enviar datos en la URL. En este caso, `?cmd=whoami` significa que el parámetro `cmd` tiene como valor el comando `whoami`, que será ejecutado por el script del servidor.
+
+---
+
+## Estado Actual y Próximos Pasos
+
+✔ Acceso exitoso a web shell  
+✔ Confirmación de ejecución remota de comandos como `www-data`  
+➡ Próximo paso: intentar escalar privilegios para obtener acceso como **root**
