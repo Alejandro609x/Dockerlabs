@@ -5,6 +5,8 @@
 **Objetivo:** Identificar y explotar vulnerabilidades presentes en la máquina *Walking Dead*  
 **Ruta de evidencias:** `/Walking_Dead/Imagenes/`
 
+![Logo](/Walking_Dead/Imagenes/Logo.png)
+
 ---
 
 ## 1. Despliegue de la Máquina
