@@ -83,7 +83,7 @@ Al inspeccionar manualmente el código HTML del sitio (clic derecho > Ver códig
 <p class="hidden-link"><a href="hidden/.shell.php">Access Panel</a></p>
 ```
 
-![Fragmento HTML oculto](/mnt/data/Directorio_oculto.jpeg)
+![Fragmento HTML oculto](/Walking_Dead/Imagenes/Directorio_oculto.jpeg)
 
 Este tipo de etiquetas ocultas no son visibles en el navegador, pero están presentes en el código fuente. La etiqueta `<a href="hidden/.shell.php">` apunta a un posible recurso interesante: un archivo PHP con nombre `.shell.php`, lo que puede sugerir una **web shell**.
 
@@ -96,7 +96,7 @@ Se accedió directamente a la ruta descubierta:
 
 Inicialmente, la página mostraba una pantalla en blanco, sin interfaz aparente:
 
-![Acceso a .shell.php](/mnt/data/Directorio.jpeg)
+![Acceso a .shell.php](/Walking_Dead/Imagenes/Directorio.jpeg)
 
 Sin embargo, se probó manualmente añadir el parámetro `?cmd=whoami` a la URL, lo cual ejecutó un comando del sistema remoto:
 
@@ -106,7 +106,7 @@ http://172.17.0.2/hidden/.shell.php?cmd=whoami
 
 Esto reveló el usuario bajo el cual corre el servidor web: `www-data`.
 
-![Salida del comando whoami](/mnt/data/web_shell.jpeg)
+![Salida del comando whoami](/Walking_Dead/Imagenes/web_shell.jpeg)
 
 Esto **confirma que la página es una Web Shell**, y permite ejecutar comandos en el sistema remoto directamente desde el navegador.
 
