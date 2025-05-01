@@ -254,7 +254,7 @@ Perfecto. A continuación te dejo la **sección completa ya redactada** para que
 
 ---
 
-## 9. Ejecución de Comandos Remotos con la Web Shell
+## 11. Ejecución de Comandos Remotos con la Web Shell
 
 Una vez identificada y confirmada la Web Shell en `http://172.17.0.2/hidden/.shell.php`, es posible **ejecutar comandos en el servidor de forma remota** utilizando la URL y el parámetro `cmd`.
 
