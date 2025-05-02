@@ -8,11 +8,11 @@ Realizar un análisis de seguridad completo sobre la máquina virtual **Patriaqu
 
 ## ⚙️ 1. Despliegue de la Máquina
 
-* Se descargó el archivo `Patriaquerida.zip` desde la página de Dockerlabs.
+* Se descargó el archivo `patriaquerida.zip` desde la página de Dockerlabs.
 * Se descomprimió usando:
 
   ```bash
-  unzip Patriaquerida.zip
+  unzip patriaquerida.zip
   ```
 * Se desplegó con el script:
 
