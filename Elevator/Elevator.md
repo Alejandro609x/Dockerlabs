@@ -1,7 +1,3 @@
-Perfecto, gracias por la aclaración. A continuación te presento una **versión más completa y explicada**, incluyendo tus notas, el escaneo con `nmap -sCV`, y una explicación detallada de cada escalada de privilegios entre usuarios.
-
----
-
 # Informe de Pentesting – Máquina Vulnerable *Elevator*
 
 ![Logo](/Elevator/Imagenes/Logo.png)
