@@ -50,9 +50,11 @@ Resultado: solo el puerto **80 (HTTP)** está abierto.
 
 ### 2.2 Extracción de Puertos
 
-Se utiliza el script personalizado `extractPorts` para filtrar los puertos encontrados.
+Se utiliza el script personalizado `extractPorts` para filtrar los puertos encontrados y usar nmap para ver mas información de los servicios. 
 
-![Servicios](/Elevator/Imagenes/Servicios.jpeg)
+```bash
+nmap -sCV -p 80 172.17.0.2 -oN target.txt
+```
 
 ---
 
