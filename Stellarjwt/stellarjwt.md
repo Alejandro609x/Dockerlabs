@@ -34,3 +34,7 @@ Imagesnes/Capturas_10.png
 Con las credenciales se gano acceso al servico de SSH y se procede a buscar una forma de escalar privilegios
 Imagesnes/Capturas_11.png
 Con el comando ls -la encontre un .txt con la contraseña de nasa: Eisenhower y denstro de este usuario con el comando sudo -l encontre que se puede escalar con: (elite) NOPASSWD: /usr/bin/socat  esta vulnerabilida la use con el comando:sudo -u elite /usr/bin/socat stdin exec:/bin/bash y pude comvertirmer en elite, ahora con sudo -l me muestra que pueda escalar con (root) NOPASSWD: /usr/bin/chown con el comando: 
+sudo chown elite:elite /etc/ && sudo chown elite:elite /etc/passwd && echo "$(cat /etc/passwd | sed 's/root:x:/root::/g')" > /etc/passwd && su
+Imagesnes/Capturas_15.png
+Imagesnes/Capturas_16.png
+
