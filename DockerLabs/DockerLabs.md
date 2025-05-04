@@ -1,4 +1,7 @@
-### 🛡️ Informe de Pentesting - DockerLabs
+# 🛡️ Informe de Pentesting - DockerLabs
+
+---
+
 ## 📄 Información General
 
 * **Máquina**: DockerLabs
