@@ -53,14 +53,13 @@ Usamos mi script personalizado `extractPorts` para filtrar los puertos important
 nmap -sCV -p22,80 172.17.0.2
 ```
 
-
-![Gobuster resultados](Imagenes/Capturas_4.png)
-
 ---
 
 ## 🌐 Enumeración Web
 
 Visitamos la página web principal pero no encontramos información útil. Por ello, iniciamos una búsqueda de directorios ocultos (fuzzing) usando `gobuster`:
+
+![Gobuster resultados](Imagenes/Capturas_4.png)
 
 ```bash
 gobuster dir -u http://172.17.0.2/ \
