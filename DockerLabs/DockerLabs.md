@@ -35,7 +35,7 @@ Hacemos ping a la IP de la máquina para asegurarnos de que está activa:
 ping -c1 172.17.0.2
 ```
 
-![Ping](Imàgenes/Capturas.png)
+![Ping](Imágenes/Capturas.png)
 
 ---
 
@@ -47,7 +47,7 @@ Escaneamos todos los puertos para encontrar servicios activos:
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
 ```
 
-![Nmap puertos](Imàgenes/Capturas_1.png)
+![Nmap puertos](Imágenes/Capturas_1.png)
 
 Extraemos los puertos encontrados usando un script personalizado:
 
@@ -61,7 +61,7 @@ Luego realizamos un escaneo más profundo:
 nmap -sC -sV -p 80 172.17.0.2 -oN target.txt
 ```
 
-![Nmap detalle](Imàgenes/Capturas_2.png)
+![Nmap detalle](Imágenes/Capturas_2.png)
 
 ---
 
@@ -69,7 +69,7 @@ nmap -sC -sV -p 80 172.17.0.2 -oN target.txt
 
 Accedemos al sitio en `http://172.17.0.2/`:
 
-![Página principal](Imàgenes/Capturas_4.png)
+![Página principal](Imágenes/Capturas_4.png)
 
 ### 🔦 Fuzzing con Wfuzz
 
@@ -81,7 +81,7 @@ wfuzz -c -t 200 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt 
 
 Se descubre `/uploads`.
 
-![wfuzz](Imàgenes/Capturas_6.png)
+![wfuzz](Imágenes/Capturas_6.png)
 
 Ingresamos en:
 
@@ -89,7 +89,7 @@ Ingresamos en:
 http://172.17.0.2/uploads/
 ```
 
-![Uploads](Imàgenes/Capturas_5.png)
+![Uploads](Imágenes/Capturas_5.png)
 
 ### 🔎 Descubrimiento adicional con Gobuster
 
@@ -97,18 +97,18 @@ http://172.17.0.2/uploads/
 gobuster dir -u http://172.17.0.2/ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x .php,.html,.txt
 ```
 
-![Gobuster](Imàgenes/Capturas_7.png)
+![Gobuster](Imágenes/Capturas_7.png)
 
 Rutas identificadas:
 
 * `/index.php`
-  ![index](Imàgenes/Capturas_9.png)
+  ![index](Imágenes/Capturas_9.png)
 * `/uploads/`
-  ![uploads](Imàgenes/Capturas_8.png)
+  ![uploads](Imágenes/Capturas_8.png)
 * `/upload.php`
-  ![upload](Imàgenes/Capturas_10.png)
+  ![upload](Imágenes/Capturas_10.png)
 * `/machine.php`
-  ![machine](Imàgenes/Capturas_11.png)
+  ![machine](Imágenes/Capturas_11.png)
 
 ---
 
@@ -127,12 +127,12 @@ Cambiamos la IP y el puerto y luego renombramos el archivo:
 mv php-reverse-shell.php php-reverse-shell.php.zip
 ```
 
-![Archivo cargado](Imàgenes/Capturas_13.png)
+![Archivo cargado](Imágenes/Capturas_13.png)
 
 El archivo se carga correctamente:
 
-![Éxito](Imàgenes/Capturas_14.png)
-![Verificado en uploads](Imàgenes/Capturas_15.png)
+![Éxito](Imágenes/Capturas_14.png)
+![Verificado en uploads](Imágenes/Capturas_15.png)
 
 Pero al intentar ejecutarlo, no se activó la shell. Probamos cambiando la extensión a `.phar`:
 
@@ -140,7 +140,7 @@ Pero al intentar ejecutarlo, no se activó la shell. Probamos cambiando la exten
 mv php-reverse-shell.php.zip php-reverse-shell.phar
 ```
 
-![Cambio a .phar](Imàgenes/Capturas_19.png)
+![Cambio a .phar](Imágenes/Capturas_19.png)
 
 ---
 
@@ -152,11 +152,11 @@ Antes de activar el archivo malicioso, iniciamos Netcat:
 sudo nc -lvnp 443
 ```
 
-![Netcat](Imàgenes/Capturas_18.png)
+![Netcat](Imágenes/Capturas_18.png)
 
 Luego accedemos al archivo desde el navegador. ¡La shell se activa!
 
-![Shell activa](Imàgenes/Capturas_21.png)
+![Shell activa](Imágenes/Capturas_21.png)
 
 ---
 
@@ -202,7 +202,7 @@ Aunque no podemos leer directamente el archivo, usamos `cut` con sudo para hacer
 sudo /usr/bin/cut -d "" -f1 /root/clave.txt
 ```
 
-![Clave root](Imàgenes/Capturas_22.png)
+![Clave root](Imágenes/Capturas_22.png)
 
 **¿Por qué funciona?**
 
