@@ -21,6 +21,7 @@ Para desplegar la máquina usamos el siguiente comando:
 ```bash
 sudo bash auto_deploy.sh stellarjwt.tar
 ```
+![Ping a la máquina](Imagenes/Capturas.png)
 
 Verificamos que la máquina esté activa con un `ping`:
 
@@ -39,7 +40,7 @@ Escaneo de puertos con `nmap` para descubrir servicios:
 ```bash
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
 ```
-![Ping a la máquina](Imagenes/Capturas.png)
+![Nmap detallado](Imagenes/Capturas_2.png)
 
 Resultado:
 
@@ -52,7 +53,8 @@ Usamos mi script personalizado `extractPorts` para filtrar los puertos important
 nmap -sCV -p22,80 172.17.0.2
 ```
 
-![Nmap detallado](Imagenes/Capturas_2.png)
+
+![Gobuster resultados](Imagenes/Capturas_4.png)
 
 ---
 
@@ -70,8 +72,6 @@ Resultados encontrados:
 
 * `/index.html` → Página principal
 * `/universe/` → Imagen
-
-![Gobuster resultados](Imagenes/Capturas_4.png)
 
 ---
 
