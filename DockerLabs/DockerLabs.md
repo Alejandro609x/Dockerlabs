@@ -23,7 +23,7 @@ Después, la desplegamos con el script automático:
 ```bash
 sudo bash auto_deploy.sh dockerlabs.tar
 ```
-![Despliegue](/Dockerlabs/Imàgenes/Logo.png)
+![Despliegue](DockerLabs/Imágenes/Logo.png)
 
 ---
 
