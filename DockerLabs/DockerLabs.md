@@ -24,7 +24,7 @@ Después, la desplegamos con el script automático:
 sudo bash auto_deploy.sh dockerlabs.tar
 ```
 
-![Despliegue](DockerLabs/Imàgenes/Logo.png)
+![Despliegue](/DockerLabs/Imàgenes/Logo.png)
 
 ---
 
