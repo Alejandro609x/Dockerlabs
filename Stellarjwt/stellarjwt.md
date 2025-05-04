@@ -11,3 +11,15 @@ Con la herramienta de nmap buscaremos los puertos abiertos: sudo nmap -p- --open
 Imagesnes/Capturas_2.png
 Con mi scrito perseonalizable extraigo los puetor importantes extractPorts allPorts.txt y con la herramienta de namp intento buscar mas informacion como versiones de los servicios que estan corriendo en los puertos
 Imagesnes/Capturas_3.png
+Al entrar a la pagina web no encontre informaciòn para poder atacar o alguna vulnerabilidad asi que procedo a hacer fuzzing en busca de mas informaciòn
+Imagesnes/Capturas_4.png
+Use la herramienta de gobuster con el comando gobuster dir -u http://172.17.0.2/ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x .php,.html,.txt
+y encontre:
+/index.html 
+/universe 
+Imagesnes/Capturas_5.png
+El index/htmll es la pagina principal
+EL /universe: http://172.17.0.2/universe/ nos muestra una imagen
+Imagesnes/Capturas_6.png
+Descargue la imagen con: wget http://172.17.0.2/universe/universe.jpg y revise su metada con: exiftool universe.jpg pero no encontre nada importtante.
+Imagesnes/Capturas_7.png
