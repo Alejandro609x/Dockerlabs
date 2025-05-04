@@ -28,7 +28,7 @@ Verificamos que la máquina esté activa con un `ping`:
 ping -c1 172.17.0.2
 ```
 
-![Ping a la máquina](Imagenes/Capturas.png)
+![Nmap Puertos](Imagenes/Capturas_1.png)
 
 ---
 
@@ -39,13 +39,12 @@ Escaneo de puertos con `nmap` para descubrir servicios:
 ```bash
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
 ```
+![Ping a la máquina](Imagenes/Capturas.png)
 
 Resultado:
 
 * Puerto 22 → SSH
 * Puerto 80 → HTTP (servidor web activo)
-
-![Nmap Puertos](Imagenes/Capturas_1.png)
 
 Usamos mi script personalizado `extractPorts` para filtrar los puertos importantes y luego hacemos un escaneo más detallado de versiones:
 
