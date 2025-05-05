@@ -179,7 +179,7 @@ find / -writable -user andy 2>/dev/null
 
 Encontramos el script: `/usr/local/bin/privileged_exec`
 
-Lo editamos y luego lo ejecutamos, lo que nos otorgó acceso como root.
+Lo ejecutamos, lo que nos otorgó acceso como root.
 
 ![Escalada final](Imagenes/escala2.jpeg)
 
