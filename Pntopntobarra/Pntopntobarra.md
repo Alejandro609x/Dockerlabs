@@ -72,18 +72,6 @@ Esta página continúa mostrando una simulación de eliminación de archivos del
 
 ---
 
-## 🔐 Ataque de Fuerza Bruta SSH (sin éxito)
-
-Intenté un ataque de fuerza bruta al servicio SSH con `hydra`, utilizando un usuario sospechoso (`nico`) y el diccionario `rockyou.txt`, pero no tuvo éxito:
-
-```bash
-hydra -l nico -P /usr/share/wordlists/rockyou.txt ssh://172.17.0.2 -t 20
-```
-
-![Hydra](/Pntopntobarra/Imagenes/Hydra.jpeg)
-
----
-
 ## 📁 Enumeración de Directorios Web
 
 Se utilizó `gobuster` para buscar directorios y archivos ocultos en el servidor web:
@@ -97,6 +85,18 @@ gobuster dir -u http://172.17.0.2/ \
 ![Gobuster](/Pntopntobarra/Imagenes/Gobuster.jpeg)
 
 No se encontraron nuevos archivos útiles directamente, pero la exploración llevó a `ejemplos.php`.
+
+---
+
+## 🔐 Ataque de Fuerza Bruta SSH (sin éxito)
+
+Intenté un ataque de fuerza bruta al servicio SSH con `hydra`, utilizando un usuario sospechoso (`nico`) y el diccionario `rockyou.txt`, pero no tuvo éxito:
+
+```bash
+hydra -l nico -P /usr/share/wordlists/rockyou.txt ssh://172.17.0.2 -t 20
+```
+
+![Hydra](/Pntopntobarra/Imagenes/Hydra.jpeg)
 
 ---
 
