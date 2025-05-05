@@ -3,7 +3,7 @@
 * **Nombre de la máquina:** Paradise
 * **Nivel de dificultad:** Fácil
 * **Propósito:** Práctica de técnicas básicas de reconocimiento, enumeración, decodificación, ataque por fuerza bruta y escalada de privilegios en un entorno controlado.
-![Logo](/Logo.jpeg)
+![Logo](/Logo.png)
 ---
 
 ## 1. Despliegue de la Máquina
