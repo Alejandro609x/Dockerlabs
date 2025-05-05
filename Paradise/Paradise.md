@@ -3,7 +3,7 @@
 * **Nombre de la máquina:** Paradise
 * **Nivel de dificultad:** Fácil
 * **Propósito:** Práctica de técnicas básicas de reconocimiento, enumeración, decodificación, ataque por fuerza bruta y escalada de privilegios en un entorno controlado.
-![Logo](Paradise/Imagenes/Logo.png)
+![Logo](/Imagenes/Logo.png)
 ---
 
 ## 1. Despliegue de la Máquina
@@ -20,7 +20,7 @@ Posteriormente, se despliega la máquina con el siguiente script:
 sudo bash auto_deploy.sh paradise.tar
 ```
 
-![Despliegue](/Imagenes/Despliegue.jpeg)
+![Despliegue](Imagenes/Despliegue.jpeg)
 
 Confirmamos que la máquina está activa con un `ping` a la dirección IP:
 
