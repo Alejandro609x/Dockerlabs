@@ -82,7 +82,7 @@ gcuaetzcba
 
 En el archivo también encontramos credenciales:
 **Usuario:** mateo
-**Contraseña:** hdvbfuadcb
+**Contraseña:** easycrazy 
 
 Accedemos al puerto **443 (HTTPS)** en:
 
