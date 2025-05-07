@@ -1,6 +1,7 @@
 # 🧊 Máquina: Winterfell
 
 **Nivel:** Fácil
+
 **Descripción:**
 Winterfell es una máquina vulnerable de nivel fácil orientada a pruebas de intrusión en un entorno controlado. El objetivo es comprometer el sistema identificando vulnerabilidades a través de diversos vectores y técnicas, desde el reconocimiento inicial hasta la escalada de privilegios.
 
