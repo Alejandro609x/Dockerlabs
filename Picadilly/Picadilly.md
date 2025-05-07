@@ -1,6 +1,7 @@
 # Informe Técnico - Máquina Picadilly (DockerLabs)
 
 **Dificultad:** Fácil
+
 **Objetivos:** Acceso inicial a la máquina, explotación de vulnerabilidades web, escalada de privilegios a root.
 
 ---
