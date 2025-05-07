@@ -21,6 +21,8 @@ sudo bash auto_deploy.sh picadilly.tar
 ```
 
 ![Logo](/Picadilly/Imagenes/Logo.png)
+
+---
 ![Inicio del despliegue](/Picadilly/Imagenes/Inicio.jpeg)
 
 Verificamos que la máquina esté activa con un simple `ping`:
