@@ -1,7 +1,7 @@
 # Informe de Pentesting – Máquina *Pressenter* (DockerLabs)
 
 * **Dificultad:** Fácil
-* **Objetivo:** Obtener acceso root a la máquina
+* **Objetivo:** Obtener acceso root a la máquina mediante la búsqueda de vulnerabilidades en directorios ocultos, revellshell y explotación de vulnerabilidades de MySQL y WordPress
 * **Autor del Informe:** Alejandro
 
 ---
