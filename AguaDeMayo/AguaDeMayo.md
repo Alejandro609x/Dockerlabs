@@ -37,6 +37,7 @@ ping -c4 172.17.0.2
 ```
 
 Resultado del ping:
+
 ![Ping](Imagenes/Ping.jpeg)
 
 ---
@@ -50,6 +51,7 @@ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
 ```
 
 El resultado revela que los puertos **22 (SSH)** y **80 (HTTP)** están abiertos.
+
 ![Puertos](Imagenes/Puertos.jpeg)
 
 ---
@@ -63,6 +65,7 @@ nmap -sC -sV -p 22,80 172.17.0.2 -oN target.txt
 ```
 
 Esto nos permite obtener información detallada sobre los servicios y versiones activas.
+
 ![Servicios](Imagenes/Servicios.jpeg)
 
 ---
@@ -80,9 +83,11 @@ gobuster dir -u http://172.17.0.2 -w /usr/share/wordlists/dirbuster/directory-li
 ```
 
 Se descubre el directorio `/images`:
+
 ![Gobuster](Imagenes/Gobuster.jpeg)
 
 Al acceder a `http://172.17.0.2/images/`, encontramos un archivo JPG llamado `agua_ssh.jpg`:
+
 ![Directorio](Imagenes/Directorio.jpeg)
 
 ---
@@ -96,6 +101,7 @@ exiftool agua_ssh.jpg
 ```
 
 No se encuentra información útil. También se realiza otro escaneo con Gobuster, pero no se identifican más recursos relevantes.
+
 ![Imagen](Imagenes/Imagen.jpeg)
 
 ---
