@@ -1,7 +1,9 @@
 # 📄 Informe Técnico – Máquina Vulnerable **Amor** (DockerLabs)
 
 **Nivel:** Fácil
+
 **Autor:** AlejandroSL
+
 **Fecha:** 10/05/2025
 
    ![](/Amor/Imagenes/Logo.png)
