@@ -3,7 +3,6 @@
 * **Nombre**: AguaDeMayo
 * **Nivel**: Fácil
 * **Objetivo**: Obtener acceso a la máquina como root a través de explotación de servicios y técnicas de escalada de privilegios.
-* **Logo**:
   
 ![Logo](Imagenes/Logo.png)
 
