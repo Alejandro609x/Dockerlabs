@@ -4,6 +4,7 @@
 * **Nivel**: Fácil
 * **Objetivo**: Obtener acceso a la máquina como root a través de explotación de servicios y técnicas de escalada de privilegios.
 * **Logo**:
+  
 ![Logo](Imagenes/Logo.png)
 
 ---
@@ -23,7 +24,7 @@ sudo bash auto_deploy.sh aguademayo.tar
 ```
 
 Imagen del despliegue exitoso:
-![Despliegue](./AguaDeMayo/Imagenes/Despliegue.jpeg)
+![Despliegue](Imagenes/Despliegue.jpeg)
 
 ---
 
@@ -36,7 +37,7 @@ ping -c4 172.17.0.2
 ```
 
 Resultado del ping:
-![Ping](./AguaDeMayo/Imagenes/Ping.jpeg)
+![Ping](Imagenes/Ping.jpeg)
 
 ---
 
@@ -49,7 +50,7 @@ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
 ```
 
 El resultado revela que los puertos **22 (SSH)** y **80 (HTTP)** están abiertos.
-![Puertos](./AguaDeMayo/Imagenes/Puertos.jpeg)
+![Puertos](Imagenes/Puertos.jpeg)
 
 ---
 
@@ -62,7 +63,7 @@ nmap -sC -sV -p 22,80 172.17.0.2 -oN target.txt
 ```
 
 Esto nos permite obtener información detallada sobre los servicios y versiones activas.
-![Servicios](./AguaDeMayo/Imagenes/Servicios.jpeg)
+![Servicios](Imagenes/Servicios.jpeg)
 
 ---
 
@@ -70,7 +71,7 @@ Esto nos permite obtener información detallada sobre los servicios y versiones 
 
 Accediendo al puerto 80 en el navegador, se muestra la página por defecto de Apache2:
 
-![Página Web](./AguaDeMayo/Imagenes/Pagina.jpeg)
+![Página Web](Imagenes/Pagina.jpeg)
 
 Realizamos fuzzing con `gobuster` para descubrir directorios ocultos:
 
@@ -79,10 +80,10 @@ gobuster dir -u http://172.17.0.2 -w /usr/share/wordlists/dirbuster/directory-li
 ```
 
 Se descubre el directorio `/images`:
-![Gobuster](./AguaDeMayo/Imagenes/Gobuster.jpeg)
+![Gobuster](Imagenes/Gobuster.jpeg)
 
 Al acceder a `http://172.17.0.2/images/`, encontramos un archivo JPG llamado `agua_ssh.jpg`:
-![Directorio](./AguaDeMayo/Imagenes/Directorio.jpeg)
+![Directorio](Imagenes/Directorio.jpeg)
 
 ---
 
@@ -95,7 +96,7 @@ exiftool agua_ssh.jpg
 ```
 
 No se encuentra información útil. También se realiza otro escaneo con Gobuster, pero no se identifican más recursos relevantes.
-![Imagen](./AguaDeMayo/Imagenes/Imagen.jpeg)
+![Imagen](Imagenes/Imagen.jpeg)
 
 ---
 
@@ -125,7 +126,7 @@ bebeaguaqueessano
 
 Este resultado parece ser una contraseña.
 
-![Decodificación](./AguaDeMayo/Imagenes/Codificar.jpeg)
+![Decodificación](Imagenes/Codificar.jpeg)
 
 ---
 
@@ -142,7 +143,7 @@ Accedemos exitosamente al servicio SSH:
 ssh agua@172.17.0.2
 ```
 
-![Acceso SSH](./AguaDeMayo/Imagenes/SSh.jpeg)
+![Acceso SSH](Imagenes/SSh.jpeg)
 
 ---
 
@@ -176,7 +177,7 @@ Descubrimos que puede ejecutar `bettercap` como root sin contraseña. Aprovecham
 
 Esto nos proporciona una shell como root, gracias al bit SUID activado.
 
-![Root Access](./AguaDeMayo/Imagenes/Root.jpeg)
+![Root Access](Imagenes/Root.jpeg)
 
 ---
 
