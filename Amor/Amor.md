@@ -4,6 +4,8 @@
 **Autor:** AlejandroSL
 **Fecha:** 10/05/2025
 
+   ![](/Amor/Imagenes/Logo.png)
+
 ---
 
 ## 📌 Objetivo
