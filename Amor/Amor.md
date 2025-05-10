@@ -66,7 +66,7 @@ Acceder a la máquina vulnerable **Amor**, identificar los servicios expuestos, 
 
 ## 🌐 Enumeración Web
 
-Accedimos a la web en `http://172.17.0.2` y observamos varias notificaciones que revelaban nombres de usuarios: **Carlos** y **Carlota**.
+Accedimos a la web en `http://172.17.0.2` y observamos varias notificaciones que revelaban nombres de usuarios: **Juan** y **Carlota**.
 ![](/Amor/Imagenes/Pagina.jpeg)
 
 ---
