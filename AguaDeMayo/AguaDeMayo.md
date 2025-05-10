@@ -23,6 +23,7 @@ sudo bash auto_deploy.sh aguademayo.tar
 ```
 
 Imagen del despliegue exitoso:
+
 ![Despliegue](Imagenes/Despliegue.jpeg)
 
 ---
