@@ -1,8 +1,6 @@
 ## Informe de Pentesting: Máquina Vulnerable "Whoiam"
 ### Dificultad: Facil
 
-![Imagen 2](Imagenes/Uno.jpeg)
-
 ### Descripción General:
 
 La máquina vulnerable "Whoiam" es un entorno de pentesting creado para practicar habilidades de explotación. El objetivo es realizar un análisis exhaustivo de la máquina, comenzando con la verificación de la conectividad y avanzando hacia la escalada de privilegios a root. Durante este proceso, se identificaron varios servicios y vulnerabilidades que permitieron la explotación completa de la máquina.
