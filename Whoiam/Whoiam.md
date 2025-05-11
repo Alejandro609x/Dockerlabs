@@ -1,12 +1,10 @@
-¡Claro! He ajustado las imágenes para que se muestren en el orden correcto, retrocediendo una posición en cada caso. Aquí tienes el informe con las imágenes ajustadas:
-
----
-
 ## Informe de Pentesting: Máquina Vulnerable "Whoiam"
 
 ### Descripción General:
 
 La máquina vulnerable "Whoiam" es un entorno de pentesting creado para practicar habilidades de explotación. El objetivo es realizar un análisis exhaustivo de la máquina, comenzando con la verificación de la conectividad y avanzando hacia la escalada de privilegios a root. Durante este proceso, se identificaron varios servicios y vulnerabilidades que permitieron la explotación completa de la máquina.
+
+![Imagen 1](Imagenes/Uno.jpeg)
 
 ---
 
@@ -21,7 +19,7 @@ unzip whoiam.zip
 
 El archivo comprimido `whoiam.zip` fue descargado desde la página de DockerLabs y descomprimido utilizando el comando `unzip whoiam.zip`. A continuación, se desplegó la máquina utilizando el script `auto_deploy.sh` con el archivo `whoiam.tar` para configurar el entorno.
 
-![Imagen 1](Imagenes/Uno.jpeg)
+![Imagen 2](Imagenes/Dos.jpeg)
 
 ---
 
@@ -35,7 +33,7 @@ ping -c1 172.18.0.2
 
 Para verificar que la máquina víctima estaba activa, se realizó un `ping` a la dirección IP `172.18.0.2`. Esto permitió confirmar que la máquina estaba accesible en la red.
 
-![Imagen 2](Imagenes/Dos.jpeg)
+![Imagen 3](Imagenes/Tres.jpeg)
 
 ---
 
@@ -57,7 +55,7 @@ nmap -p22,21 172.18.0.2
 
 Se verificó que los servicios de SSH (puerto 22) y FTP (puerto 21) no estaban abiertos, lo que indicaba que no eran accesibles desde la red.
 
-![Imagen 3](Imagenes/Tres.jpeg)
+![Imagen 4](Imagenes/Cuatro.jpeg)
 
 ---
 
@@ -72,7 +70,7 @@ nmap -sC -sV -p 80 172.18.0.2 -oN target.txt
 
 Se extrajeron los puertos importantes del archivo `allPorts.txt` y se realizó un escaneo detallado del puerto 80. Se buscaron versiones y más información sobre los servicios disponibles en este puerto, lo que proporcionó detalles útiles para el siguiente paso.
 
-![Imagen 4](Imagenes/Cuatro.jpeg)
+![Imagen 5](Imagenes/Cinco.jpeg)
 
 ---
 
@@ -86,7 +84,7 @@ http://172.18.0.2
 
 Al acceder al puerto 80, se cargó la página web disponible, pero no se encontró información relevante a simple vista. Debido a esto, se decidió realizar un fuzzing en busca de directorios ocultos.
 
-![Imagen 5](Imagenes/Cinco.jpeg)
+![Imagen 6](Imagenes/Seis.jpeg)
 
 ---
 
@@ -100,7 +98,7 @@ gobuster dir -u http://172.18.0.2/ -w /usr/share/seclists/Discovery/Web-Content/
 
 Utilizando `gobuster`, se realizó un fuzzing para encontrar directorios ocultos en la web. Durante esta búsqueda, se identificaron varios directorios, algunos de los cuales contenían archivos relacionados con WordPress, como registros de inicio de sesión y otros archivos sensibles. También se localizó un directorio que contenía una base de datos comprimida.
 
-![Imagen 6](Imagenes/Seis.jpeg)
+![Imagen 7](Imagenes/Siete.jpeg)
 
 ---
 
@@ -114,7 +112,7 @@ unzip databaseback2may.zip
 
 El archivo comprimido `databaseback2may.zip` se descomprimió, y al abrir el archivo `29DBMay`, se descubrió que contenía credenciales que podrían ser utilizadas para acceder al servicio de WordPress en la máquina.
 
-![Imagen 7](Imagenes/Siete.jpeg)
+![Imagen 8](Imagenes/Ocho.jpeg)
 
 ---
 
@@ -122,7 +120,7 @@ El archivo comprimido `databaseback2may.zip` se descomprimió, y al abrir el arc
 
 Con las credenciales descubiertas (`Username: developer`, `Password: 2wmy3KrGDRD%RsA7Ty5n71L^`), se pudo iniciar sesión exitosamente en el servicio de WordPress.
 
-![Imagen 8](Imagenes/Ocho.jpeg)
+![Imagen 9](Imagenes/Nueve.jpeg)
 
 ---
 
@@ -137,7 +135,7 @@ nano revellshell.php
 7z a revellshell.zip revellshell.php
 ```
 
-![Imagen 9](Imagenes/Nueve.jpeg)
+![Imagen 10](Imagenes/Once.jpeg)
 
 ---
 
@@ -145,7 +143,7 @@ nano revellshell.php
 
 Se configuró un puerto para escuchar las conexiones entrantes. En este caso, se utilizó el puerto 443 para permitir la conexión inversa una vez cargado el web shell.
 
-![Imagen 10](Imagenes/Once.jpeg)
+![Imagen 11](Imagenes/Doce.jpeg)
 
 ---
 
@@ -153,7 +151,7 @@ Se configuró un puerto para escuchar las conexiones entrantes. En este caso, se
 
 El archivo `.zip` que contenía el web shell fue cargado a través del panel de administración de WordPress en la sección de "Add New Plugin".
 
-![Imagen 11](Imagenes/Doce.jpeg)
+![Imagen 12](Imagenes/Trece.jpeg)
 
 ---
 
@@ -161,7 +159,7 @@ El archivo `.zip` que contenía el web shell fue cargado a través del panel de 
 
 Una vez activado el plugin, se obtuvo una terminal inversa en la máquina víctima. Esto permitió ejecutar comandos dentro de la máquina y obtener acceso a la misma.
 
-![Imagen 12](Imagenes/Trece.jpeg)
+![Imagen 13](Imagenes/Catorce.jpeg)
 
 ---
 
@@ -199,7 +197,7 @@ sudo /bin/bash /opt/pinguin.sh
 
 Finalmente, con la ejecución de este script, se logró escalar privilegios hasta obtener acceso completo como root.
 
-![Imagen 13](Imagenes/Catorce.jpeg)
+![Imagen 14](Imagenes/Quince.jpeg)
 
 ---
 
