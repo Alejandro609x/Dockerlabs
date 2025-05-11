@@ -1,7 +1,8 @@
 # Informe de Penetration Testing – Máquina *JenkHack*
 
 **Nivel:** Fácil
-**Objetivo:** Obtener acceso root en la máquina vulnerable
+
+**Objetivo:** Obtener acceso root en la máquina vulnerable mediante Jenkins
 
 ![Logo](/JenkHack/Imagenes/Logo.jpeg)
 
@@ -65,7 +66,7 @@ Al acceder mediante navegador al puerto 80, observamos una página web sencilla.
 
 ### Puertos 443 y 8080
 
-En el puerto 8080 se encuentra una interfaz de inicio de sesión que parece ser Jenkins. Al intentar autenticar, redirige a la página principal en el puerto 80 si las credenciales son válidas.
+En el puerto 8080 se encuentra una interfaz de inicio de sesión que parece ser Jenkins. Al intentar autenticar, redirige a la página principal en el puerto 80 si las credenciales son válidas en el puerto 443 es la pagina para entrar a la pagina de Jenkins.
 
 ![Interfaz de Inicio de Sesión](/JenkHack/Imagenes/Registro.jpeg)
 
