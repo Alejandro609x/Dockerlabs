@@ -4,6 +4,8 @@
 
 La máquina vulnerable "Whoiam" es una máquina de DockerLabs diseñada para practicar técnicas de pentesting. El objetivo es realizar un análisis exhaustivo, comenzando desde la verificación de la conexión hasta la escalada de privilegios a root, para identificar vulnerabilidades y explotar los servicios disponibles.
 
+![Imagen 2](Imagenes/Uno.jpeg)
+
 ### Paso 1: Despliegue de la Máquina
 
 **Comando ejecutado:**
@@ -25,7 +27,7 @@ ping -c1 172.18.0.2
 
 Se realizó un `ping` a la dirección IP de la máquina víctima, `172.18.0.2`, para verificar que la máquina estuviera activa y accesible en la red.
 
-![Imagen 2](Whoiam/Imagenes/Dos.jpeg)
+![Imagen 2](Imagenes/Dos.jpeg)
 
 ### Paso 3: Escaneo de Puertos con Nmap
 
