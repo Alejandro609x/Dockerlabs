@@ -161,7 +161,11 @@ El archivo `.zip` que contenía el web shell fue cargado a través del panel de 
 
 Una vez activado el plugin, se obtuvo una terminal inversa en la máquina víctima. Esto permitió ejecutar comandos dentro de la máquina y obtener acceso a la misma.
 
-![Imagen 13](Imagenes/Catorce.jpeg)
+![Imagen 13](Imagenes/Quince.jpeg)
+
+![Imagen 14](Imagenes/Dieciseis.jpeg)
+
+![Imagen 14](Imagenes/Diecisiete.jpeg)
 
 ---
 
@@ -199,7 +203,9 @@ sudo /bin/bash /opt/pinguin.sh
 
 Finalmente, con la ejecución de este script, se logró escalar privilegios hasta obtener acceso completo como root.
 
-![Imagen 14](Imagenes/Quince.jpeg)
+![Imagen 14](Imagenes/Dieciocho.jpeg)
+
+![Imagen 14](Imagenes/Diecinueve.jpeg)
 
 ---
 
