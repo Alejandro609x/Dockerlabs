@@ -122,6 +122,8 @@ Con las credenciales descubiertas (`Username: developer`, `Password: 2wmy3KrGDRD
 
 ![Imagen 9](Imagenes/Nueve.jpeg)
 
+![Imagen 10](Imagenes/Once.jpeg)
+
 ---
 
 ### Paso 9: Carga de un Web Shell
@@ -135,7 +137,7 @@ nano revellshell.php
 7z a revellshell.zip revellshell.php
 ```
 
-![Imagen 10](Imagenes/Once.jpeg)
+![Imagen 11](Imagenes/Doce.jpeg)
 
 ---
 
@@ -143,7 +145,7 @@ nano revellshell.php
 
 Se configuró un puerto para escuchar las conexiones entrantes. En este caso, se utilizó el puerto 443 para permitir la conexión inversa una vez cargado el web shell.
 
-![Imagen 11](Imagenes/Doce.jpeg)
+![Imagen 12](Imagenes/Trece.jpeg)
 
 ---
 
@@ -151,7 +153,7 @@ Se configuró un puerto para escuchar las conexiones entrantes. En este caso, se
 
 El archivo `.zip` que contenía el web shell fue cargado a través del panel de administración de WordPress en la sección de "Add New Plugin".
 
-![Imagen 12](Imagenes/Trece.jpeg)
+![Imagen 13](Imagenes/Catorce.jpeg)
 
 ---
 
