@@ -163,7 +163,7 @@ Con el nuevo usuario, verificamos los permisos `sudo`:
 sudo -l
 ```
 
-Esto reveló que teníamos permisos para ejecutar comandos como root sin contraseña. Aprovechamos esto para crear un script Bash que nos proporcionara un shell:
+Esto reveló que teníamos permisos para ejecutar comandos como root sin contraseña. Aprovechamos esto para crear un script Bash que nos proporcionara un shell elimando el bash.sh exixtente:
 
 ```bash
 rm bash.sh
