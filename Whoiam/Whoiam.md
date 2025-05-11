@@ -165,7 +165,7 @@ Una vez activado el plugin, se obtuvo una terminal inversa en la máquina vícti
 
 ![Imagen 14](Imagenes/Dieciseis.jpeg)
 
-![Imagen 14](Imagenes/Diecisiete.jpeg)
+![Imagen 14](Imagenes/Diecisite.jpeg)
 
 ---
 
