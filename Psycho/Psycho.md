@@ -18,6 +18,7 @@ sudo bash auto_deploy.sh psycho.tar
 ```
 
 📸 ![](/Psycho/Imagenes/Logo.png)
+
 📸 ![](/Psycho/Imagenes/Despliegue.jpeg)
 
 Comprobamos la conectividad con `ping`:
