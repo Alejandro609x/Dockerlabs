@@ -1,7 +1,9 @@
 # 🧠 Máquina: Psycho
 
 **Nivel:** Fácil
+
 **Plataforma:** DockerLabs
+
 **Objetivo:** Obtener acceso como root explotando vulnerabilidades web y de configuración.
 
 ---
