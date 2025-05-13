@@ -10,6 +10,8 @@ El objetivo de esta máquina vulnerable es identificar y explotar una **web shel
 
 Se trabajó con una máquina vulnerable descargada desde DockerLabs. El análisis incluye desde el reconocimiento de puertos hasta la escalada de privilegios. Este informe explica todo el proceso paso a paso con soporte visual para facilitar la comprensión.
 
+![Despliegue](./Imagenes/Logo.png)
+
 ---
 
 ## ⚙️ Despliegue de la Máquina
