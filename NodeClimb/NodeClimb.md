@@ -1,6 +1,7 @@
 ### Informe Técnico: Análisis de la máquina vulnerable **NodeClimb**
 
 **Dificultad**: Fácil
+
 **Objetivo**: **Escalada de privilegios y acceso root a la máquina vulnerable.**
 
 ---
