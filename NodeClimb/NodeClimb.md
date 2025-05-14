@@ -113,6 +113,12 @@ John encontró que la contraseña del archivo ZIP es **password1**.
 
 ![Cracking de contraseña](./Imágenes/Capturas_4.png)
 
+![Archivo password.txt](./Imágenes/Capturas_5.png)
+
+
+![Escalada de privilegios](./Imágenes/Capturas_6.png)
+
+
 ---
 
 #### **7. Descompresión y análisis del archivo `password.txt`**
@@ -128,7 +134,6 @@ Suponiendo que estas son las credenciales para el servicio **SSH**, intenté ini
 
 **Nota**: Antes, intenté realizar un ataque de **fuerza bruta** con **Hydra** en el servicio SSH sin éxito.
 
-![Archivo password.txt](./Imágenes/Capturas_5.png)
 
 ---
 
@@ -169,9 +174,6 @@ bash -p
 ```
 
 Esto abrió una terminal con privilegios **root**, completando así la escalada de privilegios.
-
-
-![Escalada de privilegios](./Imágenes/Capturas_6.png)
 
 ---
 
