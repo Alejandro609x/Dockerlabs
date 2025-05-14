@@ -157,6 +157,8 @@ Esto reveló que el usuario **mario** tiene acceso sin contraseña a ejecutar el
 (ALL) NOPASSWD: /usr/bin/node /home/mario/script.js
 ```
 
+![Escalada de privilegios](./Imágenes/Capturas_7.png)
+
 ---
 
 #### **9. Escalada de privilegios con Node.js**
