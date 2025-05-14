@@ -22,6 +22,8 @@ sudo bash auto_deploy.sh library.tar
 
 ![Despliegue de la máquina](Imágenes/2025-05-14_08-28.png)
 
+--------
+
 ![Ping a la máquina vulnerable](Imágenes/Capturas.png)
 
 ---
@@ -130,7 +132,7 @@ gobuster dir -u http://172.17.0.3/javascript/jquery \
 ```
 
 
-![Fuzzing jquery](/Imágenes/Capturas_7.png)
+![Fuzzing jquery](Imágenes/Capturas_7.png)
 
 ---
 ![Resultados adicionales](Imágenes/Capturas_8.png)
