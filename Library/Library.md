@@ -139,6 +139,10 @@ gobuster dir -u http://172.17.0.3/javascript/jquery \
 
 ---
 
+![Credenciales encontradas](Imágenes/Capturas_9.png)
+
+---
+
 ## 🔐 Ataque de fuerza bruta con Hydra (SSH)
 
 Dado que teníamos un posible password (`JIFGHDS87GYDFIGD`), intentamos un ataque de fuerza bruta solo sobre el nombre de usuario, usando Hydra:
@@ -153,8 +157,8 @@ hydra -L /usr/share/seclists/Usernames/xato-net-10-million-usernames.txt \
 ```
 [22][ssh] host: 172.17.0.3   login: carlos   password: JIFGHDS87GYDFIGD
 ```
+![Permisos sudo sobre script.py](Imágenes/Capturas_10.png)
 
-![Credenciales encontradas](Imágenes/Capturas_9.png)
 
 ---
 
@@ -182,7 +186,6 @@ Esto reveló que el usuario `carlos` puede ejecutar el siguiente script con priv
 (ALL : ALL) NOPASSWD: /usr/bin/python3 /opt/script.py
 ```
 
-![Permisos sudo sobre script.py](Imágenes/Capturas_10.png)
 
 ---
 
