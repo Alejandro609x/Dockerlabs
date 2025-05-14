@@ -135,6 +135,7 @@ Suponiendo que estas son las credenciales para el servicio **SSH**, intenté ini
 
 **Nota**: Antes, intenté realizar un ataque de **fuerza bruta** con **Hydra** en el servicio SSH sin éxito.
 
+![Escalada de privilegios](./Imágenes/Capturas_7.png)
 
 ---
 
@@ -157,8 +158,6 @@ Esto reveló que el usuario **mario** tiene acceso sin contraseña a ejecutar el
 ```
 (ALL) NOPASSWD: /usr/bin/node /home/mario/script.js
 ```
-
-![Escalada de privilegios](./Imágenes/Capturas_7.png)
 
 ---
 
