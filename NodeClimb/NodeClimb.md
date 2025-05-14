@@ -4,6 +4,9 @@
 
 **Objetivo**: **Escalada de privilegios y acceso root a la máquina vulnerable.**
 
+
+![Despliegue de la máquina](./Imágenes/2025-05-13_23-53.png)
+
 ---
 
 #### **1. Despliegue de la máquina vulnerable**
@@ -20,8 +23,7 @@ Una vez descomprimida, se puede desplegar ejecutando el script de instalación c
 sudo bash auto_deploy.sh nodeclimb.tar
 ```
 
-
-![Despliegue de la máquina](./Imágenes/2025-05-13_23-53.png)
+![Confirmación de conexión](./Imágenes/Capturas.png)
 
 ---
 
@@ -32,8 +34,7 @@ Con el fin de confirmar que la máquina está corriendo y es accesible, realicé
 ```bash
 ping -c1 172.17.0.3
 ```
-
-![Confirmación de conexión](./Imágenes/Capturas.png)
+![Escaneo de puertos](./Imágenes/Capturas_1.png)
 
 ---
 
@@ -47,7 +48,7 @@ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 -oG allPorts.txt
 
 Este escaneo reveló que los puertos 21 (FTP) y 22 (SSH) estaban abiertos.
 
-![Escaneo de puertos](./Imágenes/Capturas_1.png)
+![Escaneo exhaustivo](./Imágenes/Capturas_2.png)
 
 ---
 
@@ -61,7 +62,9 @@ nmap -sC -sV -p21,22 172.17.0.3 -oN target.txt
 
 El escaneo mostró que el servicio **FTP** permitía acceso mediante el usuario **Anonymous**, lo que nos dio acceso sin necesidad de credenciales.
 
-![Escaneo exhaustivo](./Imágenes/Capturas_2.png)
+
+![Acceso FTP](./Imágenes/Capturas_3.png)
+
 
 ---
 
@@ -80,8 +83,7 @@ Una vez dentro, listé los archivos con el comando `ls -la` y encontré un archi
 ```bash
 get secretitopicaron.zip
 ```
-
-![Acceso FTP](./Imágenes/Capturas_3.png)
+![Cracking de contraseña](./Imágenes/Capturas_4.png)
 
 ---
 
@@ -111,7 +113,6 @@ john --show hash.txt
 
 John encontró que la contraseña del archivo ZIP es **password1**.
 
-![Cracking de contraseña](./Imágenes/Capturas_4.png)
 
 ![Archivo password.txt](./Imágenes/Capturas_5.png)
 
