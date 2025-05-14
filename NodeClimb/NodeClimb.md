@@ -174,6 +174,8 @@ bash -p
 
 Esto abrió una terminal con privilegios **root**, completando así la escalada de privilegios.
 
+![Escalada de privilegios](./Imágenes/Capturas_9.png)
+
 ---
 
 ### **Resumen**
