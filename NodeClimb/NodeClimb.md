@@ -87,6 +87,10 @@ get secretitopicaron.zip
 
 ---
 
+![Archivo password.txt](./Imágenes/Capturas_5.png)
+
+---
+
 #### **6. Cracking de la contraseña del archivo ZIP**
 
 Al intentar descomprimir el archivo `secretitopicaron.zip`, me pidió una contraseña. Usé la herramienta **John the Ripper** para crackear la contraseña.
@@ -113,9 +117,7 @@ john --show hash.txt
 
 John encontró que la contraseña del archivo ZIP es **password1**.
 
-
-![Archivo password.txt](./Imágenes/Capturas_5.png)
-
+![Escalada de privilegios](./Imágenes/Capturas_6.png)
 
 
 ---
@@ -133,7 +135,6 @@ Suponiendo que estas son las credenciales para el servicio **SSH**, intenté ini
 
 **Nota**: Antes, intenté realizar un ataque de **fuerza bruta** con **Hydra** en el servicio SSH sin éxito.
 
-![Escalada de privilegios](./Imágenes/Capturas_6.png)
 
 ---
 
