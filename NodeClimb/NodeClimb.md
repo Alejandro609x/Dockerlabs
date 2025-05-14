@@ -116,8 +116,6 @@ John encontró que la contraseña del archivo ZIP es **password1**.
 ![Archivo password.txt](./Imágenes/Capturas_5.png)
 
 
-![Escalada de privilegios](./Imágenes/Capturas_6.png)
-
 
 ---
 
@@ -134,6 +132,7 @@ Suponiendo que estas son las credenciales para el servicio **SSH**, intenté ini
 
 **Nota**: Antes, intenté realizar un ataque de **fuerza bruta** con **Hydra** en el servicio SSH sin éxito.
 
+![Escalada de privilegios](./Imágenes/Capturas_6.png)
 
 ---
 
