@@ -33,7 +33,7 @@ ping -c1 172.17.0.3
 ```
 
 
-![Ping a la máquina vulnerable](/Imágenes/Capturas.png)
+![Ping a la máquina vulnerable](Imágenes/Capturas.png)
 
 ---
 
@@ -51,7 +51,7 @@ Esto reveló dos puertos abiertos:
 * **80** (HTTP)
 
 
-![Escaneo de puertos](/Imágenes/Capturas_1.png)
+![Escaneo de puertos](Imágenes/Capturas_1.png)
 
 ---
 
@@ -62,7 +62,7 @@ nmap -sC -sV -p80,22 172.17.0.3 -oN target.txt
 ```
 
 
-![Servicios detectados](/Imágenes/Capturas_2.png)
+![Servicios detectados](Imágenes/Capturas_2.png)
 
 ---
 
@@ -71,7 +71,7 @@ nmap -sC -sV -p80,22 172.17.0.3 -oN target.txt
 Al visitar `http://172.17.0.3:80`, encontramos la página por defecto de **Apache2**, sin contenido personalizado.
 
 
-![Página por defecto de Apache](/Imágenes/Capturas_3.png)
+![Página por defecto de Apache](Imágenes/Capturas_3.png)
 
 ---
 
@@ -88,7 +88,7 @@ gobuster dir -u http://172.17.0.3/ \
 Se encontraron tres directorios interesantes.
 
 
-![Directorios descubiertos](/Imágenes/Capturas_4.png)
+![Directorios descubiertos](Imágenes/Capturas_4.png)
 
 ---
 
@@ -101,7 +101,7 @@ JIFGHDS87GYDFIGD
 ```
 
 
-![Cadena sospechosa encontrada](/Imágenes/Capturas_5.png)
+![Cadena sospechosa encontrada](Imágenes/Capturas_5.png)
 
 ---
 
@@ -116,7 +116,7 @@ gobuster dir -u http://172.17.0.3/javascript \
 ```
 
 
-![Fuzzing javascript](/Imágenes/Capturas_6.png)
+![Fuzzing javascript](Imágenes/Capturas_6.png)
 
 ---
 
@@ -131,7 +131,7 @@ gobuster dir -u http://172.17.0.3/javascript/jquery \
 
 ![Fuzzing jquery](/Imágenes/Capturas_7.png)
 ---
-![Resultados adicionales](/Imágenes/Capturas_8.png)
+![Resultados adicionales](Imágenes/Capturas_8.png)
 
 ---
 
@@ -150,7 +150,7 @@ hydra -L /usr/share/seclists/Usernames/xato-net-10-million-usernames.txt \
 [22][ssh] host: 172.17.0.3   login: carlos   password: JIFGHDS87GYDFIGD
 ```
 
-![Credenciales encontradas](/Imágenes/Capturas_9.png)
+![Credenciales encontradas](Imágenes/Capturas_9.png)
 
 ---
 
@@ -178,7 +178,7 @@ Esto reveló que el usuario `carlos` puede ejecutar el siguiente script con priv
 (ALL : ALL) NOPASSWD: /usr/bin/python3 /opt/script.py
 ```
 
-![Permisos sudo sobre script.py](/Imágenes/Capturas_10.png)
+![Permisos sudo sobre script.py](Imágenes/Capturas_10.png)
 
 ---
 
@@ -200,7 +200,7 @@ sudo /usr/bin/python3 /opt/script.py
 
 Y así obtuvimos una shell como **root**. 🎉
 
-![Shell como root](/Imágenes/Capturas_11.png)
+![Shell como root](Imágenes/Capturas_11.png)
 
 ---
 
