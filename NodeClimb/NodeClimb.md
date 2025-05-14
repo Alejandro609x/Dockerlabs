@@ -19,7 +19,7 @@ Una vez descomprimida, se puede desplegar ejecutando el script de instalación c
 sudo bash auto_deploy.sh nodeclimb.tar
 ```
 
-**Captura de pantalla 1**:
+
 ![Despliegue de la máquina](./Imágenes/2025-05-13_23-53.png)
 
 ---
@@ -32,7 +32,6 @@ Con el fin de confirmar que la máquina está corriendo y es accesible, realicé
 ping -c1 172.17.0.3
 ```
 
-**Captura de pantalla 2**:
 ![Confirmación de conexión](./Imágenes/Capturas.png)
 
 ---
@@ -47,7 +46,6 @@ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 -oG allPorts.txt
 
 Este escaneo reveló que los puertos 21 (FTP) y 22 (SSH) estaban abiertos.
 
-**Captura de pantalla 3**:
 ![Escaneo de puertos](./Imágenes/Capturas_1.png)
 
 ---
@@ -62,7 +60,6 @@ nmap -sC -sV -p21,22 172.17.0.3 -oN target.txt
 
 El escaneo mostró que el servicio **FTP** permitía acceso mediante el usuario **Anonymous**, lo que nos dio acceso sin necesidad de credenciales.
 
-**Captura de pantalla 4**:
 ![Escaneo exhaustivo](./Imágenes/Capturas_2.png)
 
 ---
@@ -83,7 +80,6 @@ Una vez dentro, listé los archivos con el comando `ls -la` y encontré un archi
 get secretitopicaron.zip
 ```
 
-**Captura de pantalla 5**:
 ![Acceso FTP](./Imágenes/Capturas_3.png)
 
 ---
@@ -114,7 +110,6 @@ john --show hash.txt
 
 John encontró que la contraseña del archivo ZIP es **password1**.
 
-**Captura de pantalla 6**:
 ![Cracking de contraseña](./Imágenes/Capturas_4.png)
 
 ---
@@ -132,7 +127,6 @@ Suponiendo que estas son las credenciales para el servicio **SSH**, intenté ini
 
 **Nota**: Antes, intenté realizar un ataque de **fuerza bruta** con **Hydra** en el servicio SSH sin éxito.
 
-**Captura de pantalla 7**:
 ![Archivo password.txt](./Imágenes/Capturas_5.png)
 
 ---
@@ -175,7 +169,7 @@ bash -p
 
 Esto abrió una terminal con privilegios **root**, completando así la escalada de privilegios.
 
-**Captura de pantalla 8**:
+
 ![Escalada de privilegios](./Imágenes/Capturas_6.png)
 
 ---
