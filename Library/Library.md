@@ -1,4 +1,3 @@
-Claro, aquí tienes el **informe profesional y didáctico** sobre la máquina vulnerable **"Library"** de DockerLabs. Está redactado de forma clara y completa, orientado tanto a quienes tienen experiencia como a principiantes, con las imágenes integradas en rutas locales para GitHub:
 
 ---
 
@@ -21,7 +20,7 @@ sudo bash auto_deploy.sh library.tar
 ```
 
 
-![Despliegue de la máquina](/Imágenes/2025-05-14_08-28.png)
+![Despliegue de la máquina](Imágenes/2025-05-14_08-28.png)
 
 ---
 
