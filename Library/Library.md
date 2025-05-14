@@ -22,6 +22,8 @@ sudo bash auto_deploy.sh library.tar
 
 ![Despliegue de la máquina](Imágenes/2025-05-14_08-28.png)
 
+![Ping a la máquina vulnerable](Imágenes/Capturas.png)
+
 ---
 
 ## 📡 Comprobación de conectividad
@@ -32,8 +34,8 @@ Para verificar que la máquina está activa en la red, hicimos un ping:
 ping -c1 172.17.0.3
 ```
 
+![Escaneo de puertos](Imágenes/Capturas_1.png)
 
-![Ping a la máquina vulnerable](Imágenes/Capturas.png)
 
 ---
 
@@ -51,7 +53,7 @@ Esto reveló dos puertos abiertos:
 * **80** (HTTP)
 
 
-![Escaneo de puertos](Imágenes/Capturas_1.png)
+![Escaneo de puertos](Imágenes/Capturas_2.png)
 
 ---
 
@@ -62,7 +64,7 @@ nmap -sC -sV -p80,22 172.17.0.3 -oN target.txt
 ```
 
 
-![Servicios detectados](Imágenes/Capturas_2.png)
+![Servicios detectados](Imágenes/Capturas_3.png)
 
 ---
 
@@ -71,7 +73,7 @@ nmap -sC -sV -p80,22 172.17.0.3 -oN target.txt
 Al visitar `http://172.17.0.3:80`, encontramos la página por defecto de **Apache2**, sin contenido personalizado.
 
 
-![Página por defecto de Apache](Imágenes/Capturas_3.png)
+![Página por defecto de Apache](Imágenes/Capturas_4.png)
 
 ---
 
@@ -88,7 +90,7 @@ gobuster dir -u http://172.17.0.3/ \
 Se encontraron tres directorios interesantes.
 
 
-![Directorios descubiertos](Imágenes/Capturas_4.png)
+![Directorios descubiertos](Imágenes/Capturas_5.png)
 
 ---
 
@@ -101,7 +103,7 @@ JIFGHDS87GYDFIGD
 ```
 
 
-![Cadena sospechosa encontrada](Imágenes/Capturas_5.png)
+![Cadena sospechosa encontrada](Imágenes/Capturas_6.png)
 
 ---
 
@@ -116,7 +118,6 @@ gobuster dir -u http://172.17.0.3/javascript \
 ```
 
 
-![Fuzzing javascript](Imágenes/Capturas_6.png)
 
 ---
 
@@ -130,6 +131,7 @@ gobuster dir -u http://172.17.0.3/javascript/jquery \
 
 
 ![Fuzzing jquery](/Imágenes/Capturas_7.png)
+
 ---
 ![Resultados adicionales](Imágenes/Capturas_8.png)
 
