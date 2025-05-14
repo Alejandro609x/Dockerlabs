@@ -59,3 +59,4 @@ Nota: antes realice fuerza bruta con hydra con el servicio de SSH sin exito
 
 Se entro al SSH con las credenciales encontradas y ejecute el comando sudo -l docne encotre: (ALL) NOPASSWD: /usr/bin/node /home/mario/script.js y me ubique en el directorio donde se encotraba el script.js con cd /home/mario y lo edite ya que este 
 script tiene permisos y lo ejecute con: sudo node /home/mario/script.js y abri una terminal con root con el comando: bash -p
+Nota: El scritp que se uso esta en este repositorio junto con el md
