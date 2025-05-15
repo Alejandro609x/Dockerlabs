@@ -18,7 +18,7 @@ Esta máquina simula un entorno real con múltiples servicios corriendo en disti
 
 ## 🐳 Despliegue de la Máquina
 
-1. Descargamos la máquina desde la página de [DockerLabs](https://dockerlabs.github.io).
+1. Descargamos la máquina desde la página de [DockerLabs](https://dockerlabs.es/).
 2. La descomprimimos con el comando:
 
 ```bash
