@@ -130,8 +130,11 @@ sanluis12345
 
 ![Credenciales decodificadas](Imágenes/Capturas_7.png)
 
-Con estas credenciales se logró acceder como administrador:
+---
 ![Acceso administrador](Imágenes/Capturas_8.png)
+
+Con estas credenciales se logró acceder como administrador:
+
 ![Página principal con sesión iniciada](Imágenes/Capturas_9.png)
 
 ---
