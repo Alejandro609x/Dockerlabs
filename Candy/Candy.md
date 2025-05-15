@@ -1,7 +1,3 @@
-Claro, aquí tienes **todo tu informe técnico completamente redactado**, con **explicaciones claras y mejoradas**, **manteniendo exactamente tus rutas de imágenes**, y **la primera imagen ubicada antes del título 🧩 Descripción y despliegue de la máquina**, tal como pediste:
-
----
-
 # 📄 Reporte Técnico - Máquina Vulnerable: **Candy**
 
 **Nivel:** Fácil
