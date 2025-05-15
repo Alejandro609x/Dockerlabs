@@ -12,7 +12,7 @@ Explotar la máquina vulnerable `Consolelog` descargada desde la página de Dock
 
 Esta máquina simula un entorno real con múltiples servicios corriendo en distintos puertos. Nuestro objetivo es reconocer los servicios expuestos, encontrar vulnerabilidades y escalarlas hasta obtener control total sobre el sistema.
 
-![](/Imágenes/2025-05-14_17-37.png)
+![](Imágenes/2025-05-14_17-37.png)
 
 ---
 
@@ -31,7 +31,7 @@ unzip consolelog.zip
 sudo bash auto_deploy.sh consolelog.tar
 ```
 
-![](/Imágenes/Capturas.png)
+![](Imágenes/Capturas.png)
 
 ---
 
@@ -43,7 +43,7 @@ Hacemos un `ping` a la dirección IP de la máquina vulnerable para verificar qu
 ping -c1 172.17.0.3
 ```
 
-![](/Imágenes/Capturas_1.png)
+![](Imágenes/Capturas_1.png)
 
 ---
 
@@ -64,7 +64,7 @@ PORT     STATE SERVICE
 5000/tcp open  upnp
 ```
 
-![](/Imágenes/Capturas_2.png)
+![](Imágenes/Capturas_2.png)
 
 ---
 
@@ -76,7 +76,7 @@ Usamos nuestro script `extractPorts` para extraer los puertos del archivo `allPo
 nmap -sC -sV -p80,3000,5000 172.17.0.3 -oN target.txt
 ```
 
-![](/Imágenes/Capturas_3.png)
+![](Imágenes/Capturas_3.png)
 
 ---
 
@@ -86,13 +86,13 @@ nmap -sC -sV -p80,3000,5000 172.17.0.3 -oN target.txt
 
 Al abrir el navegador en `http://172.17.0.3:80`, no encontramos contenido relevante ni funcionalidad explotable.
 
-![](/Imágenes/Capturas_4.png)
+![](Imágenes/Capturas_4.png)
 
 ### Puerto 3000
 
 En `http://172.17.0.3:3000`, vemos una interfaz pero sin funcionalidades o vulnerabilidades evidentes.
 
-![](/Imágenes/Capturas_5.png)
+![](Imágenes/Capturas_5.png)
 
 ---
 
@@ -128,9 +128,9 @@ Rutas encontradas:
 
 A pesar de encontrar múltiples directorios, no hallamos vulnerabilidades claras, hasta que accedemos al contenido en `/backend`.
 
-![](/Imágenes/Capturas_6.png)
-![](/Imágenes/Capturas_7.png)
-![](/Imágenes/Capturas_8.png)
+![](Imágenes/Capturas_6.png)
+![](Imágenes/Capturas_7.png)
+![](Imágenes/Capturas_8.png)
 
 ---
 
@@ -151,7 +151,7 @@ app.post('/recurso/', (req, res) => {
 
 Este endpoint espera un token específico. Si lo recibe, revela una contraseña.
 
-![](/Imágenes/Capturas_9.png)
+![](Imágenes/Capturas_9.png)
 
 ---
 
@@ -171,7 +171,7 @@ Respuesta del servidor:
 lapassworddebackupmaschingonadetodas
 ```
 
-![](/Imágenes/Capturas_10.png)
+![](Imágenes/Capturas_10.png)
 
 ---
 
@@ -191,7 +191,7 @@ Resultado:
 [5000][ssh] host: 172.17.0.3   login: lovely   password: lapassworddebackupmaschingonadetodas
 ```
 
-![](/Imágenes/Capturas_12.png)
+![](Imágenes/Capturas_12.png)
 
 ---
 
@@ -255,7 +255,7 @@ Y accedemos directamente como **root** sin necesidad de contraseña.
 export TERM=xterm
 ```
 
-![](/Imágenes/Capturas_13.png)
+![](Imágenes/Capturas_13.png)
 
 ---
 
