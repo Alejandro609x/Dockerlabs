@@ -1,7 +1,9 @@
 # 🧪 Análisis de la máquina vulnerable: **Verdejo**
 
 **Dificultad:** Fácil
+
 **Plataforma:** DockerLabs
+
 **Descripción:**
 
 ![Descarga de la máquina](Imágenes/2025-05-15_09-12.png)
