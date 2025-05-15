@@ -22,13 +22,16 @@ Posteriormente, desplegamos la máquina vulnerable usando el siguiente comando:
 sudo bash auto_deploy.sh Upload.tar
 ```
 
+![Ping a la máquina](Imágenes/Capturas.png)
+
+
 Verificamos que la máquina esté activa con un `ping` al contenedor:
 
 ```bash
 ping -c1 172.17.0.3
 ```
 
-![Ping a la máquina](Imágenes/Capturas.png)
+![Nmap Puertos](Imágenes/Capturas_1.png)
 
 ---
 
@@ -40,7 +43,7 @@ Realizamos un escaneo de puertos completo con `nmap`:
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 -oG allPorts.txt
 ```
 
-![Nmap Puertos](Imágenes/Capturas_1.png)
+![Nmap detallado](Imágenes/Capturas_2.png)
 
 Luego usamos `extractPorts` para filtrar los puertos detectados y escaneamos con más detalle:
 
@@ -48,7 +51,7 @@ Luego usamos `extractPorts` para filtrar los puertos detectados y escaneamos con
 nmap -sCV -p80 172.17.0.3
 ```
 
-![Nmap detallado](Imágenes/Capturas_2.png)
+![Nmap detallado](Imágenes/Capturas_3.png)
 
 ### 🔍 Resultado:
 
