@@ -22,6 +22,10 @@ sudo bash auto_deploy.sh candy.tar
 
 ---
 
+![Ping a la máquina](Imágenes/Capturas.png)
+
+---
+
 ## Conectividad
 
 Se verificó la conexión a la máquina con un ping:
@@ -30,7 +34,7 @@ Se verificó la conexión a la máquina con un ping:
 ping -c1 172.17.0.3
 ```
 
-![Ping a la máquina](Imágenes/Capturas.png)
+![Nmap escaneo completo](Imágenes/Capturas_1.png)
 
 ---
 
@@ -43,7 +47,7 @@ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 -oG allPorts.txt
 ```
 
 Solo se encontró el puerto 80 (HTTP) abierto.
-![Nmap escaneo completo](Imágenes/Capturas_1.png)
+![Nmap escaneo versión y scripts](Imágenes/Capturas_2.png)
 
 Luego, para obtener más detalles sobre el puerto 80:
 
@@ -51,14 +55,14 @@ Luego, para obtener más detalles sobre el puerto 80:
 nmap -sC -sV -p80 172.17.0.3 -oN target.txt
 ```
 
-![Nmap escaneo versión y scripts](Imágenes/Capturas_2.png)
+![Página principal](Imágenes/Capturas_3.png)
 
 ---
 
 ## Reconocimiento web
 
 Al acceder a [http://172.17.0.3:80](http://172.17.0.3:80) se encontró una página con formulario de inicio de sesión y registro.
-![Página principal](Imágenes/Capturas_3.png)
+![Directorios encontrados](Imágenes/Capturas_4.png)
 
 ---
 
@@ -95,7 +99,7 @@ Se encontraron los siguientes directorios:
 /cli                 
 ```
 
-![Directorios encontrados](Imágenes/Capturas_4.png)
+![Página administrador](Imágenes/Capturas_5.png)
 
 ---
 
@@ -103,7 +107,7 @@ Se encontraron los siguientes directorios:
 
 En el directorio `/administrator` se encontró el usuario `TLuisilloo`:
 [http://172.17.0.3/administrator/index.php](http://172.17.0.3/administrator/index.php)
-![Página administrador](Imágenes/Capturas_5.png)
+![Decodificación Base64](Imágenes/Capturas_6.png)
 
 En `/robots.txt` se hallaron posibles credenciales codificadas:
 
@@ -123,7 +127,7 @@ Obtenemos la contraseña:
 sanluis12345
 ```
 
-![Decodificación Base64](Imágenes/Capturas_6.png)
+
 ![Credenciales decodificadas](Imágenes/Capturas_7.png)
 
 Con estas credenciales se logró acceder como administrador:
