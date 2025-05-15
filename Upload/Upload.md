@@ -48,7 +48,7 @@ Luego usamos `extractPorts` para filtrar los puertos detectados y escaneamos con
 nmap -sCV -p80 172.17.0.3
 ```
 
-![Nmap detallado](Imagenes/Capturas_2.png)
+![Nmap detallado](Imágenes/Capturas_2.png)
 
 ### 🔍 Resultado:
 
@@ -60,7 +60,7 @@ nmap -sCV -p80 172.17.0.3
 
 Al acceder a la web en el puerto 80, observamos una interfaz simple con una opción de subida de archivos.
 
-![Web](Imagenes/Capturas_4.png)
+![Web](Imágenes/Capturas_4.png)
 
 Realizamos un fuzzing de directorios para detectar rutas ocultas:
 
@@ -74,7 +74,7 @@ gobuster dir -u http://172.17.0.3/ -w /usr/share/seclists/Discovery/Web-Content/
 * `/index.html`
 * `/upload.php`
 
-![Pagina](Imagenes/Capturas_5.png)
+![Pagina](Imágenes/Capturas_5.png)
 
 Al ingresar a `/uploads`, observamos los archivos que han sido subidos previamente.
 
@@ -92,11 +92,11 @@ sudo nc -lvnp 443
 
 Desde la interfaz de subida (`/upload.php`), cargamos nuestro archivo malicioso `.php`.
 
-![subida](Imagenes/Capturas_8.png)
+![subida](Imágenes/Capturas_8.png)
 
 Posteriormente, al acceder al archivo desde la ruta `/uploads`, se ejecuta el payload y obtenemos una **shell inversa** como el usuario `www-data`.
 
-![Escucha](Imagenes/Capturas_7.png)
+![Escucha](Imágenes/Capturas_7.png)
 
 ---
 
@@ -114,7 +114,7 @@ La salida indica que el usuario `www-data` puede ejecutar `/usr/bin/env` como ro
 (root) NOPASSWD: /usr/bin/env
 ```
 
-![php](Imagenes/Capturas_9.png)
+![php](Imágenes/Capturas_9.png)
 
 Aprovechamos esta configuración para escalar privilegios ejecutando una shell como root:
 
@@ -124,7 +124,7 @@ sudo /usr/bin/env /bin/sh
 
 ¡Y obtenemos acceso como **root**!
 
-![root](Imagenes/Capturas_10.png)
+![root](Imágenes/Capturas_10.png)
 
 ---
 
