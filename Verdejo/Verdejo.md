@@ -191,7 +191,6 @@ john hash --wordlist=/usr/share/wordlists/rockyou.txt
 Se obtuvo la contraseña `honda1`, con la cual se logró el acceso como **root** por SSH.
 
 ![id\_rsa](Imágenes/Capturas_13.png)
-![id\_rsa](Imágenes/Capturas_14.png)
 
 ---
 
