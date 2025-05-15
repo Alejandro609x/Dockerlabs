@@ -95,11 +95,13 @@ sudo nc -lvnp 443
 
 Desde la interfaz de subida (`/upload.php`), cargamos nuestro archivo malicioso `.php`.
 
-![subida](Imágenes/Capturas_8.png)
+![Escucha](Imágenes/Capturas_7.png)
 
 Posteriormente, al acceder al archivo desde la ruta `/uploads`, se ejecuta el payload y obtenemos una **shell inversa** como el usuario `www-data`.
 
-![Escucha](Imágenes/Capturas_7.png)
+![subida](Imágenes/Capturas_8.png)
+
+![php](Imágenes/Capturas_9.png)
 
 ---
 
@@ -117,7 +119,6 @@ La salida indica que el usuario `www-data` puede ejecutar `/usr/bin/env` como ro
 (root) NOPASSWD: /usr/bin/env
 ```
 
-![php](Imágenes/Capturas_9.png)
 
 Aprovechamos esta configuración para escalar privilegios ejecutando una shell como root:
 
