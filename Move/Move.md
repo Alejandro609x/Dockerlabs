@@ -174,8 +174,11 @@ El archivo solo contenía:
 ```python
 print("Server under beta testing")
 ```
+Procedo a usar SSH si puedo hacer alguna escalada.
 
 ![py](Imágenes/Capturas_13.png)
+
+## 🔐 Explotacion del servicio SSH
 
 Ya conectados como el usuario `freddy`, ejecutamos:
 
