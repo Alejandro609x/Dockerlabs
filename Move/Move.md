@@ -215,9 +215,10 @@ Esto nos otorga una **shell con privilegios root**.
 
 ## 📝 Nota Final
 
-Es posible que existan otras formas de comprometer esta máquina, pero esta fue la ruta explotada a partir de la información descubierta.
-En el sercio de SSH me ubique en el directorio /opt/
+* Es posible que existan otras formas de comprometer esta máquina, pero esta fue la ruta explotada a partir de la información descubierta.
+  
+* En el sercio de SSH me ubique en el directorio /opt/
 
-
-
-
+* Todo el contenido encotrado y los scrpts usados se encuentran en este directorio.
+  
+---
