@@ -209,14 +209,14 @@ sudo /usr/bin/python3 /opt/maintenance.py
 
 Esto nos otorga una **shell con privilegios root**.
 
-![root](Imágenes/Capturas_13.png)
+![root](Imágenes/Capturas_14.png)
 
 ---
 
 ## 📝 Nota Final
 
 Es posible que existan otras formas de comprometer esta máquina, pero esta fue la ruta explotada a partir de la información descubierta.
-
+En el sercio de SSH me ubique en el directorio /opt/
 
 
 
