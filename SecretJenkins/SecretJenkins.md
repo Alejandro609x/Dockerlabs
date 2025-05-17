@@ -1,12 +1,10 @@
 # **Máquina: SecretJenkins**
 
-**Dificultad:** Fácil
+### **Dificultad:** Fácil
 
 ### 📝 **Descripción:**
 
 SecretJenkins es una máquina vulnerable de nivel fácil orientada a la práctica de técnicas esenciales de pentesting. A través de un entorno web basado en Jenkins, el atacante deberá identificar servicios expuestos, reconocer vulnerabilidades conocidas, explotar una LFI (Local File Inclusion), obtener credenciales mediante fuerza bruta, y finalmente realizar una doble escalada de privilegios para obtener acceso total como root.
-
----
 
 ### 🎯 **Objetivo:**
 
