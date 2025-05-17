@@ -19,5 +19,6 @@ Con mi script personalisado extractPorts allPorts.txt se extrae los puertos abie
 Al entrar http://172.17.0.3:8080/ podemos ver un registro de login del servicio de Jenkins
 ![Pagina](Imágenes/Capturas_4.png)
 
-Realizamos fuzzing gobuster dir -u http://172.17.0.3:8080 -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x php,html,txt se encontro varios directorios ocultos revisamos cada uno de ellos para ver si encontramos alguna vulnerabilidad
+Realizamos fuzzing gobuster dir -u http://172.17.0.3:8080 -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x php,html,txt se encontro varios directorios ocultos revisamos cada uno de ellos para ver si encontramos alguna vulnerabilidad.
+Nota: se cae la pagina esto nos siguiere que se podria un ataque DOS o DDOS
 ![Fuzzing](Imágenes/Capturas_5.png)
