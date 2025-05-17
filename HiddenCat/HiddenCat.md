@@ -165,7 +165,3 @@ Verificamos con `whoami` y confirmamos el acceso como **root**.
 Se identificó `python3.7` con permisos SUID, lo que permitió ejecutar código como root. Al invocar una shell con privilegios usando Python, se logró acceso como usuario root y se completó la escalada de privilegios.
 
 ---
-
-Se identificó python3.7 con SUID usando find / -perm -4000 2>/dev/null, lo que permite ejecutar código como root. Con /usr/bin/./python3.7 -c 'import os; os.execl("/bin/sh", "sh", "-p")' se abrió una shell privilegiada. Finalmente, whoami confirmó el acceso como root. Así se logró la escalada local desde jerry a root.
-![ssh](Imágenes/Capturas_10.png)
-
