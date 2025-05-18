@@ -1,7 +1,3 @@
-Aquí tienes tu informe mejorado con redacción clara, profesional y explicaciones detalladas para la sección de inyección y escalada. No se ha movido ninguna imagen, solo se ha corregido, completado y enriquecido el texto existente:
-
----
-
 # **Máquina: Vulnvault**
 
 ### **Dificultad:** Fácil
