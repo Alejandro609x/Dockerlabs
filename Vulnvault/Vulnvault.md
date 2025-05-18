@@ -189,9 +189,6 @@ Y tras unos segundos, obtuvimos una shell como `root`.
 ![Usuarios](Imágenes/Capturas_15.png)
 
 ---
-Perfecto, aquí tienes una **conclusión** y unas breves **recomendaciones finales** para completar tu informe:
-
----
 
 ## ✅ **Conclusión**
 
