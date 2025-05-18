@@ -65,3 +65,17 @@ nmap -sCV -p22,8009,8080 172.17.0.3 -oN target.txt
 Entre http://172.17.0.3/ en donde se encuntra alojado una pagina web donde se ecnotro que existe un login.html 
 ![Pagina](Imágenes/Capturas_4.png)
 
+---
+
+![login](Imágenes/Capturas_5.png)
+
+Comprobación de inyección SQL en el formulario de login
+
+Durante la fase de pruebas, se introdujo el carácter ' al final del campo de nombre de usuario en el formulario de inicio de sesión, lo cual provocó un error,Este mensaje de error revela que el sistema construye la consulta SQL de manera insegura, concatenando directamente el valor proporcionado por el usuario. La aparición del error de sintaxis confirma que no se están utilizando sentencias preparadas ni un adecuado filtrado de entrada, lo cual indica una vulnerabilidad a inyección SQL.
+![inyeccion](Imágenes/Capturas_6.png)
+
+---
+
+![error](Imágenes/Capturas_7.png)
+
+
