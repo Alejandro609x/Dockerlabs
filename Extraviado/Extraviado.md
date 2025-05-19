@@ -1,11 +1,12 @@
-# 🧠 **Informe de Pentesting – Máquina: Extraviado** 
+# 🧠 **Informe de Pentesting – Máquina: Extraviado**
 
 ### 💡 **Dificultad:** Fácil
 
+---
 
+### 🕵️‍♂️ **Tipo de ataque:**
 
-### 🕵️‍♂️ **Tipo de ataque:** 
-
+**Acceso SSH mediante credenciales expuestas en Base64, enumeración de usuarios y lectura de archivos ocultos con pistas para escalada de privilegios.**
 
 ![Despliegue](Imágenes/2025-05-19_15-52.png)
 
@@ -13,18 +14,19 @@
 
 ## 📝 **Descripción de la máquina**
 
+Extraviado es una máquina vulnerable de dificultad baja, ideal para familiarizarse con la decodificación de datos ocultos, la enumeración básica de usuarios y la búsqueda de archivos ocultos como medio para la escalada de privilegios.
 
 ---
 
 ## 🎯 **Objetivo**
 
-
+Obtener acceso como **root** dentro del sistema objetivo mediante análisis de puertos, descubrimiento de credenciales y explotación de archivos ocultos con pistas.
 
 ---
 
 ## ⚙️ **Despliegue de la máquina**
 
-Se descarga el archivo comprimido de la máquina vulnerable y se lanza el contenedor Docker mediante el script incluido:
+Se descarga y despliega la máquina utilizando el script automatizado provisto:
 
 ```bash
 unzip extraviado.zip
@@ -37,7 +39,7 @@ sudo bash auto_deploy.sh extraviado.tar
 
 ## 📡 **Comprobación de conectividad**
 
-Verificamos que la máquina se encuentra activa respondiendo a peticiones ICMP (ping):
+Verificamos que el contenedor está activo mediante una solicitud `ping`:
 
 ```bash
 ping -c1 172.17.0.3
@@ -49,7 +51,7 @@ ping -c1 172.17.0.3
 
 ## 🔍 **Escaneo de Puertos**
 
-Realizamos un escaneo completo para detectar todos los puertos abiertos:
+Realizamos un escaneo completo para identificar los puertos abiertos:
 
 ```bash
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 -oG allPorts.txt
@@ -62,7 +64,7 @@ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 -oG allPorts.txt
 
 ![Puertos](Imágenes/Capturas_2.png)
 
-Luego, analizamos los servicios y versiones asociados a esos puertos:
+Posteriormente, enumeramos servicios y versiones:
 
 ```bash
 nmap -sCV -p22,80 172.17.0.3 -oN target.txt
@@ -72,26 +74,120 @@ nmap -sCV -p22,80 172.17.0.3 -oN target.txt
 
 ---
 
-Entre a la pagina que estaba alojado en el puerto: 80 http://172.17.0.3 y se muestra la pagina default de apache pero al buscar en su codigo fuente se encotro: ZGFuaWVsYQ== : Zm9jYXJvamE= al ver que al final usa signos = puedo suponer que es base64
+## 🌐 **Análisis del servicio web (HTTP)**
+
+Al acceder al sitio en `http://172.17.0.3`, se muestra la página por defecto de Apache.
+
 ![Pagina](Imágenes/Capturas_4.png)
 
----
+Sin embargo, al inspeccionar el código fuente, se encuentran dos cadenas sospechosas codificadas en **Base64**:
+
+* `ZGFuaWVsYQ==`
+* `Zm9jYXJvamE=`
+
 ![Fuente](Imágenes/Capturas_5.png)
 
-Para descodificarlo use: 
+Las descodificamos con el comando:
 
+```bash
 echo 'ZGFuaWVsYQ==' | base64 --decode
-daniela%  
+daniela%
 
 echo 'Zm9jYXJvamE=' | base64 --decode
-focaroja%   
+focaroja%
+```
 
 ![Descodificar](Imágenes/Capturas_6.png)
 
-Accedemos a SSH como usuario daniela, busque permisos sudo -l sin exito busque usuarios en cd /home y encontre el usuario diego, dentro del directorio de daniela hay un direcotio oculto .secreto con un oculto .passdiego donde se encotro un codigo
-en base64 usamos la misma tecnica echo 'YmFsbGVuYW5lZ3Jh' | base64 --decode y obtenemos la contraseña de diego ballenanegra% entramos como diego su diego, y encntramos un directorio oculto .passroot con un archivo .pass que tiene un codigo en base64 
-lo descodigficamos echo 'YWNhdGFtcG9jb2VzdGE=' | base64 --decode y obtenemos acatampocoesta% sin exito buscamos otra manera, despues de buscar entre directorio nos ubicamos en cd /home/diego/.local/share y encontramos un archivo lo leemos con cat .-
-y nos muestra un asetijo donde la respuesta es "osoazul" porque el acertijo describe un animal ficticio del hielo, peludo, azul, amigable y típico en cuentos.
+---
 
-accedemos a root con las credenciales obtenidas
+## 🔐 **Acceso mediante SSH**
+
+Con las credenciales obtenidas:
+
+* **Usuario:** daniela
+* **Contraseña:** focaroja
+
+Accedemos al sistema vía SSH. Luego, al intentar `sudo -l`, no se tienen permisos administrativos.
+
+Explorando el sistema, descubrimos otro usuario: `diego`.
+
+---
+
+## 📁 **Enumeración de archivos ocultos**
+
+Dentro del directorio `/home/daniela`, encontramos un directorio oculto `.secreto` que contiene el archivo `.passdiego`. Este archivo posee otra cadena en Base64:
+
+```bash
+echo 'YmFsbGVuYW5lZ3Jh' | base64 --decode
+ballenanegra%
+```
+
+Con esto, accedemos como `diego`:
+
+```bash
+su diego
+```
+
+---
+
+## 📦 **Escalada de privilegios – búsqueda de root**
+
+En `/home/diego`, encontramos otro archivo oculto: `.passroot/.pass`, que al ser decodificado muestra:
+
+```bash
+echo 'YWNhdGFtcG9jb2VzdGE=' | base64 --decode
+acatampocoesta%
+```
+
+Sin embargo, esta contraseña no permite escalar a root.
+
+---
+
+## 🔍 **Hallazgo clave en archivos compartidos**
+
+Al buscar en:
+
+```bash
+cd /home/diego/.local/share
+```
+
+Encontramos un archivo sin nombre aparente (`cat .-`) que contiene un **acertijo**:
+
+> En un mundo de hielo, me muevo sin prisa,
+> con un pelaje que brilla, como la brisa.
+> No soy un rey, pero en cuentos soy fiel,
+> de un color inusual, como el cielo y el mar también.
+> Soy amigo de los niños, en historias de ensueño.
+> ¿Quién soy, que en el frío encuentro mi dueño?
+
+La solución al acertijo es:
+
+### ✅ **osoazul**
+
+Explicación: describe a un animal ficticio, amigable, peludo, de ambiente frío y asociado a cuentos infantiles.
+
+---
+
+## 👑 **Acceso a root**
+
+Usamos la contraseña `osoazul` para convertirnos en root:
+
+```bash
+su root
+```
+
 ![root](Imágenes/Capturas_7.png)
+
+---
+
+## 🏁 **Conclusión**
+
+La máquina **Extraviado** expone una cadena lógica de vulnerabilidades y pistas en texto plano codificado en Base64. Desde credenciales básicas hasta un acertijo final para obtener acceso completo como `root`, la máquina pone a prueba habilidades esenciales como:
+
+* Enumeración web
+* Decodificación
+* Exploración de archivos ocultos
+* Pensamiento lateral en resolución de acertijos
+
+---
