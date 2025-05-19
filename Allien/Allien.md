@@ -8,8 +8,7 @@
 
 ## 📝 **Descripción de la máquina**
 
-La máquina vulnerable **Allien** simula un entorno realista donde un servidor web mal configurado expone una aplicación susceptible a **inyección SQL**. A través de esta falla, un atacante puede extraer credenciales y acceder al sistema por **SSH**. Además, cuenta con servicios SMB mal configurados que permiten acceso anónimo y exposición de archivos sensibles. Finalmente, mediante la explotación de binarios con permisos de **sudo mal definidos**, se logra una **escalada de privilegios a root**.
-
+La máquina vulnerable **Allien** el objetivo es identificar y explotar una vulnerabilidad de inyección SQL en una aplicación web para obtener credenciales de usuarios. Posteriormente, se busca aprovechar recursos compartidos en SMB para obtener más información sensible y utilizar técnicas de fuerza bruta para acceder vía SSH. Finalmente, se debe escalar privilegios explotando permisos SUID mal configurados, logrando acceso como usuario root en el sistema comprometido.
 ---
 
 ## 🎯 **Objetivo**
