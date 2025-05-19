@@ -9,6 +9,7 @@
 ## 📝 **Descripción de la máquina**
 
 La máquina vulnerable **Allien** el objetivo es identificar y explotar una vulnerabilidad de inyección SQL en una aplicación web para obtener credenciales de usuarios. Posteriormente, se busca aprovechar recursos compartidos en SMB para obtener más información sensible y utilizar técnicas de fuerza bruta para acceder vía SSH. Finalmente, se debe escalar privilegios explotando permisos SUID mal configurados, logrando acceso como usuario root en el sistema comprometido.
+
 ---
 
 ## 🎯 **Objetivo**
