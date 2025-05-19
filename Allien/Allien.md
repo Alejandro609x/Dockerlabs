@@ -2,7 +2,7 @@
 
 ### 💡 **Dificultad:** Fácil
 
-![Despliegue](Imágenes/2025-05-17_19-35.png)
+![Despliegue](Imágenes/2025-05-18_21-11.png)
 
 ---
 
