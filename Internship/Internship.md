@@ -87,7 +87,7 @@ Agregamos:
 ```
 ![Dominio](Imágenes/Capturas_5.png)
 
-
+![Dominio](Imágenes/Capturas_6.png)
 Esto nos da acceso a una pantalla de inicio de sesión:
 
 ![Registro](Imágenes/Capturas_8.png)
