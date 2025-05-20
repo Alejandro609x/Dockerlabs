@@ -54,7 +54,7 @@ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 -oG allPorts.txt
 **Puertos detectados:**
 
 * `22/tcp`: SSH
-* `80/tcp`: HTTP
+* `5000/tcp`: HTTTP
 
 ![Puertos](Imágenes/Capturas_2.png)
 
@@ -67,3 +67,4 @@ nmap -sCV -p22,80 172.17.0.3 -oN target.txt
 ![Servicios](Imágenes/Capturas_3.png)
 
 ---
+
