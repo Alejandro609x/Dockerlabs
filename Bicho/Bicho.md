@@ -3,6 +3,7 @@
 ### 💡 **Dificultad:** Fácil
 
 📦 **Plataforma:** DockerLabs
+
 🌐 **Objetivo:** Obtener acceso total (root) explotando servicios expuestos y configuraciones inseguras en una instalación de WordPress.
 
 ---
