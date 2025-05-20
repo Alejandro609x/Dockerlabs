@@ -85,8 +85,8 @@ Agregamos:
 ```
 172.17.0.3 gatekeeperhr.com
 ```
+![Dominio](Imágenes/Capturas_7.png)
 
-![Dominio](Imágenes/Capturas_6.png)
 
 Esto nos da acceso a una pantalla de inicio de sesión:
 
