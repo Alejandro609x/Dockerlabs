@@ -2,7 +2,7 @@
 
 ### 💡 **Dificultad:** Fácil
 
-![Despliegue](Imágenes/2025-05-19_20-20.png)
+![Despliegue](Imágenes/2025-05-17_19-35.png)
 
 ---
 
@@ -85,9 +85,10 @@ Agregamos:
 ```
 172.17.0.3 gatekeeperhr.com
 ```
-![Dominio](Imágenes/Capturas_5.png)
 
 ![Dominio](Imágenes/Capturas_6.png)
+![hosts](Imágenes/Capturas_7.png)
+
 Esto nos da acceso a una pantalla de inicio de sesión:
 
 ![Registro](Imágenes/Capturas_8.png)
@@ -265,4 +266,3 @@ sudo su
 ![rott](Imágenes/Capturas_16.png)
 
 ---
-
