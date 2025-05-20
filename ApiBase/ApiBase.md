@@ -8,7 +8,7 @@
 
 ## 📝 **Descripción de la máquina**
 
-*Pendiente de completar.*
+*ApiBase es una máquina de nivel principiante diseñada para explorar vulnerabilidades comunes en aplicaciones web que exponen una API sin protección adecuada. La máquina simula un entorno real donde el atacante debe interactuar con endpoints HTTP, descubrir rutas ocultas, y explotar una vulnerabilidad de inyección SQL para obtener credenciales. Posteriormente, el atacante analiza tráfico de red para escalar privilegios y obtener acceso como root. Esta máquina es ideal para reforzar habilidades en enumeración de APIs, análisis de tráfico, uso de Burp Suite, y explotación de SQLi.*
 
 ---
 
