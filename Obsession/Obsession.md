@@ -94,7 +94,7 @@ Añadimos:
 
 Esto nos permitirá visitar `http://nombre-del-sitio.local` en nuestro navegador.
 
-![Pagina](/Images/Pagina.jpeg)
+![Pagina](/Obsession/Imagenes/Pagina.jpeg)
 
 Recopilamos información básica del sitio usando **WhatWeb**:
 
