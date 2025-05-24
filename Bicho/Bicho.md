@@ -243,6 +243,7 @@ export LD_LIBRARY_PATH=/tmp
 ```bash
 ./socat TCP-LISTEN:7755,fork TCP:127.0.0.1:5000
 ```
+Nota: Tambien tuve que instalar libwrap.so.2 lo descargue en mi maquina host e segui el mismo procesos que los otros 2.
 
 ![Socat](Imágenes/Capturas_18.png)
 ![Libreria](Imágenes/Capturas_19.png)
