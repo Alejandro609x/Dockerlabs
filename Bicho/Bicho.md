@@ -427,8 +427,6 @@ Con esto, hemos logrado:
 * Obtener una reverse shell como usuario `app`.
 * Identificar un método de escalada de privilegios usando `wp-cli`.
 
-Claro, aquí tienes todo explicado paso a paso con un lenguaje claro y amigable para alguien que no tenga conocimientos técnicos previos. También se mantienen todas las rutas y las imágenes mencionadas:
-
 ---
 
 ## 🧪 Accediendo a una consola interna usando Burp Suite
@@ -503,8 +501,7 @@ pty.spawn("bash")
 ```
 
 Activamos el proxy y el *intercept* en Burp Suite, enviamos el código, lo modificamos para que el host sea `127.0.0.1`, apagamos el *intercept*, y…
-
-¡Boom! Aparecemos conectados como el usuario `app` en nuestra terminal:
+ Aparecemos conectados como el usuario `app` en nuestra terminal:
 
 ![Bash](Imágenes/Capturas_30.png)
 
