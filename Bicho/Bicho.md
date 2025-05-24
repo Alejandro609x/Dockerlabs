@@ -148,13 +148,14 @@ http://bicho.dl/wp-content/debug.log
 
 Interceptamos el http://bicho.dl/wp-content/debug.log con Burp Suite y lo mandamos a **Repeater**.
 
-![Intercept](Imágenes/Capturas_14.png)
+
 
 Modificamos la cabecera:
 
 ```
 User-Agent: <?php phpinfo(); ?>
 ```
+![Intercept](Imágenes/Capturas_15.png)
 
 
 ---
