@@ -94,7 +94,7 @@ Añadimos:
 
 Esto nos permitirá visitar `http://nombre-del-sitio.local` en nuestro navegador.
 
-![Pagina](/Images/etchost.jpeg)
+![Pagina](/Images/Pagina.jpeg)
 
 Recopilamos información básica del sitio usando **WhatWeb**:
 
