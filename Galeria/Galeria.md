@@ -110,5 +110,24 @@ asi que puedo confirmar que existe una revellshell con php en el directorio en e
 
 ![Codigo](Imágenes/Capturas_10.png)
 
+Creamos la revellshen, el script lo tome de (https://github.com/pentestmonkey/php-reverse-shell/blob/master/php-reverse-shell.php) y lo subimos lo nombre como revellshell.php
+
+![Subida](Imágenes/Capturas_11.png)
+
+Nos ubicamos en http://172.17.0.2/gallery/uploads/images/ para ver nuestro archivo que se subio.
+![php](Imágenes/Capturas_12.png)
+
+Nos ponemos en modo escuha: sudo nc -lvnp 1234 y ejecutamos el .php y obtenemos una terminal
+![php](Imágenes/Capturas_13.png)
+
+Tratamiento de la TTY
+python -c 'import pty; pty.spawn("/bin/bash")'
+export TERM=xterm
+stty rows 40 columns 120
+Este tratamiento es para poder usar nano
+
+
+
+
 
 
