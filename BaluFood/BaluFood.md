@@ -208,6 +208,7 @@ Probamos credenciales directamente:
 ```bash
 sudo su 
 ```
+![root](Imágenes/Capturas_12.png)
 
 ¡Acceso root conseguido!
 
