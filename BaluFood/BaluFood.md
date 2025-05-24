@@ -177,7 +177,7 @@ secret_key = "cuidaditocuidadin"
 Usamos esta clave como contraseña para intentar acceder como `balulero` por SSH:
 
 ```bash
-ssh balulero@172.17.0.2
+su balulero
 ```
 
 ¡Acceso exitoso!
