@@ -1,9 +1,8 @@
-# 🧠 **Informe de Pentesting – Máquina: BaluFood** 
+# 🧠 **Informe de Pentesting – Máquina: BaluFood**
 
 ### 💡 **Dificultad:** Fácil
 
 ### 🧩 **Plataforma:** DockerLabs
-
 
 ![Despliegue](Imágenes/2025-05-24_03-34.png)
 
@@ -11,97 +10,223 @@
 
 ## 📝 **Descripción de la máquina**
 
+BaluFood es una máquina vulnerable en contenedor Docker que simula el entorno de una aplicación web de pedidos de comida. El objetivo es identificar y explotar vulnerabilidades para obtener acceso no autorizado y, finalmente, escalar privilegios hasta obtener acceso como root.
 
 ---
 
 ## 🎯 **Objetivo**
 
+* Acceso inicial a través de la interfaz web o servicios expuestos.
+* Escalado de privilegios hasta obtener acceso root.
+* Documentación de los pasos seguidos, técnicas utilizadas y hallazgos.
 
 ---
 
 ## ⚙️ **Despliegue de la máquina**
 
-Se descarga el archivo comprimido de la máquina vulnerable y se lanza el contenedor Docker mediante el script incluido:
+Se descarga y despliega el entorno vulnerable utilizando el script incluido:
 
 ```bash
 unzip balufood.zip
 sudo bash auto_deploy.sh backend.tar
 ```
 
+Esto lanza el contenedor Docker con la máquina BaluFood.
 ![Despliegue](Imágenes/Capturas.png)
 
 ---
 
 ## 📡 **Comprobación de conectividad**
 
-Verificamos que la máquina se encuentra activa respondiendo a peticiones ICMP (ping):
+Se realiza una prueba de conectividad mediante ping hacia la dirección IP del contenedor:
 
 ```bash
 ping -c1 172.17.0.2
 ```
 
+Esto confirma que la máquina está activa y accesible.
 ![Ping](Imágenes/Capturas_1.png)
 
 ---
 
 ## 🔍 **Escaneo de Puertos**
 
-Realizamos un escaneo completo para detectar todos los puertos abiertos:
+### Escaneo completo de puertos:
 
 ```bash
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2 -oG allPorts.txt
 ```
 
-**Puertos detectados:**
+* `-p-`: Escanea todos los puertos del 1 al 65535.
+* `--open`: Muestra solo puertos abiertos.
+* `-sS`: Escaneo TCP SYN.
+* `--min-rate 5000`: Aumenta la velocidad del escaneo.
+* `-Pn`: Omite el ping previo.
+* `-oG`: Guarda el resultado en formato grepable.
+
+**Puertos abiertos encontrados:**
 
 * `22/tcp`: SSH
 * `5000/tcp`: HTTP
 
 ![Puertos](Imágenes/Capturas_2.png)
 
-Luego, analizamos los servicios y versiones asociados a esos puertos:
+### Detección de versiones y servicios:
 
 ```bash
-nmap -sCV -p22,80 172.17.0.2 -oN target.txt
+nmap -sCV -p22,5000 172.17.0.2 -oN target.txt
 ```
+
+* `-sC`: Ejecuta scripts por defecto.
+* `-sV`: Detecta versiones de servicios.
 
 ![Servicios](Imágenes/Capturas_3.png)
 
 ---
 
-Al ver que esta el puerto 5000 esta abierto nos vamos a http://172.17.0.2:5000/ para visualizar lo que aloja y nos damos cuenta que es la pagina de un restaurante y en la parte de abajo hay una seccion de comentarios.
+## 🌐 **Exploración Web**
+
+Accedemos a `http://172.17.0.2:5000/` y observamos una aplicación web de restaurante con opciones como menú, pedidos y comentarios.
 
 ![Pagina](Imágenes/Capturas_4.png)
 
-Al navegar entre pestañas y ver la funciones que tiene como el de ver menu,realizar pedidos, logro encontrar un formulario de registro http://172.17.0.2:5000/login
+### Formulario de login
+
+Visitamos `http://172.17.0.2:5000/login`, encontramos un formulario de acceso.
 
 ![Registro](Imágenes/Capturas_5.png)
 
-Al probar credenciales comunes logro accedes con usuario: admin Contraseña admin, nos reditige a http://172.17.0.2:5000/admin y se logra ver lo pedidos que realice previamente.
+Probamos credenciales comunes:
+
+* **Usuario:** `admin`
+* **Contraseña:** `admin`
+
+Accedemos exitosamente al panel de administración en `/admin`.
 
 ![Admin](Imágenes/Capturas_6.png)
-Nota: Al poner el directorio: /admin tambien no da acceso a la pagina del adminitrador
 
-Al revisar el codigo fuento de esta pestaña puedo notar que hay uno comentario con credenciales, <!-- Backup de acceso: sysadmin:backup123 -->
+> **Nota:** También es posible acceder directamente navegando a `http://172.17.0.2:5000/admin`.
+
+### Comentario con credenciales
+
+Al revisar el código fuente de la página de administrador encontramos un comentario HTML:
+
+```html
+<!-- Backup de acceso: sysadmin:backup123 -->
+```
 
 ![Credenciales](Imágenes/Capturas_7.png)
 
-Realice fuzzing gobuster dir -u http://172.17.0.2:5000/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x .php,.html,.txt y encontramos mas directorios el mas interesante seria el directorio /console que podriamon intetar una explotacion como en la maquina Bichos ya hecha.
+---
+
+## 🧭 **Fuzzing de directorios**
+
+Ejecutamos `gobuster` para descubrir rutas ocultas:
+
+```bash
+gobuster dir -u http://172.17.0.2:5000/ \
+-w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt \
+-t 20 -x .php,.html,.txt -b 403,404 -o gobuster.txt
+```
+
+* `-w`: Wordlist utilizada.
+* `-x`: Extensiones buscadas.
+* `-b`: Códigos de respuesta a omitir.
+* `-t`: Hilos para mayor velocidad.
+
+Se descubre el directorio `/console`, lo que sugiere una posible consola interactiva (como Flask Debug Console).
 
 ![Console](Imágenes/Capturas_8.png)
 
-Probamos la credenciales encontradas para entrar al servicio de SSH y son validas 
+---
+
+## 🔐 **Acceso por SSH**
+
+Probamos las credenciales encontradas `sysadmin:backup123` para conectarnos por SSH:
+
+```bash
+ssh sysadmin@172.17.0.2
+```
+
+¡Acceso exitoso!
 
 ![SSH](Imágenes/Capturas_9.png)
 
-Usamos sudo -l sin exito, busque archivos en /opt sin exito asi que busco usuarios en home y encontre: balulero y sysadmin por el cual estamos conectados, dentro de este usuario hay un app.py, 
+### Verificación de privilegios
+
+```bash
+sudo -l
+```
+
+No tiene permisos sudo.
+
+### Búsqueda de archivos interesantes
+
+Se inspecciona el directorio `/home/` y se encuentran dos usuarios: `sysadmin` y `balulero`. Dentro del home de `sysadmin`, se encuentra un archivo `app.py`.
+
+```bash
+cat ~/app.py
+```
 
 ![Python](Imágenes/Capturas_10.png)
 
-Al revisar el codigo encontramos una clave secreta cuidaditocuidadin asi usamos esta contraseña para acceder como balulero con exito
+El contenido del script revela una **clave secreta**:
+
+```python
+secret_key = "cuidaditocuidadin"
+```
+
+Usamos esta clave como contraseña para intentar acceder como `balulero` por SSH:
+
+```bash
+ssh balulero@172.17.0.2
+```
+
+¡Acceso exitoso!
 
 ![Balulero](Imágenes/Capturas_11.png)
 
-Al revisar el contenido de usuario en el archivo: .bashrc que leimos con: cat ~/.bashrc encontramos unas posibles credenciales para root: alias ser-root='echo chocolate2 | su - root' lo probamos: su root y accedimos a root con exito
+---
 
-![Balulero](Imágenes/Capturas_12.png)
+## ⬆️ **Escalada de Privilegios**
+
+Ya dentro del usuario `balulero`, buscamos archivos y configuraciones que nos den acceso como root.
+
+### Análisis del archivo `.bashrc`
+
+Revisamos el archivo `.bashrc`:
+
+```bash
+cat ~/.bashrc
+```
+
+Encontramos el siguiente alias:
+
+```bash
+alias ser-root='sudo su -'
+```
+
+Esto sugiere que el usuario puede ejecutar `sudo su -` sin contraseña. Probamos directamente:
+
+```bash
+sudo su -
+```
+
+¡Acceso root conseguido!
+
+---
+
+## 🏁 **Resumen**
+
+| Etapa                | Resultado                             |
+| -------------------- | ------------------------------------- |
+| Acceso Web           | Formulario login expuesto             |
+| Credenciales comunes | admin\:admin                          |
+| Código fuente web    | Comentario con usuario: sysadmin      |
+| Acceso por SSH       | sysadmin\:backup123                   |
+| Revisión de scripts  | Clave encontrada: "cuidaditocuidadin" |
+| Acceso como balulero | Contraseña: cuidaditocuidadin         |
+| Escalada a root      | Alias sudo encontrado en `.bashrc`    |
+
+---
+
