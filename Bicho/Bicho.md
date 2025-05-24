@@ -146,7 +146,7 @@ http://bicho.dl/wp-content/debug.log
 
 ### 🐚 Inyección vía User-Agent
 
-Interceptamos el login con Burp Suite y lo mandamos a **Repeater**.
+Interceptamos el http://bicho.dl/wp-content/debug.log con Burp Suite y lo mandamos a **Repeater**.
 
 ![Intercept](Imágenes/Capturas_14.png)
 
@@ -156,7 +156,6 @@ Modificamos la cabecera:
 User-Agent: <?php phpinfo(); ?>
 ```
 
-![LogPoisoning](Imágenes/Capturas_15.png)
 
 ---
 
