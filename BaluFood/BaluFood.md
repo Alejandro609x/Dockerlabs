@@ -163,7 +163,7 @@ No tiene permisos sudo.
 Se inspecciona el directorio `/home/` y se encuentran dos usuarios: `sysadmin` y `balulero`. Dentro del home de `sysadmin`, se encuentra un archivo `app.py`.
 
 ```bash
-cat ~/app.py
+cat app.py
 ```
 
 ![Python](Imágenes/Capturas_10.png)
