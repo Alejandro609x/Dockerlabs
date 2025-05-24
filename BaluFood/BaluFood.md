@@ -86,4 +86,22 @@ Al revisar el codigo fuento de esta pestaña puedo notar que hay uno comentario 
 
 ![Credenciales](Imágenes/Capturas_7.png)
 
+Realice fuzzing gobuster dir -u http://172.17.0.2:5000/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x .php,.html,.txt y encontramos mas directorios el mas interesante seria el directorio /console que podriamon intetar una explotacion como en la maquina Bichos ya hecha.
 
+![Console](Imágenes/Capturas_8.png)
+
+Probamos la credenciales encontradas para entrar al servicio de SSH y son validas 
+
+![SSH](Imágenes/Capturas_9.png)
+
+Usamos sudo -l sin exito, busque archivos en /opt sin exito asi que busco usuarios en home y encontre: balulero y sysadmin por el cual estamos conectados, dentro de este usuario hay un app.py, 
+
+![Python](Imágenes/Capturas_10.png)
+
+Al revisar el codigo encontramos una clave secreta cuidaditocuidadin asi usamos esta contraseña para acceder como balulero con exito
+
+![Balulero](Imágenes/Capturas_11.png)
+
+Al revisar el contenido de usuario en el archivo: .bashrc que leimos con: cat ~/.bashrc encontramos unas posibles credenciales para root: alias ser-root='echo chocolate2 | su - root' lo probamos: su root y accedimos a root con exito
+
+![Balulero](Imágenes/Capturas_12.png)
