@@ -198,16 +198,15 @@ Revisamos el archivo `.bashrc`:
 cat ~/.bashrc
 ```
 
-Encontramos el siguiente alias:
+Encontramos contraseña:
 
 ```bash
-alias ser-root='sudo su -'
+chocolate2
 ```
-
-Esto sugiere que el usuario puede ejecutar `sudo su -` sin contraseña. Probamos directamente:
+Probamos credenciales directamente:
 
 ```bash
-sudo su -
+sudo su 
 ```
 
 ¡Acceso root conseguido!
@@ -216,15 +215,15 @@ sudo su -
 
 ## 🏁 **Resumen**
 
-| Etapa                | Resultado                             |
-| -------------------- | ------------------------------------- |
-| Acceso Web           | Formulario login expuesto             |
-| Credenciales comunes | admin\:admin                          |
-| Código fuente web    | Comentario con usuario: sysadmin      |
-| Acceso por SSH       | sysadmin\:backup123                   |
-| Revisión de scripts  | Clave encontrada: "cuidaditocuidadin" |
-| Acceso como balulero | Contraseña: cuidaditocuidadin         |
-| Escalada a root      | Alias sudo encontrado en `.bashrc`    |
-
+| Etapa                | Resultado                                  |
+| -------------------- | ------------------------------------------ |
+| Acceso Web           | Formulario login expuesto                  |
+| Credenciales comunes | admin\:admin                               |
+| Código fuente web    | Comentario con usuario: sysadmin           |
+| Acceso por SSH       | sysadmin\:backup123                        |
+| Revisión de scripts  | Clave encontrada: "cuidaditocuidadin"      |
+| Acceso como balulero | Contraseña: cuidaditocuidadin              |
+| Escalada a root      | Contraseña root encontrado en `.bashrc`    |
+---------------------------------------------------------------------
 ---
 
