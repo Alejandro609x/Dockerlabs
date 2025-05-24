@@ -124,9 +124,7 @@ Al revisar el código fuente de la página de administrador encontramos un comen
 Ejecutamos `gobuster` para descubrir rutas ocultas:
 
 ```bash
-gobuster dir -u http://172.17.0.2:5000/ \
--w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt \
--t 20 -x .php,.html,.txt -b 403,404 -o gobuster.txt
+gobuster dir -u http://172.17.0.2:5000 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 20 -x .php,.html,.txt -b 403,404 -o gobuster.txt
 ```
 
 * `-w`: Wordlist utilizada.
