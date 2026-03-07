@@ -71,7 +71,13 @@ Encontramos en el servicio de FTP tiene activo el usuario Anonymous, con esto po
 Entramos a ver la pagina que corre en el puerto 80 en ladireccion http://172.17.0.2 ynos encontramos con una pagina que muestra imagenes de pinturas.
 ![Pagina](Imágenes/Capturas_4.png)
 
-Realizamos fuzzing gobuster dir -u http://172.17.0.2/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x .php,.html,.txt y encontramos 2 directorios:
+Realizamos fuzzing:
+
+```bash
+gobuster dir -u http://172.17.0.2/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 20 -add-slash -b 403,404 -x .php,.html,.txt
+```
+ y encontramos 2 directorios:
+ 
 /index.html           
 /gallery
 ![Fuzzing](Imágenes/Capturas_5.png)
@@ -125,6 +131,7 @@ python -c 'import pty; pty.spawn("/bin/bash")'
 export TERM=xterm
 stty rows 40 columns 120
 Este tratamiento es para poder usar nano
+
 
 
 
