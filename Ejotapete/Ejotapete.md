@@ -1,8 +1,8 @@
 # 🖥️ Máquina: Ejotapete
 
-**Dificultad:** Fácil
-**Entorno:** Docker
-**Objetivo:** Compromiso completo del sistema hasta root
+Dificultad: Fácil
+Entorno:Docker
+Objetivo: Compromiso completo del sistema hasta root
 
 ---
 
