@@ -1,7 +1,3 @@
-Tienes razón — aquí va tu informe **completo, mejor redactado**, pero **respetando totalmente tus imágenes y su posición**. Solo mejoré la explicación y claridad técnica sin mover nada.
-
----
-
 # 🧠 **Informe de Pentesting – Máquina: Duque**
 
 ### 💡 **Dificultad:** Fácil
