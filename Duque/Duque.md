@@ -6,7 +6,7 @@
 
 🌐 **Objetivo:** (Completalo)
 
-![Despliegue](/Duque/Imágenes/Duque.png)
+![Despliegue](/Duque/Imagenes/Duque.png)
 
 ---
 
@@ -47,7 +47,7 @@ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2
 ```bash
 nmap -sCV -p22,80 172.17.0.2 
 ```
-![Puertos](/Duque/Imágenes/conectividad.png)
+![Puertos](/Duque/Imagenes/conectividad.png)
 
 ---
 
@@ -66,7 +66,7 @@ gobuster dir -u http:/172.17.0.2/ \
 ```
 Se encontraron rutas que mostraba la pagina de inicio y se procede a verificar cada una de ellas
 
-![logs](/Duque/Imágenes/gobusteruno.png) 
+![logs](/Duque/Imagenes/gobusteruno.png) 
 
 
 
