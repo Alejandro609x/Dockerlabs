@@ -231,6 +231,8 @@ Resultado:
 ```
 root
 ```
+![Puertos](/Duque/Imagenes/sshuno.png) 
+![Puertos](/Duque/Imagenes/sshdos.png)
 
 ---
 
