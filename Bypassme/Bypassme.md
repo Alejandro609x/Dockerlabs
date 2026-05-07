@@ -228,8 +228,8 @@ Resultado:
 ```
 root
 ```
-![Puertos](/Duque/Imagenes/sshuno.png) 
-![Puertos](/Duque/Imagenes/sshdos.png)
+![Puertos](/Bypassme/Imagenes/sshuno.png) 
+![Puertos](/Bypassme/Imagenes/sshdos.png)
 
 ---
 
