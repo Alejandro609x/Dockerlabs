@@ -67,7 +67,7 @@ nmap -sCV -p21,8080 172.17.0.2
 
 El análisis revela que el servicio web corresponde a un servidor Apache Tomcat.
 
-![Puertos](/Duque/Imagenes/nmap.png)
+![Puertos](/pn/Imagenes/nmap.png)
 
 ---
 
@@ -83,7 +83,7 @@ http://172.17.0.2:8080
 
 Se observa una instalación funcional de Apache Tomcat.
 
-![logs](/Duque/Imagenes/pagina.png)
+![logs](/pn/Imagenes/pagina.png)
 
 ---
 
@@ -97,11 +97,11 @@ gobuster dir -u http://172.17.0.2:8080/ -w /usr/share/wordlists/dirbuster/direct
 
 Durante el análisis se identifican múltiples rutas disponibles dentro de la aplicación.
 
-![logs](/Duque/Imagenes/gobuster.png)
+![logs](/pn/Imagenes/gobuster.png)
 
 También se detectan directorios adicionales interesantes.
 
-![logs](/Duque/Imagenes/gobusterdos.png)
+![logs](/pn/Imagenes/gobusterdos.png)
 
 Entre ellos destaca el directorio:
 
@@ -143,9 +143,9 @@ get tomcat.txt
 
 Aunque el archivo fue descargado correctamente, su contenido no aporta información relevante para la resolución de la máquina.
 
-![logs](/Duque/Imagenes/ftpAnonymous.png)
+![logs](/pn/Imagenes/ftpAnonymous.png)
 
-![logs](/Duque/Imagenes/descargaftp.png)
+![logs](/pn/Imagenes/descargaftp.png)
 
 ---
 
@@ -157,7 +157,7 @@ Inicialmente no se obtiene acceso.
 
 Al cancelar la autenticación, el servidor muestra un mensaje de error que contiene ejemplos de credenciales por defecto utilizadas frecuentemente en Apache Tomcat.
 
-![logs](/Duque/Imagenes/cancelarmanager.png)
+![logs](/pn/Imagenes/cancelarmanager.png)
 
 A partir de esta información se investigan listas públicas de credenciales por defecto relacionadas con Tomcat.
 También se genera una lista personalizada de usuarios y contraseñas frecuentes para realizar pruebas de autenticación.
@@ -171,7 +171,7 @@ Contraseña: s3cr3t
 
 Con estas credenciales es posible acceder correctamente al panel de administración.
 
-![logs](/Duque/Imagenes/ogincredenciales.png)
+![logs](/pn/Imagenes/ogincredenciales.png)
 
 También es posible acceder al panel desde la opción **Manager App** disponible en la página principal de Tomcat.
 
@@ -183,7 +183,7 @@ Una vez dentro del panel de administración, se analiza la funcionalidad disponi
 
 Se observa que existe una sección para desplegar aplicaciones mediante archivos `.war`.
 
-![logs](/Duque/Imagenes/archivologin.png)
+![logs](/pn/Imagenes/archivologin.png)
 
 Los archivos WAR (`Web Application Archive`) son paquetes utilizados por aplicaciones Java web.
 
@@ -205,17 +205,17 @@ Se puede verificar su creación utilizando:
 ls -la
 ```
 
-![logs](/Duque/Imagenes/subidashell.png)
+![logs](/pn/Imagenes/subidashell.png)
 
 Posteriormente, desde el panel Tomcat Manager, se selecciona el archivo generado y se procede a subirlo al servidor.
 
-![logs](/Duque/Imagenes/apartadosub.png)
+![logs](/pn/Imagenes/apartadosub.png)
 
 Después de la carga exitosa, la nueva aplicación aparece listada dentro del panel de aplicaciones desplegadas.
 
-![logs](/Duque/Imagenes/archivosub.png)
+![logs](/pn/Imagenes/archivosub.png)
 
-![logs](/Duque/Imagenes/subido.png)
+![logs](/pn/Imagenes/subido.png)
 
 ---
 
@@ -233,7 +233,7 @@ Una vez ejecutada la aplicación, se recibe la conexión en la terminal en escuc
 
 Finalmente, se logra acceso con privilegios elevados dentro de la máquina objetivo.
 
-![logs](/Duque/Imagenes/root.png)
+![logs](/pn/Imagenes/root.png)
 
 ---
 
