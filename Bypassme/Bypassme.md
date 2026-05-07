@@ -5,7 +5,7 @@
 📦 **Plataforma:** DockerLabs
 🌐 **Objetivo:** Compromiso completo de la máquina mediante enumeración, explotación web y escalada de privilegios.
 
-![Despliegue](/Duque/Imagenes/Maquina.png)
+![Despliegue](/Bypassme/Imagenes/Maquina.png)
 
 ---
 
@@ -18,7 +18,7 @@ unzip bicho.zip
 sudo bash auto_deploy.sh bypassme.tar
 ```
 
-![Despliegue](/Duque/Imagenes/Despliegue.png)
+![Despliegue](/Bypassme/Imagenes/Despliegue.png)
 
 ---
 
@@ -57,7 +57,7 @@ Se procede a enumerar versiones y servicios activos:
 nmap -sCV -p22,80 172.17.0.2
 ```
 
-![Puertos](/Duque/Imagenes/conectividad.png)
+![Puertos](/Bypassme/Imagenes/conectividad.png)
 
 ---
 
@@ -75,7 +75,7 @@ Se observa una aplicación web funcional de inicio de sesión.
 
 ---
 
-![Puertos](/Duque/Imagenes/conectividad.png)
+![Puertos](/Bypassme/Imagenes/conectividad.png)
 
 ---
 
@@ -85,7 +85,7 @@ Se observa una aplicación web funcional de inicio de sesión.
 gobuster dir -u 'http://172.17.0.2/' -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x .env,.php,.bak,.old,.zip,.txt -b 400 --exclude-length 0
 ```
 
-![logs](/Duque/Imagenes/gobusterprimero.png)
+![logs](/Bypassme/Imagenes/gobusterprimero.png)
 
 Durante este proceso se detectan varios directorios, aunque inicialmente no se identifica un vector de ataque directo.
 
@@ -99,13 +99,13 @@ admin' OR '1'='1' -- -
 
 usuario: `admin`
 
-![Puertos](/Duque/Imagenes/loginsql.png)
+![Puertos](/Bypassme/Imagenes/loginsql.png)
 
 ---
 
 Después de esto se obtienen indicios de la existencia de logs, según la información mostrada por la aplicación:
 
-![Puertos](/Duque/Imagenes/inyeccion.png)
+![Puertos](/Bypassme/Imagenes/inyeccion.png)
 
 En este caso, se prueban varias combinaciones hasta encontrar acceso mediante:
 
@@ -115,7 +115,7 @@ http://172.17.0.2/index.php?page=logs/logs.txt
 
 ---
 
-![Puertos](/Duque/Imagenes/logs.png)
+![Puertos](/Bypassme/Imagenes/logs.png)
 
 En los logs encontrados se observan múltiples intentos de autenticación. Solo uno tiene éxito y aparece en Base64.
 
@@ -139,7 +139,7 @@ La contraseña obtenida para acceso SSH es:
 ssh albert@172.17.0.2
 ```
 
-![Puertos](/Duque/Imagenes/ssh.png)
+![Puertos](/Bypassme/Imagenes/ssh.png)
 
 ---
 
