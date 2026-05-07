@@ -121,11 +121,12 @@ La cadena decodificada es:
 NGxiM3J0MTIz
 ```
 
-La contraseña obtenida para acceso SSH es:
+La contraseña obtenida es:
 
 ```
 4lb3rt123
 ```
+Pero se usa la codificada para acceder a ssh
 
 ---
 
