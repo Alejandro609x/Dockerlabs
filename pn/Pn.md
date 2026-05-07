@@ -171,7 +171,7 @@ Contraseña: s3cr3t
 
 Con estas credenciales es posible acceder correctamente al panel de administración.
 
-![logs](/pn/Imagenes/ogincredenciales.png)
+![logs](/pn/Imagenes/logincredenciales.png)
 
 También es posible acceder al panel desde la opción **Manager App** disponible en la página principal de Tomcat.
 
