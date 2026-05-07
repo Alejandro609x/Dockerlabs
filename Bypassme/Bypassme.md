@@ -75,10 +75,6 @@ Se observa una aplicación web funcional de inicio de sesión.
 
 ---
 
-![Puertos](/Bypassme/Imagenes/conectividad.png)
-
----
-
 ### 🗂️ **Fuzzing de Directorios**
 
 ```bash
