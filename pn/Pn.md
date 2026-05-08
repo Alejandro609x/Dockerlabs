@@ -14,7 +14,7 @@
 Se inicia la máquina vulnerable descomprimiendo el archivo proporcionado y ejecutando el script de despliegue incluido.
 
 ```bash
-unzip bicho.zip
+unzip pn.zip
 sudo bash auto_deploy.sh pn.tar
 ```
 
