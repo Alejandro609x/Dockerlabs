@@ -2,7 +2,7 @@
 
 Dificultad: Fácil
 Entorno:Docker
-Objetivo: Compromiso completo del sistema hasta root usando la vulneravilidad grupal
+Objetivo: Compromiso completo del sistema hasta root usando la vulneravilidad Drupal
 
 ---
 
