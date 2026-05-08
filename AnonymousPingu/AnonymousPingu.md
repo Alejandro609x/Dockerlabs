@@ -365,7 +365,7 @@ Con esto se logra comprometer completamente la máquina y obtener control total 
 
 ![Despliegue](/AnonymousPingu/Imagenes/escaladapingu.png)
 
-![Despliegue](/AnonymousPingu/Imagenes/pingu.png.png)
+![Despliegue](/AnonymousPingu/Imagenes/pingu.png)
 
 ![Despliegue](/AnonymousPingu/Imagenes/root.png)
 
