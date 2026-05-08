@@ -15,7 +15,7 @@
 Se inicia la máquina vulnerable descomprimiendo el archivo proporcionado y ejecutando el script de despliegue:
 
 ```bash
-unzip bicho.zip
+unzip duque.zip
 sudo bash auto_deploy.sh duque.tar
 ```
 
