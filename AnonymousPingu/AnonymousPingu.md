@@ -203,6 +203,7 @@ Con esto obtenemos acceso inicial como el usuario del servidor web (`www-data`).
 
 ---
 # Nota: Antes de hacer la escalada se debe de hacer el tratamiento de TTY para evitar conflictos en la terminal
+
 ```bash
 script /dev/null -c bash
 ```
@@ -210,6 +211,7 @@ ctrl Z (Se pondra en pausa la terminal victima)
 
 ```bash
 stty raw -echo; fg
+```
 
 ```bash
 reset xterm
