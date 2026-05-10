@@ -362,8 +362,6 @@ El archivo pertenecía al usuario `root`, pero tenía permisos de escritura inse
 
 Esto significa que el usuario `grooti` tenía permisos para modificar el script, aun cuando este era ejecutado por `root`.
 
-![Despliegue](/Grooti/Imagenes/root.png)
-
 ---
 
 # ⚠️ **Revisión del Script Vulnerable**
