@@ -4,8 +4,6 @@
 
 📦 **Plataforma:** DockerLabs
 
-🌐 **Objetivo:** Explicar paso a paso todo el proceso de explotación realizado sobre la máquina.
-
 ![Despliegue](/Grooti/Imagenes/Logo.png)
 
 ---
