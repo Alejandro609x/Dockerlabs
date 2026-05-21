@@ -6,6 +6,6 @@
 
 ---
 
-![Despliegue](Imágenes/logo.png)
+![Despliegue](Imagenes/logo.png)
 
 ---
