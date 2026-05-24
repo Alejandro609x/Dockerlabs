@@ -36,3 +36,11 @@ Posteriormente se valida que servicio y versiòn esta corriendo el los puertos e
 sudo nmap -sCV -p5000 172.17.0.2
 ```
 ![Despliegue](Imagenes/nmap.png)
+
+Se accede al sitio que esta corriendo en el puerto
+
+```bash
+http://172.17.0.2:5000
+```
+![Despliegue](Imagenes/pagina.png)
+
