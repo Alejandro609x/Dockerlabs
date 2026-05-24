@@ -6,4 +6,4 @@
 
 ---
 
-![Despliegue](Imágenes/despliegue.png)
+![Despliegue](Imagenes/despliegue.png)
