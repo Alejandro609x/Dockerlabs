@@ -171,34 +171,6 @@ Una vez enviada la petición vulnerable, se recibió la conexión reversa desde 
 
 # 📌 Escalada de privilegios
 
-Una vez obtenida la shell inicial, se verificaron los privilegios actuales del usuario comprometido.
-
-```bash
-whoami
-```
-
-La ejecución devolvió:
-
-```bash
-root
-```
-
-Lo anterior indicó que el proceso Flask dentro del contenedor estaba ejecutándose directamente como usuario `root`, permitiendo control total inmediato sobre el sistema comprometido.
-
-Posteriormente se verificaron los privilegios configurados mediante:
-
-```bash
-sudo -l
-```
-
-El resultado confirmó que el usuario `root` tenía permisos completos sobre el sistema:
-
-```bash
-(ALL : ALL) ALL
-```
-
----
-
 ## 📌 Análisis del usuario pinguinazo
 
 Durante la enumeración también se identificó el usuario `pinguinazo`, el cual poseía permisos especiales en `sudo`.
@@ -241,6 +213,7 @@ Posteriormente el archivo fue ejecutado con privilegios elevados:
 ```bash
 sudo java revshell.java
 ```
+Nota: Antes de ejecutar el .java se tiene que poner en escuha otra terminal del atacante
 
 Esto permitió ejecutar comandos como `root` aprovechando la configuración insegura de `sudoers`.
 
