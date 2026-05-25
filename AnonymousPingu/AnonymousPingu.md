@@ -4,8 +4,6 @@
 
 📦 **Plataforma:** DockerLabs
 
-🌐 **Objetivo:** Comprometer la máquina obteniendo acceso inicial mediante la subida de archivos PHP a través del servicio FTP.
-
 ![Despliegue](/AnonymousPingu/Imagenes/logo.png)
 
 ---
