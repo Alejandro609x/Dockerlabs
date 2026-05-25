@@ -65,7 +65,7 @@ Accedemos al servicio web desde el navegador:
 http://172.17.0.2
 ```
 
-La página carga correctamente y muestra una aplicación web funcional.
+La página carga correctamente y muestra una aplicación web inico de apache.
 
 ![Despliegue](Imagenes/pagina.png)
 
@@ -79,5 +79,28 @@ gobuster vhost --append-domain -u http://172.17.0.2 -w /usr/share/wordlists/secl
 ```bash
 gobuster dir -u http://172.17.0.2 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x .env,.php,.bak,.old,.zip,.txt -b 403,404 --exclude-length 301
 ```
+Revisamos el codigo fuente y enocntramos un directorio:
+
+/nibbleblog
+
+![Despliegue](Imagenes/directocodifune.png)
+
+```bash
+http://172.17.0.2/nibbleblog/
+```
+Al acceder nos muestra una pagina de nibbleblog (explica que es)
+
+![Despliegue](Imagenes/paginasubdirec.png)
 
 
+Al buscar por la pagina podemos rederogirno a una pagina de formulario login
+
+![Despliegue](Imagenes/paginalogeodirec.png)
+
+Podemos acceder con credenciales por defecto 
+
+admin:admin 
+
+Al buscar en la pagina podemos ver la versiòn
+
+![Despliegue](Imagenes/version.png)
