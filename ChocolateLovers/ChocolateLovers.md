@@ -5,7 +5,7 @@
 📦 **Plataforma:** DockerLabs
 
 
-![Despliegue](/AnonymousPingu/Imagenes/logo.png)
+![Despliegue](Imagenes/logo.png)
 
 ---
 
@@ -18,7 +18,7 @@ unzip chocolatelovers.zip
 sudo bash auto_deploy.sh chocolatelovers.tar
 ```
 
-![Despliegue](/AnonymousPingu/Imagenes/despliegue.png)
+![Despliegue](Imagenes/despliegue.png)
 
 ---
 
@@ -30,7 +30,7 @@ Una vez desplegada la máquina, verificamos que el objetivo se encuentre activo 
 ping -c1 172.17.0.2
 ```
 
-![Despliegue](/AnonymousPingu/Imagenes/ping.png)
+![Despliegue](Imagenes/ping.png)
 
 ---
 
