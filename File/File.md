@@ -48,3 +48,24 @@ nmap -sCV -p21,80 172.17.0.3
 ![Servicios](Imagenes/nmapdos.png)
 
 ---
+Nos podemos dar cuenta que cuenta con el usaurio anonymous activado, asi que se puede acceder sin la necesidad de una contraseña
+
+```bash
+ftp anonymous@172.17.0.2
+```
+
+![Servicios](Imagenes/ftpdesano.png)
+
+Al entrar podemos encontrar un .txt que podemos descargar con el comando:
+
+
+```bash
+get anon.txt
+```
+Al ver el contenido del .txt podemos darnos cuenta que esta codificado con MD%, para descodificar usamos el comando:
+
+```bash
+john --format=Raw-MD5 anon.txt
+```
+
+![Servicios](Imagenes/md5usu.png)
