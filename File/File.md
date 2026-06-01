@@ -136,11 +136,7 @@ Esto sugiere que debemos buscar contenido oculto.
 Utilizamos Gobuster:
 
 ```bash
-gobuster dir -u http://172.17.0.3 \
--w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt \
--x .env,.php,.bak,.old,.zip,.txt \
--b 403,404 \
---exclude-length 301
+gobuster dir -u http://172.17.0.3 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x .env,.php,.bak,.old,.zip,.txt -b 403,404 --exclude-length 301
 ```
 
 Explicación:
