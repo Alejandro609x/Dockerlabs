@@ -24,3 +24,27 @@ ping -c1 172.17.0.3
 ```
 ![Despliegue](Imagenes/ping.png)
 
+## 🔍 **Escaneo de Puertos**
+
+Realizamos un escaneo de todos los puertos para detectar cuáles están abiertos:
+
+```bash
+sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 
+```
+
+**Puertos descubiertos:**
+
+* `21/tcp`: FTP
+* `80/tcp`: HTTP
+
+![Puertos](Imagenes/nmap.png)
+
+A continuación, analizamos los servicios y versiones presentes en los puertos detectados:
+
+```bash
+nmap -sCV -p21,80 172.17.0.3 
+```
+
+![Servicios](Imagenes/nmapdos.png)
+
+---
