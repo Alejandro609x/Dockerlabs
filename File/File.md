@@ -120,7 +120,7 @@ Esto nos proporciona credenciales potencialmente reutilizables.
 Accedemos al puerto HTTP:
 
 ```bash
-http://172.17.0.3
+http://172.17.0.2
 ```
 
 Encontramos únicamente la página por defecto de Debian.
