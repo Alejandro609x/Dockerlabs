@@ -26,7 +26,7 @@ Una vez finalizado el despliegue, la máquina vulnerable quedará disponible den
 Antes de iniciar la enumeración comprobamos que la máquina objetivo responde correctamente.
 
 ```bash
-ping -c1 172.17.0.3
+ping -c1 172.17.0.2
 ```
 
 ![Despliegue](Imagenes/ping.png)
@@ -40,7 +40,7 @@ La respuesta ICMP confirma conectividad con el objetivo.
 Realizamos un escaneo completo de puertos TCP.
 
 ```bash
-sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3
+sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2
 ```
 
 ### Explicación de parámetros utilizados:
@@ -65,7 +65,7 @@ Puertos encontrados:
 Procedemos a identificar versiones y servicios.
 
 ```bash
-nmap -sCV -p21,80 172.17.0.3
+nmap -sCV -p21,80 172.17.0.2
 ```
 
 Donde:
@@ -84,10 +84,8 @@ Durante la enumeración observamos que FTP permite autenticación anónima.
 Accedemos:
 
 ```bash
-ftp anonymous@172.17.0.3
+ftp anonymous@172.17.0.2
 ```
-
-> Nota: anteriormente se usó 172.17.0.2, pero la IP correcta del objetivo debe mantenerse consistente.
 
 ![Servicios](Imagenes/ftpdesano.png)
 
