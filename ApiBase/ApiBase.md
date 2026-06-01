@@ -54,7 +54,7 @@ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.3 -oG allPorts.txt
 **Puertos descubiertos:**
 
 * `22/tcp`: SSH
-* `5000/tcp`: HTTP
+* `80/tcp`: HTTP
 
 ![Puertos](Imágenes/Capturas_2.png)
 
