@@ -96,10 +96,7 @@ Se observa una página por defecto de Apache, lo que indica una aplicación poco
 Se realiza un ataque de enumeración de rutas ocultas utilizando Gobuster:
 
 ```bash
-gobuster dir -u http://172.17.0.2:5000 \
--w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt \
--x .env,.php,.bak,.old,.zip,.txt \
--b 403,404 --exclude-length 365
+gobuster dir -u http://172.17.0.2:5000 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x .env,.php,.bak,.old,.zip,.txt -b 403,404 --exclude-length 365
 ```
 
 ### 📌 Rutas descubiertas
@@ -111,7 +108,7 @@ gobuster dir -u http://172.17.0.2:5000 \
 
 Estas rutas indican la existencia de una aplicación web dinámica con funcionalidades de autenticación y panel de usuario.
 
-![Despliegue](Imagenes/gobuste.png)
+![Despliegue](Imagenes/gobuster.png)
 
 ---
 
