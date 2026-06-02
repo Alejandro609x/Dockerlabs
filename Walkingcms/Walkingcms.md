@@ -18,15 +18,6 @@ La máquina se distribuye comprimida en formato `.zip`, conteniendo una imagen D
 unzip walkingcms.zip
 sudo bash auto_deploy.sh walkingcms.tar
 ```
-
-### Explicación del proceso:
-
-* **unzip walkingcms.zip**
-  Extrae el contenido comprimido de la máquina vulnerable.
-
-* **auto_deploy.sh walkingcms.tar**
-  Ejecuta el script automatizado encargado de importar la imagen Docker y desplegar el contenedor vulnerable.
-
 Una vez finalizado el proceso, la máquina queda disponible dentro de la red Docker local.
 
 ![Despliegue](Imagenes/despliegue.png)
@@ -91,14 +82,14 @@ Esto indica que la superficie de ataque inicial está centrada en aplicaciones w
 Una vez identificados los puertos abiertos, se ejecuta un escaneo más profundo:
 
 ```bash
-nmap -sCV -p21,80 172.17.0.2
+nmap -sCV -p80 172.17.0.2
 ```
 
 ### Explicación:
 
 * **-sC** → Ejecuta scripts NSE básicos.
 * **-sV** → Detecta versiones.
-* **-p21,80** → Analiza puertos concretos.
+* **-p80** → Analiza puertos concretos.
 
 Este análisis revela que el servidor web utiliza **Apache**.
 
