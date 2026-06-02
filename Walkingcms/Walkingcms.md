@@ -4,7 +4,7 @@
 
 ### 🧩 **Plataforma:** DockerLabs
 
-![Despliegue](Imágenes/logo.png)
+![Despliegue](Imagenes/logo.png)
 
 ---
 
@@ -17,4 +17,4 @@ unzip backend.zip
 sudo bash auto_deploy.sh backend.tar
 ```
 
-![Despliegue](Imágenes/despliegue.png)
+![Despliegue](Imagenes/despliegue.png)
