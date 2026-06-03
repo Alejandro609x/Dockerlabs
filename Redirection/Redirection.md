@@ -121,6 +121,46 @@ Se accede al servicio HTTP:
 http://172.17.0.2
 ```
 
-La página presenta un formulario de autenticación simple.
+La página presenta tres laboratorios a resolver
 
-![Despliegue](Imagenes/pagina.png)
+---
+
+# Laboratorio 1
+
+Al analizar el codigo fuente se encuentra el fragmento de HTML/PHP:
+
+<a href="redirect.php?url=http://google.com">Ir a otro sitio</a>
+
+Esto significa que:
+
+La página interactúa con un script del lado del servidor llamado redirect.php.
+
+Este script recibe un parámetro llamado url.
+
+El problema: Si el código interno de redirect.php simplemente toma el valor de url y hace un header("Location: " . $_GET['url']); sin filtrar nada, el sitio redirigirá a cualquier dirección que se le pase.
+
+Lo que hacemos en este primer laboratorios es:
+
+Se cambia el parámetro de la URL del laboratorios por:
+
+```bash
+http://172.17.0.2/laboratorio1/redirect.php?url=https://github.com/Alejandro609x
+```
+
+Aquí, en lugar de ir a un sitio neutro, se está forzando a la aplicación a apuntar hacia un perfil específico de GitHub
+
+
+![Despliegue](Imagenes/laboratoriouno.png)
+
+
+![Despliegue](Imagenes/laboratoriounourl.png)
+
+
+![Despliegue](Imagenes/laboratoriounourlcambiada.png)
+
+
+![Despliegue](Imagenes/laboratoriounocompleta..png)
+
+
+
+
