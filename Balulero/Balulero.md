@@ -47,4 +47,52 @@ La recepción de respuesta confirma:
 ![Despliegue](Imagenes/ping.png)
 
 ---
+# 🔍 Fase de reconocimiento – Escaneo de puertos
 
+La enumeración inicial comienza identificando los puertos expuestos por el sistema.
+
+Se realiza un escaneo completo sobre todos los puertos TCP:
+
+```bash
+sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2
+```
+
+## Explicación detallada de parámetros:
+
+* **-p-** → Escanea los 65535 puertos TCP.
+* **--open** → Muestra únicamente puertos abiertos.
+* **-sS** → Ejecuta un SYN Scan (Stealth Scan).
+* **--min-rate 5000** → Fuerza una velocidad mínima de envío de paquetes.
+* **-vvv** → Incrementa el nivel de verbosidad.
+* **-n** → Evita la resolución DNS.
+* **-Pn** → Omite la detección previa de hosts activos.
+
+---
+
+## 📌 Resultado obtenido
+
+El escaneo revela los siguientes servicios expuestos:
+
+* **22/tcp → SSH**
+* **80/tcp → HTTP**
+
+Esto indica que la superficie de ataque inicial se encuentra orientada principalmente hacia servicios web.
+
+---
+# Enumeración de servicios
+
+Una vez identificados los puertos abiertos, se ejecuta un análisis más profundo para obtener información adicional sobre versiones y configuraciones:
+
+```bash
+nmap -sCV -p22,80 172.17.0.2
+```
+
+### Explicación:
+
+* **-sC** → Ejecuta scripts NSE básicos.
+* **-sV** → Detecta versiones de servicios.
+* **-p22,80** → Analiza únicamente los puertos especificados.
+
+![Despliegue](Imagenes/nmap.png)
+
+---
