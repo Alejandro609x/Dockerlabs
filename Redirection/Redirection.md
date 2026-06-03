@@ -159,7 +159,7 @@ Aquí, en lugar de ir a un sitio neutro, se está forzando a la aplicación a ap
 ![Despliegue](Imagenes/laboratoriounourlcambiada.png)
 
 
-![Despliegue](Imagenes/laboratoriounocompleta..png)
+![Despliegue](Imagenes/laboratoriounocompleta.png)
 
 
 
