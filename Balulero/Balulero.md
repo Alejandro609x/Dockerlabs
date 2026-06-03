@@ -96,3 +96,17 @@ nmap -sCV -p22,80 172.17.0.2
 ![Despliegue](Imagenes/nmap.png)
 
 ---
+
+# 🌐 Enumeración web
+
+Al acceder al servicio HTTP mediante navegador:
+
+```bash
+http://172.17.0.2
+```
+
+Se observa una aplicación web con un formulario de autenticación.
+
+![Despliegue](Imagenes/pagina.png)
+
+---
