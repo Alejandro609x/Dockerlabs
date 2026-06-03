@@ -24,3 +24,27 @@ Una vez finalizado el despliegue, la máquina queda disponible dentro de la red 
 ![Despliegue](Imagenes/despliegue.png)
 
 ---
+
+# 📡 Comprobación de conectividad
+
+Antes de comenzar la fase de enumeración, es importante verificar que el objetivo se encuentre activo y responda correctamente dentro de la red.
+
+```bash
+ping -c4 172.17.0.2
+```
+
+### Explicación:
+
+* **ping** → Herramienta utilizada para verificar conectividad mediante ICMP.
+* **-c4** → Envía únicamente un paquete ICMP.
+
+La recepción de respuesta confirma:
+
+* Existencia del host objetivo
+* Conectividad de red funcional
+* Baja latencia, esperada al ejecutarse dentro de Docker
+
+![Despliegue](Imagenes/ping.png)
+
+---
+
