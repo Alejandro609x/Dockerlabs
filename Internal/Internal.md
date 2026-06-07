@@ -105,8 +105,6 @@ Añadimos:
 172.17.0.2 internal.dl
 ```
 
-![Despliegue](Imagenes/subdominio.png)
-
 Al acceder nuevamente al sitio web encontramos la página principal:
 
 ![Despliegue](Imagenes/pagina.png)
