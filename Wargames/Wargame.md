@@ -56,7 +56,7 @@ Parámetros utilizados:
 * `-n` → Evita resolución DNS.
 * `-Pn` → Omite descubrimiento ICMP.
 
-![Despliegue](/Imagenes/nmapuno.png)
+![Despliegue](Imagenes/nmapuno.png)
 
 ---
 
@@ -69,7 +69,7 @@ Durante la enumeración se identifican los siguientes servicios:
 * `80/tcp` → HTTP
 * `5000/tcp` → Servicio personalizado
 
-![Despliegue](/Imagenes/nmapdos.png)
+![Despliegue](Imagenes/nmapdos.png)
 
 ---
 
