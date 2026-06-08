@@ -119,7 +119,7 @@ gobuster dir -u http://172.17.0.2/ -w /usr/share/wordlists/dirbuster/directory-l
 
 El objetivo es descubrir recursos no indexados o directorios olvidados.
 
-![Despliegue](Imagenes/gobuste.png)
+![Despliegue](Imagenes/gobuster.png)
 
 Durante la enumeración encontramos un recurso especialmente interesante:
 
