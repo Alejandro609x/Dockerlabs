@@ -33,7 +33,7 @@ ping -c1 172.17.0.2
 
 La respuesta confirma que el host se encuentra activo dentro del segmento de red.
 
-![Despliegue](/Imagenes/ping.png)
+![Despliegue](Imagenes/ping.png)
 
 ---
 
