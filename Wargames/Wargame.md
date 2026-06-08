@@ -267,8 +267,6 @@ W.O.P.R
 
 La presencia de llamadas privilegiadas sugiere que el binario manipula permisos durante ejecución.
 
-Captura obtenida:
-
 ---
 
 ## 🌐 Observación del Comportamiento del Binario
