@@ -1,107 +1,241 @@
-# 🧠 **Informe de Pentesting – Máquina: Wargame**
+# 🧩 Enumeración de Servicios y Versiones
 
-### 💡 **Dificultad:** Fácil
-
-📦 **Plataforma:** DockerLabs
-
-![Despliegue](Imagenes/logo.png)
-
----
-
-# 🚀 **Despliegue de la Máquina**
-
-Para iniciar la máquina vulnerable, primero descomprimimos el archivo proporcionado y posteriormente ejecutamos el script de despliegue:
+Después de identificar los puertos abiertos, procedemos a enumerar versiones y configuraciones específicas de cada servicio:
 
 ```bash
-unzip wargame.zip
-sudo bash auto_deploy.sh wargame.tar
+nmap -sCV -p21,22,80,5000 172.17.0.2
 ```
 
-![Despliegue](Imagenes/Despliegue.png)
+Durante esta fase se obtiene información relevante:
+
+* Servicio SSH activo.
+* Existencia del usuario **joshua** expuesto por banners o respuestas del servicio.
+* Puerto `5000/tcp` ejecutando un servicio personalizado.
+
+Esto sugiere que la explotación probablemente involucre interacción con servicios no estándar además del vector web.
 
 ---
 
-# 📶 **Comprobación de Conectividad**
+# 🧭 Reconocimiento Web
 
-Una vez desplegada la máquina, verificamos que el objetivo se encuentre activo y responda correctamente a peticiones ICMP:
+## 🖥️ Acceso Inicial a la Aplicación
 
-```bash
-ping -c1 172.17.0.2
-```
-
-![Despliegue](/AnonymousPingu/Imagenes/ping.png)
-
----
-
-# 🔍 **Escaneo de Puertos**
-
-## 🔎 Escaneo Completo de Puertos
-
-Se realiza un escaneo completo sobre todos los puertos TCP para identificar los servicios expuestos en la máquina víctima:
-
-```bash
-sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2
-```
-
-### 📌 Puertos Abiertos Detectados
-
-* `21/tcp` → Servicio FTP
-* `80/tcp` → Servicio HTTP
-
----
-
-## 🧩 Enumeración de Servicios y Versiones
-
-Después de identificar los puertos abiertos, procedemos a detectar versiones y configuraciones de los servicios activos:
-
-```bash
-nmap -sCV -p21,80 172.17.0.2
-```
-
-![Despliegue](/AnonymousPingu/Imagenes/pabiertos.png)
-
-![Despliegue](/AnonymousPingu/Imagenes/serviciosp.png)
-
-Durante esta fase observamos un detalle importante:
-el servicio FTP permite autenticación anónima (`Anonymous FTP login allowed`), lo que podría representar una vía de acceso inicial al sistema.
-
----
-
-# 🧭 **Reconocimiento Web**
-
-## 🖥️ Acceso Inicial a la Aplicación Web
-
-Accedemos al servicio web desde el navegador:
+Accedemos al sitio web:
 
 ```bash
 http://172.17.0.2
 ```
 
-La página carga correctamente y muestra una aplicación web funcional.
+La aplicación responde correctamente, aunque inicialmente solo muestra contenido estático.
 
-![Despliegue](/AnonymousPingu/Imagenes/pagina.png)
+![Despliegue](Imagenes/pagina.png)
+
+Debido a la ausencia de funcionalidades visibles, se procede a realizar enumeración de contenido oculto.
 
 ---
 
 # 🗂️ Enumeración de Directorios
 
-Para identificar rutas ocultas o directorios interesantes, realizamos fuzzing utilizando `gobuster`:
+Utilizamos **Gobuster** para descubrir recursos no enlazados públicamente:
 
 ```bash
 gobuster dir -u http://172.17.0.2/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x .env,.php,.bak,.old,.zip,.txt -b 403,404 --exclude-length 8068
 ```
 
-Como resultado, se detectan múltiples directorios dentro de la aplicación.
+Durante el fuzzing se identifican múltiples recursos.
 
-![Despliegue](/AnonymousPingu/Imagenes/gobusteruno.png)
+![Despliegue](Imagenes/gobuste.png)
 
-Entre todos los resultados encontrados, el directorio más interesante es:
+Uno de ellos resulta especialmente interesante:
 
 ```bash
-/upload/
+/README.txt
 ```
 
-Este directorio resulta especialmente relevante porque podría permitir visualizar archivos subidos al servidor.
-Si logramos cargar un archivo PHP malicioso, posiblemente podamos ejecutarlo directamente desde el navegador.
+Al acceder encontramos información operativa relacionada con **W.O.P.R.**, restricciones internas y pistas de ingeniería social.
 
+![Despliegue](Imagenes/README.png)
+
+Aspectos importantes descubiertos:
+
+* Se menciona un sistema restringido.
+* Referencias a **Falken**.
+* Existencia de una posible funcionalidad oculta.
+* Aparición explícita del término:
+
+```text
+Codename: GODMODE
+```
+
+Este dato será útil posteriormente.
+
+---
+
+# 🔌 Enumeración del Servicio Personalizado (Puerto 5000)
+
+El puerto `5000/tcp` presentaba un servicio no identificado durante la enumeración inicial.
+
+Para interactuar manualmente utilizamos Netcat:
+
+```bash
+nc 172.17.0.2 5000
+```
+
+![Despliegue](Imagenes/usuarion.png)
+
+El servicio funciona como una consola interactiva limitada.
+
+Durante la interacción se prueban comandos básicos, palabras clave encontradas en el README y distintos intentos de enumeración.
+
+Gracias a las pistas previas se prueba el término:
+
+```text
+GODMODE
+```
+
+Tras múltiples pruebas se obtiene acceso a información sensible, incluyendo referencias al usuario encontrado anteriormente y credenciales almacenadas parcialmente ofuscadas.
+
+![Despliegue](Imagenes/hashssh.png)
+
+La contraseña aparece representada mediante hash, por lo que se procede a su crackeo offline.
+
+---
+
+# 🔓 Obtención de Credenciales
+
+Se probaron distintas herramientas de cracking.
+
+La plataforma que logró resolver el hash fue:
+
+```text
+https://hashes.com/es/decrypt/hash
+```
+
+Una vez identificado el valor real del hash, obtenemos credenciales válidas para SSH.
+
+Acceso:
+
+```bash
+ssh joshua@172.17.0.2
+```
+
+Ya disponemos de acceso inicial como usuario con bajos privilegios.
+
+---
+
+# 🚩 Escalada de Privilegios
+
+Una vez dentro del sistema, iniciamos enumeración local buscando binarios SUID:
+
+```bash
+find / -type f -perm -4000 -ls 2>/dev/null
+```
+
+Resultado relevante:
+
+```bash
+/usr/local/bin/godmode
+```
+![Despliegue](Imagenes/sshuno.png)
+
+El binario posee permisos SUID:
+
+```text
+-rwsr-xr-x root root
+```
+
+Esto significa que se ejecuta con privilegios efectivos de **root**, independientemente del usuario que lo invoque.
+
+---
+
+## 🔬 Análisis del Binario
+
+Ejecutamos el binario:
+
+```bash
+/usr/local/bin/godmode
+```
+
+Salida:
+
+```text
+W.O.P.R Simulation System v1.0
+ACCESS DENIED. DEFCON remains at 5.
+```
+
+El programa aparentemente restringe funcionalidades, por lo que se procede a inspeccionarlo.
+
+Primero identificamos cadenas internas:
+
+```bash
+strings /usr/local/bin/godmode
+```
+
+Entre las cadenas aparecen:
+
+```text
+setuid@GLIBC
+main
+W.O.P.R
+```
+
+Además observamos que el binario realiza llamadas privilegiadas.
+
+Posteriormente verificamos su comportamiento.
+
+El objetivo consiste en identificar archivos externos, llamadas del sistema o recursos que el binario utilice y que podamos manipular.
+
+---
+
+## 🌐 Descubrimiento de Recurso Compartido
+
+Al revisar el contenido y comportamiento del binario, se identifica que puede interactuar con recursos externos.
+
+Nos desplazamos al directorio:
+
+```bash
+cd /usr/local/bin/
+```
+
+Y levantamos un servidor HTTP simple:
+
+```bash
+python3 -m http.server
+```
+
+Desde otra sesión observamos accesos realizados hacia:
+
+```text
+GET /godmode HTTP/1.1
+```
+
+Esto confirma que el binario o servicio relacionado interactúa con recursos compartidos.
+
+---
+
+## 👑 Obtención de Root
+
+Utilizando la palabra clave encontrada previamente:
+
+```text
+GODMODE
+```
+
+y aprovechando el comportamiento privilegiado del binario SUID, logramos ejecutar operaciones como root.
+
+Verificación:
+
+```bash
+whoami
+```
+
+Salida:
+
+```bash
+root
+```
+
+Sistema comprometido exitosamente.
+
+![Despliegue](Imagenes/root.png)
 ---
