@@ -4,7 +4,7 @@
 
 📦 **Plataforma:** DockerLabs
 
-![Despliegue](/Grooti/Imagenes/logo.png)
+![Despliegue](/Grooti/Imagenes/Logo.png)
 
 ---
 
