@@ -253,7 +253,7 @@ netstat -tuln
 
 El resultado del comando revela la existencia de un servicio que se ejecuta de forma exclusiva a nivel local (localhost) en el socket `127.0.0.1:3000`. Con el fin de auditar dicha aplicación desde el equipo atacante, se implementa una tunelización de red empleando la herramienta Chisel:
 
-Enlace del proyecto oficial: [https://github.com/jpillora/chisel/releases](https://github.com/jpillora/chisel/releases)
+Enlace del proyecto oficial: [https://github.com/jpillora/chisel/releases](https://github.com/jpillora/chisel/releases) 
 
 Para este entorno, se seleccionó y descargó el binario compilado correspondiente: `chisel_1.11.5_linux_amd64.gz`.
 
@@ -329,6 +329,8 @@ Tras recopilar la información del entorno web interno y analizar la estructura 
 > **Descripción del Fallo (CVE-2025-55182):** La vulnerabilidad CVE-2025-55182 es un fallo crítico de Server-Side Request Forgery (SSRF) y Remote Code Execution (RCE) que afecta a frameworks modernos basados en Node.js, como Next.js, al procesar Server Actions maliciosas. Ocurre debido a una validación insuficiente en la deserialización de datos estructurados que se envían a través de peticiones HTTP `POST`. Un atacante puede manipular los encabezados del framework y las propiedades internas de los objetos (enlazándose a cadenas de Prototype Pollution) para evadir las restricciones de aislamiento de la aplicación, logrando ejecutar comandos arbitrarios directamente en el sistema operativo del servidor.
 
 Con el objetivo de automatizar y validar de forma segura la presencia de este vector de ataque, se desarrolló un script en Python personalizado (disponible en el repositorio personal de GitHub), el cual se encarga de testear las respuestas de la aplicación ante cargas útiles controladas.
+
+Enlace del proyecto oficial: https://github.com/Alejandro609x/JEFAZO-CVE-2025-55182-Checker
 
 Al ejecutar la herramienta de desarrollo propio, se obtienen los siguientes indicadores analíticos:
 
