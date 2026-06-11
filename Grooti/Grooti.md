@@ -4,7 +4,7 @@
 
 📦 **Plataforma:** DockerLabs
 
-![Despliegue](/Grooti/Imagenes/Logo.png)
+![Despliegue](/Grooti/Imagenes/logo.png)
 
 ---
 
@@ -12,8 +12,8 @@
 
 Para iniciar la máquina vulnerable, primero descomprimimos el archivo proporcionado y posteriormente ejecutamos el script de despliegue:
 
-```bash id="m8jv2f"
-unzip grooti.zip
+```bash
+unzip winfake.zip
 sudo bash auto_deploy.sh grooti.tar
 ```
 
@@ -25,7 +25,7 @@ sudo bash auto_deploy.sh grooti.tar
 
 Una vez desplegada la máquina, verificamos que el objetivo se encuentre activo y responda correctamente a peticiones ICMP:
 
-```bash id="9zz4y2"
+```bash 
 ping -c1 172.17.0.2
 ```
 
