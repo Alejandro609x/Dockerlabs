@@ -1,5 +1,3 @@
-Te dejo una versión más profesional, corregida ortográficamente, con mejor redacción técnica y manteniendo **exactamente las mismas rutas de imágenes**.
-
 # 🧠 Informe de Pentesting – Máquina: WinFake
 
 ### 💡 Dificultad: Fácil
