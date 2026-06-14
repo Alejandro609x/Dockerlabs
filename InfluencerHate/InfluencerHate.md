@@ -65,3 +65,53 @@ Este análisis permite obtener información más detallada sobre los servicios e
 ![Despliegue](Imagenes/nmapdos.png)
 
 ---
+
+Al saber que existe el servicio http por el puerto 80 entramos a revisar la pagina y nos muetsra un formualario de inicio de sesion
+
+![Despliegue](Imagenes/nmapdos.png)
+
+Se realizo fuzzing y diversos ataque sin exito, posterior se introdujo credenciales admin:admin para interceptar la peticiòn con la herramineta burtsuite y poder analizar el GET.
+
+![Despliegue](Imagenes/Burtsuite.png)
+
+Al analizar "YWRtaW46YWRtaW4=" resultado de la peticiòn peticioòn se descubre que esta trabajando con Basic: en Base65, se confirma gracias a:
+
+```bash 
+echo 'YWRtaW46YWRtaW4=' | base64 -d
+```
+
+![Despliegue](Imagenes/base64.png)
+
+Obtenenos admin:admin las credenciales antes introducidas.
+
+Se procede a realizar fuerza bruta con el directorio: Passwords/Default-Credentials/ftp-betterdefaultpasslist.txt
+Pagina de SecLists: https://github.com/danielmiessler/SecLists/blob/master/Passwords/Default-Credentials/ftp-betterdefaultpasslist.txt
+
+```bash 
+hydra -C ftp-credenciales.txt 172.17.0.2 http-get / -t 64 -I -e nsr
+```
+![Despliegue](Imagenes/hydra.png) 
+
+Y obtendremos las credenciales: httpadmin:fhttpadmin con estas podemos acceder al primer formulario de login.
+
+Al acededer nos muestra la siguiente pagina: 
+
+![Despliegue](Imagenes/paginados.png) 
+
+Y al realizar nuevamente el fuzzing:
+
+```bash
+gobuster dir -u http://172.17.0.2/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x .env,.php,.bak,.old,.zip,.txt -b 403,303,404 --exclude-length 457 -H "Authorization: Basic aHR0cGFkbWluOmZodHRwYWRtaW4="
+```
+Pero agrenando el paramero -H (Explica esta parte del parametro), obtendermos el directorio:
+
+/login.php
+
+![Despliegue](Imagenes/gobuster.png) 
+
+Al acceder a la pagina encontramos un nuevo formulario de login.
+
+![Despliegue](Imagenes/paginatres.png) 
+
+
+
