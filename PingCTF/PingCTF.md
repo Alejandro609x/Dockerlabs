@@ -70,7 +70,7 @@ Durante el análisis se identificaron los siguientes puertos abiertos:
 Una vez identificados los puertos abiertos, realizamos una enumeración más detallada para conocer versiones, configuraciones y posibles vectores de ataque.
 
 ```bash
-nmap -sCV -p22,80,3306 172.17.0.2
+nmap -sCV -p80 172.17.0.2
 ```
 
 ### Explicación de los parámetros
