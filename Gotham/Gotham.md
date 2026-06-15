@@ -39,8 +39,6 @@ La respuesta recibida confirma que el host está encendido y accesible dentro de
 
 # 🔍 Escaneo de Puertos
 
-## 🔎 Escaneo Completo de Puertos
-
 El siguiente paso consiste en realizar un escaneo completo sobre todos los puertos TCP con el objetivo de identificar los servicios expuestos por la máquina víctima.
 
 ```bash
