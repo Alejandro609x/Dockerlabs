@@ -312,6 +312,8 @@ Posteriormente se introdujo el siguiente payload en el formulario vulnerable:
 
 ![Despliegue](Imagenes/pruebauno.png)
 
+![Despliegue](Imagenes/payload.png)
+
 La ejecución fue exitosa y se obtuvo una reverse shell sobre el sistema objetivo.
 
 ![Despliegue](Imagenes/acceso.png)
