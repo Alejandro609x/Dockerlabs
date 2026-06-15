@@ -61,7 +61,6 @@ sudo nmap -p- --open -sS --min-rate 5000 -vvv -n -Pn 172.17.0.2
 
 Durante el análisis se identificaron los siguientes puertos abiertos:
 
-* **22/tcp** → Servicio SSH
 * **80/tcp** → Servicio HTTP
 
 ---
