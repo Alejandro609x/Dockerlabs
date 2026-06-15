@@ -316,7 +316,28 @@ La ejecución fue exitosa y se obtuvo una reverse shell sobre el sistema objetiv
 
 ![Despliegue](Imagenes/acceso.png)
 
-Una vez obtenida la shell interactiva, se realizó el tratamiento TTY correspondiente para mejorar la estabilidad y funcionalidad de la sesión.
+# Nota: Antes de hacer la escalada se debe de hacer el tratamiento de TTY para evitar conflictos en la terminal
+
+```bash
+script /dev/null -c bash
+```
+ctrl Z (Se pondra en pausa la terminal victima)
+
+```bash
+stty raw -echo; fg
+```
+
+```bash
+reset xterm
+```
+
+```bash
+export TERM=xterm
+```
+
+```bash
+export BASH=bash
+```
 
 ---
 
