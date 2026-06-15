@@ -98,6 +98,7 @@ Al identificar la presencia de un servicio HTTP en el puerto 80, accedemos a la 
 
 Durante la inspección inicial observamos un formulario de autenticación aparentemente sencillo.
 
+![Despliegue](Imagenes/pagina.png)
 
 Se realizaron diferentes pruebas de enumeración y fuzzing sin obtener resultados relevantes en una primera fase.
 
