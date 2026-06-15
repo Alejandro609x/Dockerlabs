@@ -181,7 +181,7 @@ echo -n "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiZ3Vlc3QiLCJyb2xlIjoidX
 Posteriormente se utilizó John the Ripper para intentar recuperar la clave de firma mediante fuerza bruta basada en diccionario:
 
 ```bash
-john token_real.txt --format=HMAC-SHA256 --wordlist=/usr/share/wordlists/rockyou.txt
+john token.txt --format=HMAC-SHA256 --wordlist=/usr/share/wordlists/rockyou.txt
 ```
 
 La clave fue recuperada con éxito:
