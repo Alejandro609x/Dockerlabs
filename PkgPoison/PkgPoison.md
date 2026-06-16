@@ -144,6 +144,48 @@ Estas credenciales permiten establecer una sesión remota en el sistema comprome
 
 ![Despliegue](Imagenes/credencialeshydra.png)
 
+---
+
+# Nota: Antes de hacer la escalada se debe de hacer el tratamiento de TTY para evitar conflictos en la terminal
+
+Las shells obtenidas mediante técnicas de Reverse Shell suelen ser limitadas y carecen de funcionalidades propias de una terminal interactiva. Por ello, antes de comenzar cualquier proceso de escalada de privilegios es recomendable realizar el tratamiento de la TTY para disponer de una consola más estable y funcional.
+
+```bash
+script /dev/null -c bash
+```
+
+Una vez ejecutado el comando anterior, se suspende temporalmente la sesión:
+
+```bash
+Ctrl + Z
+```
+
+Posteriormente, desde la máquina atacante:
+
+```bash
+stty raw -echo; fg
+```
+
+A continuación se restablece correctamente el entorno de terminal:
+
+```bash
+reset xterm
+```
+
+Se configuran las variables necesarias para mejorar la experiencia interactiva:
+
+```bash
+export TERM=xterm
+```
+
+```bash
+export BASH=bash
+```
+
+Tras estos pasos se obtiene una terminal completamente interactiva, permitiendo utilizar herramientas como `su`, `vim`, `nano`, historial de comandos, autocompletado y combinaciones de teclas sin restricciones.
+
+---
+
 # Escalada a usuario admin
 
 Una vez dentro del sistema como el usuario **dev**, se realiza una enumeración de usuarios con acceso a una shell interactiva mediante el siguiente comando:
